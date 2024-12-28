@@ -5,7 +5,6 @@ from Common.utils import create_slider, create_label, create_image, create_butto
 from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
 import Common.constants as constants
 
-
 class FullScreenWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -65,6 +64,10 @@ class FullScreenWindow(QMainWindow):
         self.static_elements['TXT_P1'].show()
         self.static_elements['TXT_P2'].show()
 
+        # Slider Labels
+        self.static_elements['TXT_Slider_0'].hide()
+        self.static_elements['TXT_Slider_100'].hide()
+
     def initialize_slider(self):
         """
         Initializes the slider and its value label.
@@ -79,6 +82,7 @@ class FullScreenWindow(QMainWindow):
             location=constants.SLIDER_COORDINATES,
             size=constants.SLIDER_SIZE
         )
+        self.slider.hide()  # Start with the slider hidden
         # Connect slider change to a function
         self.slider.valueChanged.connect(self.on_slider_change)
 
@@ -90,6 +94,7 @@ class FullScreenWindow(QMainWindow):
             size=constants.TXT_SLIDER_VALUE_SIZE,
             location=(constants.TXT_SLIDER_VALUE_COORDINATES)
         )
+        self.value_label.hide()  # Start with the label hidden
 
     def initialize_buttons(self):
         """
@@ -147,7 +152,8 @@ class FullScreenWindow(QMainWindow):
     def select_button(self, selected_key, name_key):
         """
         Ensures only one selection box is visible at a time and updates the current selection.
-        
+        Also shows the slider if a selection is active.
+
         Parameters:
         selected_key (str): The key of the image to show or hide.
         name_key (str): The key of the name text to hide or show.
@@ -159,6 +165,10 @@ class FullScreenWindow(QMainWindow):
             if name_key in self.static_elements:
                 self.static_elements[name_key].show()  # Show the name text
             self.current_selection = None  # Reset the current selection
+            self.slider.hide()  # Hide slider
+            self.value_label.hide()  # Hide label
+            self.static_elements['TXT_Slider_0'].hide() # Hide slider labels
+            self.static_elements['TXT_Slider_100'].hide() # Hide slider labels
         else:
             # Hide all selection boxes
             selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected','IMG_REGBK_Selected','IMG_REGHLT_Selected']
@@ -176,6 +186,10 @@ class FullScreenWindow(QMainWindow):
             if name_key in self.static_elements:
                 self.static_elements[name_key].hide()
             self.current_selection = selected_key  # Update current selection
+            self.slider.show()  # Show slider
+            self.value_label.show()  # Show label
+            self.static_elements['TXT_Slider_0'].show() # Show slider labels
+            self.static_elements['TXT_Slider_100'].show() # Show slider labels
 
     def on_slider_change(self, value):
         """
