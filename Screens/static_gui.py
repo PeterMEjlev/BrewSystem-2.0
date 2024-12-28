@@ -46,6 +46,8 @@ def initialize_static_images(parent_widget):
         # Selection Text
         'IMG_BK_Selected': create_image(parent_widget, "TXT_BK_Selected.png", location=constants.TXT_BK_SELECTED),
         'IMG_HLT_Selected': create_image(parent_widget, "TXT_HLT_Selected.png", location=constants.TXT_HLT_SELECTED),
+        'IMG_REGBK_Selected': create_image(parent_widget, "TXT_REG_Selected.png", location=constants.TXT_REGBK_SELECTED),
+        'IMG_REGHLT_Selected': create_image(parent_widget, "TXT_REG_Selected.png", location=constants.TXT_REGHLT_SELECTED),
         'IMG_P1_Selected': create_image(parent_widget, "TXT_P1_Selected.png", location=constants.TXT_P1_SELECTED),
         'IMG_P2_Selected': create_image(parent_widget, "TXT_P2_Selected.png", location=constants.TXT_P2_SELECTED),
     }

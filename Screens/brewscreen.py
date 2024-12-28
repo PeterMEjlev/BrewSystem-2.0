@@ -55,6 +55,8 @@ class FullScreenWindow(QMainWindow):
         self.static_elements['IMG_HLT_Selected'].hide()
         self.static_elements['IMG_P1_Selected'].hide()
         self.static_elements['IMG_P2_Selected'].hide()
+        self.static_elements['IMG_REGBK_Selected'].hide()
+        self.static_elements['IMG_REGHLT_Selected'].hide()
 
         # Pot and Pump Names
         self.static_elements['TXT_POT_NAME_BK'].show()
@@ -125,6 +127,22 @@ class FullScreenWindow(QMainWindow):
             on_long_click=None,
             invisible=True
         )
+        self.BTN_toggle_REGBK = create_button(
+            parent_widget=self.central_widget,
+            position=constants.IMG_REG_BOX_BK_COORDINATES,
+            size=constants.BTN_REG_ON_OFF,
+            on_normal_click=lambda: self.select_button('IMG_REGBK_Selected', 'TXT_REG_BK'),
+            on_long_click=None,
+            invisible=True
+        )
+        self.BTN_toggle_REGBK = create_button(
+            parent_widget=self.central_widget,
+            position=constants.IMG_REG_BOX_HLT_COORDINATES,
+            size=constants.BTN_REG_ON_OFF,
+            on_normal_click=lambda: self.select_button('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
+            on_long_click=None,
+            invisible=True
+        )
 
     def select_button(self, selected_key, name_key):
         """
@@ -143,8 +161,8 @@ class FullScreenWindow(QMainWindow):
             self.current_selection = None  # Reset the current selection
         else:
             # Hide all selection boxes
-            selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected']
-            name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2']
+            selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected','IMG_REGBK_Selected','IMG_REGHLT_Selected']
+            name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2','TXT_REG_BK','TXT_REG_HLT']
             for key in selection_keys:
                 if key in self.static_elements:
                     self.static_elements[key].hide()
