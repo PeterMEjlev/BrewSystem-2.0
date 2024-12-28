@@ -6,14 +6,6 @@ from Screens.static_gui import initialize_static_elements  # Import the static e
 import Common.constants as constants
 
 
-import os
-from PyQt5.QtWidgets import QMainWindow, QWidget
-from PyQt5.QtCore import Qt
-from Common.utils import create_slider, create_label, create_image, create_button
-from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
-import Common.constants as constants
-
-
 class FullScreenWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -59,10 +51,17 @@ class FullScreenWindow(QMainWindow):
         self.static_elements['IMG_Pot_HLT_On_Foreground'].hide()
         
         # Selection Boxes
-        self.static_elements['IMG_Selection_Pot_BK'].hide()
-        self.static_elements['IMG_Selection_Pot_HLT'].hide()
-        self.static_elements['IMG_Selection_P1'].hide()
-        self.static_elements['IMG_Selection_P2'].hide()
+        self.static_elements['IMG_BK_Selected'].hide()
+        self.static_elements['IMG_HLT_Selected'].hide()
+        self.static_elements['IMG_P1_Selected'].hide()
+        self.static_elements['IMG_P2_Selected'].hide()
+
+        # Pot and Pump Names
+        self.static_elements['TXT_POT_NAME_BK'].show()
+        self.static_elements['TXT_POT_NAME_MLT'].show()
+        self.static_elements['TXT_POT_NAME_HLT'].show()
+        self.static_elements['TXT_P1'].show()
+        self.static_elements['TXT_P2'].show()
 
     def initialize_slider(self):
         """
@@ -98,7 +97,7 @@ class FullScreenWindow(QMainWindow):
             parent_widget=self.central_widget,
             position=constants.IMG_POT_BK_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_Selection_Pot_BK'),
+            on_normal_click=lambda: self.select_button('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
             on_long_click=lambda: toggle_images_visibility(self.static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
             invisible=True
         )
@@ -106,7 +105,7 @@ class FullScreenWindow(QMainWindow):
             parent_widget=self.central_widget,
             position=constants.IMG_POT_HLT_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_Selection_Pot_HLT'),
+            on_normal_click=lambda: self.select_button('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
             on_long_click=lambda: toggle_images_visibility(self.static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
             invisible=True
         )
@@ -114,7 +113,7 @@ class FullScreenWindow(QMainWindow):
             parent_widget=self.central_widget,
             position=constants.IMG_PUMP_BOX_P1_COORDINATES,
             size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_Selection_P1'),
+            on_normal_click=lambda: self.select_button('IMG_P1_Selected', 'TXT_P1'),
             on_long_click=None,
             invisible=True
         )
@@ -122,43 +121,43 @@ class FullScreenWindow(QMainWindow):
             parent_widget=self.central_widget,
             position=constants.IMG_PUMP_BOX_P2_COORDINATES,
             size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_Selection_P2'),
+            on_normal_click=lambda: self.select_button('IMG_P2_Selected', 'TXT_P2'),
             on_long_click=None,
             invisible=True
         )
 
-    def select_button(self, selected_key):
+    def select_button(self, selected_key, name_key):
         """
         Ensures only one selection box is visible at a time and updates the current selection.
         
         Parameters:
         selected_key (str): The key of the image to show or hide.
+        name_key (str): The key of the name text to hide or show.
         """
         # If the selected button is already selected, unselect it
         if self.current_selection == selected_key:
             if selected_key in self.static_elements:
                 self.static_elements[selected_key].hide()  # Hide the current selection
+            if name_key in self.static_elements:
+                self.static_elements[name_key].show()  # Show the name text
             self.current_selection = None  # Reset the current selection
         else:
             # Hide all selection boxes
-            selection_keys = ['IMG_Selection_Pot_BK', 'IMG_Selection_Pot_HLT', 'IMG_Selection_P1', 'IMG_Selection_P2']
+            selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected']
+            name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2']
             for key in selection_keys:
                 if key in self.static_elements:
                     self.static_elements[key].hide()
+            for key in name_keys:
+                if key in self.static_elements:
+                    self.static_elements[key].show()
             
             # Show the new selected selection box
             if selected_key in self.static_elements:
                 self.static_elements[selected_key].show()
-                self.current_selection = selected_key  # Update current selection
-            else:
-                self.current_selection = None  # Clear selection if the key is invalid
-
-    def on_slider_change(self, value):
-        """
-        Updates the slider value label when the slider is moved.
-        """
-        self.value_label.setText(str(value))  # Update the label text
-
+            if name_key in self.static_elements:
+                self.static_elements[name_key].hide()
+            self.current_selection = selected_key  # Update current selection
 
     def on_slider_change(self, value):
         """

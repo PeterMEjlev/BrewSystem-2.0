@@ -28,12 +28,6 @@ def initialize_static_images(parent_widget):
         'IMG_Pot_HLT_On_Background': create_image(parent_widget, "Pot_On_Background.png", location=constants.IMG_POT_HLT_COORDINATES), # Hidden     
         'IMG_Pot_HLT_On_Foreground': create_image(parent_widget, "Pot_On_Foreground.png", location=constants.IMG_POT_HLT_COORDINATES), # Hidden       
         'IMG_Pot_HLT': create_image(parent_widget, "Pot_Outline.png", location=constants.IMG_POT_HLT_COORDINATES),
-        
-        # Pot & Pump Selection Boxes
-        'IMG_Selection_Pot_BK': create_image(parent_widget, "Selection_Pot.png", location=constants.IMG_POT_BK_SELECTION_COORDINATES), # Hidden
-        'IMG_Selection_Pot_HLT': create_image(parent_widget, "Selection_Pot.png", location=constants.IMG_POT_HLT_SELECTION_COORDINATES), # Hidden
-        'IMG_Selection_P1': create_image(parent_widget, "Selection_Pump.png", location=constants.IMG_P1_SELECTION_COORDINATES), # Hidden
-        'IMG_Selection_P2': create_image(parent_widget, "Selection_Pump.png", location=constants.IMG_P2_SELECTION_COORDINATES), # Hidden
 
         # Pipes and Reg Boxes
         'IMG_Pipes': create_image(parent_widget, "Pipes.png", location=constants.IMG_PIPES_COORDINATES),
@@ -48,6 +42,12 @@ def initialize_static_images(parent_widget):
         # Pump Boxes
         'IMG_Pump_Box_P1': create_image(parent_widget, "Pump_Box.png", location=constants.IMG_PUMP_BOX_P1_COORDINATES),
         'IMG_Pump_Box_P2': create_image(parent_widget, "Pump_Box.png", location=constants.IMG_PUMP_BOX_P2_COORDINATES),
+
+        # Selection Text
+        'IMG_BK_Selected': create_image(parent_widget, "TXT_BK_Selected.png", location=constants.TXT_BK_SELECTED),
+        'IMG_HLT_Selected': create_image(parent_widget, "TXT_HLT_Selected.png", location=constants.TXT_HLT_SELECTED),
+        'IMG_P1_Selected': create_image(parent_widget, "TXT_P1_Selected.png", location=constants.TXT_P1_SELECTED),
+        'IMG_P2_Selected': create_image(parent_widget, "TXT_P2_Selected.png", location=constants.TXT_P2_SELECTED),
     }
 
 def initialize_static_text(parent_widget):
