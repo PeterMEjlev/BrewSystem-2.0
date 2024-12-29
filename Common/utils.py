@@ -4,9 +4,9 @@ from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon
 from PyQt5 import QtWidgets, QtCore
 import os
 
-def create_label(parent_widget, text, color='white', size=40, location=(0, 0), width=None, height=None, alignment=Qt.AlignLeft):
+def create_label(parent_widget, text, color='white', size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
     """
-    Creates and returns a QLabel with specified text, color, size, and location.
+    Creates and returns a QLabel with specified text, color, size, and alignment at a fixed center point.
     """
     # Load the custom font
     custom_font = load_custom_font()
@@ -24,12 +24,16 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
     # Calculate text dimensions dynamically
     metrics = QFontMetrics(label.font())
     if width is None:
-        width = metrics.horizontalAdvance(text) + 30  # Add padding for safety
+        width = metrics.horizontalAdvance("999°") + 30  # Fixed width based on the longest text
     if height is None:
         height = metrics.height() + 10  # Add padding for height
 
+    # Calculate top-left position to center the label at the desired point
+    x = center[0] - width // 2
+    y = center[1] - height // 2
+
     # Set the position and size of the label
-    label.setGeometry(location[0], location[1], width, height)
+    label.setGeometry(x, y, width, height)
 
     # Set the style for colors and background
     label.setStyleSheet(f"""
@@ -48,7 +52,8 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
     return label
 
 
-def create_image(parent_widget, image_path, location=(0, 0), size=None):
+
+def create_image(parent_widget, image_path, center=(0, 0), size=None):
     """
     Creates and returns a QLabel with an image displayed, respecting transparency.
 
@@ -81,7 +86,7 @@ def create_image(parent_widget, image_path, location=(0, 0), size=None):
     # Set the position and size of the label
     width = pixmap.width() if not size else size[0]
     height = pixmap.height() if not size else size[1]
-    image_label.setGeometry(location[0], location[1], width, height)
+    image_label.setGeometry(center[0], center[1], width, height)
 
     # Ensure transparency of the image
     image_label.setAttribute(Qt.WA_TranslucentBackground)

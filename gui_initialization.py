@@ -34,7 +34,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
         text=str(slider.value()),
         color='white',
         size=constants.TXT_SLIDER_VALUE_SIZE,
-        location=(constants.TXT_SLIDER_VALUE_COORDINATES)
+        center=(constants.TXT_SLIDER_VALUE_COORDINATES)
     )
     value_label.hide()  # Start with the label hidden
 
