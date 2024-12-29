@@ -51,8 +51,6 @@ def create_label(parent_widget, text, color='white', size=40, center=(0, 0), wid
 
     return label
 
-
-
 def create_image(parent_widget, image_path, center=(0, 0), size=None):
     """
     Creates and returns a QLabel with an image displayed, respecting transparency.
@@ -96,7 +94,7 @@ def create_image(parent_widget, image_path, center=(0, 0), size=None):
 
     return image_label
     
-def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=100, value=50, location=(0, 0), size=(200, 40), style=None):
+def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=100, value=50, location=(0, 0), size=(200, 70), style=None):
     """
     Creates and returns a QSlider with specified properties.
 
@@ -107,7 +105,7 @@ def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=1
     maximum (int): The maximum value of the slider (default is 100).
     value (int): The initial value of the slider (default is 50).
     location (tuple): A tuple (x, y) representing the location of the slider. Default is (0, 0).
-    size (tuple): A tuple (width, height) representing the size of the slider. Default is (200, 40).
+    size (tuple): A tuple (width, height) representing the size of the slider. Default is (200, 70).
     style (str): A string containing the custom stylesheet for the slider (default is None).
 
     Returns:
@@ -121,6 +119,7 @@ def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=1
 
     # Set the position and size of the slider
     slider.setGeometry(location[0], location[1], size[0], size[1])
+    slider.setMinimumHeight(70)  # Ensure the widget is tall enough to accommodate the larger handle
 
     # Apply the custom style if provided
     if style:
@@ -133,25 +132,33 @@ def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=1
             }
             QSlider::groove:horizontal {
                 border: none;
-                height: 40px;
+                height: 40px; /* Set the slider bar height */
                 background: #F58361; /* The color of the unselected portion */
                 border-radius: 20px;
             }
             QSlider::sub-page:horizontal {
                 border: none;
-                height: 40px;
+                height: 40px; /* Match the slider bar height */
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                            stop:0 #F04C65, stop:1 #F58361);
+                                            stop:0 #F04C65, stop:1 #F58361); /* Gradient for selected portion */
                 border-radius: 20px;
             }
             QSlider::handle:horizontal {
-                background: white;
+                background-color: white; /* Handle color */
                 border: none;
-                width: 10px;
+                height: 50px; /* Increase handle height */
+                width: 75px; /* Increase handle width */
+                margin: -15px 0; /* Ensure handle extends above and below groove */
+                border-radius: 10px; /* Make handle circular */
+            }
+            QSlider::handle:horizontal:pressed {
+                background-color: rgb(65, 255, 195); /* Change handle color when pressed */
             }
         """)
 
     return slider
+
+
    
 def create_button(parent_widget, position=(0, 0), size=(100, 50), image_path=None,
                   on_normal_click=None, on_long_click=None, invisible=False, long_click_duration=300):
