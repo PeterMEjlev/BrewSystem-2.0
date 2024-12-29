@@ -86,7 +86,7 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_P1_Selected', 'TXT_P1'),
                 central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
             ),
-            on_long_click=None,
+            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
             invisible=True
         ),
         'BTN_toggle_P2': create_button(
@@ -97,7 +97,7 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_P2_Selected', 'TXT_P2'),
                 central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
             ),
-            on_long_click=None,
+            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
             invisible=True
         ),
         'BTN_toggle_REGBK': create_button(
@@ -140,7 +140,7 @@ def hide_GUI_elements(static_elements):
         'IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground',
         'IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected',
         'IMG_REGBK_Selected', 'IMG_REGHLT_Selected',
-        'TXT_Slider_0', 'TXT_Slider_100'
+        'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2'
     ]
     for key in keys_to_hide:
         if key in static_elements:

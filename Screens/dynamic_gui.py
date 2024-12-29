@@ -1,3 +1,4 @@
+# dynamic_gui.py
 from Common.utils import create_label
 import Common.variables as variables
 import Common.constants as constants
@@ -18,8 +19,8 @@ def initialize_dynamic_text(parent_widget):
         'TXT_TEMP_REG_HLT': create_label(parent_widget, f"{variables.temp_REG_HLT}°", color='white', size=constants.TXT_REG_VALUE_SIZE, center=constants.TXT_REG_HLT_VALUE_COORDINATES, alignment=Qt.AlignCenter),
     
         # Pump Speeds (PWM)
-        'TXT_P1_SPEED': create_label(parent_widget, f"{variables.pump_speed_P1}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P1_VALUE_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_P2_SPEED': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_PUMP_SPEED_P1': create_label(parent_widget, f"{variables.pump_speed_P1}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P1_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_PUMP_SPEED_P2': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),
     
     }
 

@@ -1,3 +1,4 @@
+# static_gui.py
 from Common.utils import create_image, create_label
 import Common.constants as constants
 from PyQt5.QtCore import Qt
@@ -40,7 +41,10 @@ def initialize_static_images(parent_widget):
         'IMG_Heating_Element_HLT': create_image(parent_widget, "Heating_Element.png", center=constants.IMG_HEATING_ELEMENT_HLT_COORDINATES),
 
         # Pump Boxes
+        'IMG_Pump_On_P1': create_image(parent_widget, "Pump_On.png", center=constants.IMG_PUMP_BOX_P1_COORDINATES),
         'IMG_Pump_Box_P1': create_image(parent_widget, "Pump_Box.png", center=constants.IMG_PUMP_BOX_P1_COORDINATES),
+        
+        'IMG_Pump_On_P2': create_image(parent_widget, "Pump_On.png", center=constants.IMG_PUMP_BOX_P2_COORDINATES),
         'IMG_Pump_Box_P2': create_image(parent_widget, "Pump_Box.png", center=constants.IMG_PUMP_BOX_P2_COORDINATES),
 
         # Selection Text
@@ -61,7 +65,7 @@ def initialize_static_text(parent_widget):
     """
     return {
         # Title
-        'TXT_Title': create_label(parent_widget, "BrewSystem 2.0", color='white', size=constants.TXT_TITLE_SIZE, center=constants.TXT_TITLE_COORDINATES),
+        'TXT_Title': create_label(parent_widget, "BrewSystem 2.0", color='white', size=constants.TXT_TITLE_SIZE, center=constants.TXT_TITLE_COORDINATES, width = 500),
 
         # Pot Names
         'TXT_POT_NAME_BK': create_label(parent_widget, "BK", color='white', size=constants.TXT_POT_NAMES_SIZE, center=constants.TXT_POT_NAMES_BK_COORDINATES),

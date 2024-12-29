@@ -1,3 +1,4 @@
+# brewscreen.py
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from Common.utils import toggle_images_visibility
