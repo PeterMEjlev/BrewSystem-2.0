@@ -4,6 +4,7 @@ from Common.utils import toggle_images_visibility
 from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
 from Screens.dynamic_gui import initialize_dynamic_elements  # Import the dynamic elements initializer
 import Common.constants as constants
+import Common.variables as variables
 from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 
 class FullScreenWindow(QMainWindow):
@@ -100,3 +101,17 @@ class FullScreenWindow(QMainWindow):
         Updates the slider value label when the slider is moved.
         """
         self.value_label.setText(str(value))  # Update the label text
+
+    def update_slider_value(self, variable_name):
+        """
+        Updates the slider value based on the selected variable.
+
+        Parameters:
+        - variable_name (str): The name of the variable from `variables.py` whose value should set the slider.
+        """
+        # Get the variable value and update the slider
+        value = getattr(variables, variable_name, None)
+        if value is not None:
+            self.slider.setValue(value)  # Update the slider value
+            self.value_label.setText(str(value))  # Update the slider label
+

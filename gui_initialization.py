@@ -60,7 +60,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_BK_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
+            on_normal_click=lambda: (
+                select_button_callback('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
+                central_widget.parent().update_slider_value('temp_BK')  # Update slider for BK
+            ),
             on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
             invisible=True
         ),
@@ -72,11 +75,25 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
             invisible=True
         ),
+        'BTN_toggle_HLT': create_button(
+            parent_widget=central_widget,
+            position=constants.IMG_POT_HLT_COORDINATES,
+            size=constants.BTN_POT_ON_OFF,
+            on_normal_click=lambda: (
+                select_button_callback('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
+                central_widget.parent().update_slider_value('temp_HLT')  # Update slider for HLT
+            ),
+            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
+            invisible=True
+        ),
         'BTN_toggle_P1': create_button(
             parent_widget=central_widget,
             position=constants.IMG_PUMP_BOX_P1_COORDINATES,
             size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_P1_Selected', 'TXT_P1'),
+            on_normal_click=lambda: (
+                select_button_callback('IMG_P1_Selected', 'TXT_P1'),
+                central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
+            ),
             on_long_click=None,
             invisible=True
         ),
@@ -84,7 +101,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_PUMP_BOX_P2_COORDINATES,
             size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_P2_Selected', 'TXT_P2'),
+            on_normal_click=lambda: (
+                select_button_callback('IMG_P2_Selected', 'TXT_P2'),
+                central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
+            ),
             on_long_click=None,
             invisible=True
         ),
@@ -92,7 +112,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_REG_BOX_BK_COORDINATES,
             size=constants.BTN_REG_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
+            on_normal_click=lambda: (
+                select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
+                central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
+            ),
             on_long_click=None,
             invisible=True
         ),
@@ -100,7 +123,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_REG_BOX_HLT_COORDINATES,
             size=constants.BTN_REG_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
+            on_normal_click=lambda: (
+                select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
+                central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
+            ),
             on_long_click=None,
             invisible=True
         )
