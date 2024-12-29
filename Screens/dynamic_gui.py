@@ -9,8 +9,9 @@ def initialize_dynamic_text(parent_widget):
     """
     return {
         # Pot Temperatures
-        'TXT_TEMP_BK': create_label(parent_widget, str(variables.temp_BK), color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, location=constants.TXT_TEMP_BK_COORDINATES, alignment=Qt.AlignCenter),
-
+        'TXT_TEMP_BK': create_label(parent_widget, f"{variables.temp_BK}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, location=constants.TXT_TEMP_BK_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_MLT': create_label(parent_widget, f"{variables.temp_MLT}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, location=constants.TXT_TEMP_MLT_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_HLT': create_label(parent_widget, f"{variables.temp_HLT}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, location=constants.TXT_TEMP_HLT_COORDINATES, alignment=Qt.AlignCenter),
     }
 
 def initialize_dynamic_elements(parent_widget, assets_path):

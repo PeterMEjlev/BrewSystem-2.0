@@ -1,5 +1,5 @@
 # Temperatures
-temp_BK = 0
-temp_MLT = 0
-temp_HLT = 0
+temp_BK = 75
+temp_MLT = 68
+temp_HLT = 75
 
