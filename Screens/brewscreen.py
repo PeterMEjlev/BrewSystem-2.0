@@ -10,11 +10,11 @@ from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_e
 class FullScreenWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # Define the base path for relative asset loading
         self.path = os.path.join(os.path.dirname(__file__), "..", "Assets")
         self.current_selection = None  # Tracks the currently selected button
+        self.active_variable = None  # Tracks the active variable being adjusted
         self.init_ui()
-        self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
+        
 
     def init_ui(self):
         # Configure window properties
@@ -28,8 +28,9 @@ class FullScreenWindow(QMainWindow):
         self.central_widget.setContentsMargins(0, 0, 0, 0)  # Remove margins
         self.setCentralWidget(self.central_widget)
 
-        # Initialize static GUI elements
+        # Initialize static & dynamic GUI elements
         self.static_elements = initialize_static_elements(self.central_widget, self.path)
+        self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
 
         # Hide necessary GUI elements
         hide_GUI_elements(self.static_elements)
@@ -40,9 +41,6 @@ class FullScreenWindow(QMainWindow):
             constants=constants,
             on_slider_change_callback=self.on_slider_change
         )
-
-        # Initialize dynamic GUI elements (after static elements)
-        self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
 
         # Initialize buttons (last to ensure they are on top)
         self.buttons = initialize_buttons(
@@ -98,18 +96,30 @@ class FullScreenWindow(QMainWindow):
 
     def on_slider_change(self, value):
         """
-        Updates the slider value label when the slider is moved.
+        Updates the slider value label and the respective variable and label when the slider is moved.
         """
-        self.value_label.setText(str(value))  # Update the label text
+        self.value_label.setText(str(value))  # Update the slider label
+
+        # Update the value of the active variable in variables.py
+        if self.active_variable:
+            setattr(variables, self.active_variable, value)
+
+            # Update the respective label in dynamic_elements
+            label_key = f'TXT_{self.active_variable.upper()}'
+            if label_key in self.dynamic_elements:
+                self.dynamic_elements[label_key].setText(f"{value}°")
+            else:
+                print(f"Label key {label_key} not found in dynamic elements.")
+
 
     def update_slider_value(self, variable_name):
         """
-        Updates the slider value based on the selected variable.
+        Updates the slider value based on the selected variable and sets the active variable.
 
         Parameters:
         - variable_name (str): The name of the variable from `variables.py` whose value should set the slider.
         """
-        # Get the variable value and update the slider
+        self.active_variable = variable_name  # Set the active variable
         value = getattr(variables, variable_name, None)
         if value is not None:
             self.slider.setValue(value)  # Update the slider value

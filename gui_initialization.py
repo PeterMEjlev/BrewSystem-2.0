@@ -71,14 +71,6 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_HLT_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: select_button_callback('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
-            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
-            invisible=True
-        ),
-        'BTN_toggle_HLT': create_button(
-            parent_widget=central_widget,
-            position=constants.IMG_POT_HLT_COORDINATES,
-            size=constants.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
                 central_widget.parent().update_slider_value('temp_HLT')  # Update slider for HLT
