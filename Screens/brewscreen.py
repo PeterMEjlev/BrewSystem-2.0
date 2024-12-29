@@ -2,6 +2,7 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from Common.utils import toggle_images_visibility
 from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
+from Screens.dynamic_gui import initialize_dynamic_elements  # Import the dynamic elements initializer
 import Common.constants as constants
 from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 
@@ -12,6 +13,7 @@ class FullScreenWindow(QMainWindow):
         self.path = os.path.join(os.path.dirname(__file__), "..", "Assets")
         self.current_selection = None  # Tracks the currently selected button
         self.init_ui()
+        self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
 
     def init_ui(self):
         # Configure window properties
@@ -38,7 +40,10 @@ class FullScreenWindow(QMainWindow):
             on_slider_change_callback=self.on_slider_change
         )
 
-        # Initialize buttons
+        # Initialize dynamic GUI elements (after static elements)
+        self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
+
+        # Initialize buttons (last to ensure they are on top)
         self.buttons = initialize_buttons(
             central_widget=self.central_widget,
             constants=constants,

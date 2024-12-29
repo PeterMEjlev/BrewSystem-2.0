@@ -4,22 +4,9 @@ from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon
 from PyQt5 import QtWidgets, QtCore
 import os
 
-def create_label(parent_widget, text, color='white', size=40, location=(0, 0), width=None, height=50, alignment=Qt.AlignLeft):
+def create_label(parent_widget, text, color='white', size=40, location=(0, 0), width=None, height=None, alignment=Qt.AlignLeft):
     """
     Creates and returns a QLabel with specified text, color, size, and location.
-
-    Parameters:
-    parent_widget (QWidget): The widget to which the label will be added.
-    text (str): The text to display in the label.
-    color (str): The color of the text. Default is 'white'.
-    size (int): The font size of the text. Default is 40.
-    location (tuple): A tuple (x, y) representing the location of the label. Default is (0, 0).
-    width (int): Width of the label. Default is None (auto-size based on text).
-    height (int): Height of the label. Default is 50.
-    alignment (Qt.Alignment): Alignment of the text within the label. Default is Qt.AlignLeft.
-
-    Returns:
-    QLabel: The configured QLabel object.
     """
     # Load the custom font
     custom_font = load_custom_font()
@@ -34,6 +21,16 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
         custom_font.setWeight(QFont.ExtraBold)  # Make the font bold
         label.setFont(custom_font)
 
+    # Calculate text dimensions dynamically
+    metrics = QFontMetrics(label.font())
+    if width is None:
+        width = metrics.horizontalAdvance(text) + 30  # Add padding for safety
+    if height is None:
+        height = metrics.height() + 10  # Add padding for height
+
+    # Set the position and size of the label
+    label.setGeometry(location[0], location[1], width, height)
+
     # Set the style for colors and background
     label.setStyleSheet(f"""
         color: {color};
@@ -42,18 +39,11 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
         padding: 0px;
     """)
 
-    # Calculate width dynamically if not provided
-    if width is None:
-        metrics = QFontMetrics(label.font())
-        width = metrics.horizontalAdvance(text) + 30  # Add padding for safety
-
-    # Set the position and size of the label
-    label.setGeometry(location[0], location[1], width, height)
-
     # Apply alignment
     label.setAlignment(alignment)
 
     return label
+
 
 def create_image(parent_widget, image_path, location=(0, 0), size=None):
     """
