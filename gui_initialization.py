@@ -1,11 +1,12 @@
 # gui_initialization.py
 from PyQt5.QtCore import Qt
+import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button
 
 
 def initialize_slider(central_widget, constants, on_slider_change_callback):
     """
-    Initializes the slider and its value label.
+    Initializes the slider, its value label, and a fake slider to visually represent dynamic width.
 
     Parameters:
     - central_widget: The parent widget for the slider.
@@ -13,9 +14,9 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     - on_slider_change_callback: Function to call when the slider value changes.
 
     Returns:
-    A tuple containing the slider and its associated label.
+    A tuple containing the slider, its associated label, and the fake slider.
     """
-    # Add slider to the screen
+    # Create the real slider
     slider = create_slider(
         parent_widget=central_widget,
         orientation=Qt.Horizontal,
@@ -28,6 +29,17 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     slider.hide()  # Start with the slider hidden
     slider.valueChanged.connect(on_slider_change_callback)
 
+    # Create the fake slider (a QFrame positioned above the real slider)
+    fake_slider = QtWidgets.QFrame(central_widget)
+    fake_slider.setGeometry(
+        constants.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants.SLIDER_COORDINATES[1] - 30,  # Slightly above the real slider
+        int(constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
+        constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+    )
+    fake_slider.setStyleSheet("background-color: #F58361; border-radius: 15px;")
+    fake_slider.hide()
+
     # Add a label to display the slider value
     value_label = create_label(
         parent_widget=central_widget,
@@ -38,7 +50,8 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     )
     value_label.hide()  # Start with the label hidden
 
-    return slider, value_label
+    return slider, value_label, fake_slider
+
 
 
 def initialize_buttons(central_widget, constants, static_elements, toggle_images_visibility_callback, select_button_callback):

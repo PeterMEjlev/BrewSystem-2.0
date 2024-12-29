@@ -36,8 +36,8 @@ class FullScreenWindow(QMainWindow):
         # Hide necessary GUI elements
         hide_GUI_elements(self.static_elements)
 
-        # Initialize slider
-        self.slider, self.value_label = initialize_slider(
+        # Initialize slider and fake slider
+        self.slider, self.value_label, self.fake_slider = initialize_slider(
             central_widget=self.central_widget,
             constants=constants,
             on_slider_change_callback=self.on_slider_change
@@ -51,6 +51,7 @@ class FullScreenWindow(QMainWindow):
             toggle_images_visibility_callback=toggle_images_visibility,
             select_button_callback=self.select_button
         )
+
 
     def select_button(self, selected_key, name_key):
         """
@@ -68,7 +69,8 @@ class FullScreenWindow(QMainWindow):
             if name_key in self.static_elements:
                 self.static_elements[name_key].show()  # Show the name text
             self.current_selection = None  # Reset the current selection
-            self.slider.hide()  # Hide slider
+            self.slider.hide()# Hide slider
+            self.fake_slider.hide()  # Hide fake slider
             self.value_label.hide()  # Hide label
             self.static_elements['TXT_Slider_0'].hide()  # Hide slider labels
             self.static_elements['TXT_Slider_100'].hide()  # Hide slider labels
@@ -91,15 +93,27 @@ class FullScreenWindow(QMainWindow):
                 self.static_elements[name_key].hide()
             self.current_selection = selected_key  # Update current selection
             self.slider.show()  # Show slider
+            self.fake_slider.show()  # Show fake slider
             self.value_label.show()  # Show label
             self.static_elements['TXT_Slider_0'].show()  # Show slider labels
             self.static_elements['TXT_Slider_100'].show()  # Show slider labels
 
     def on_slider_change(self, value):
         """
-        Updates the slider value label and the respective variable and label when the slider is moved.
+        Updates the slider value label and dynamically adjusts the fake slider width based on the slider value.
         """
-        self.value_label.setText(str(value))  # Update the slider label
+        # Update the value label
+        self.value_label.setText(str(value))
+
+        # Adjust the fake slider's width dynamically
+        max_width = constants.SLIDER_SIZE[0]
+        new_width = int((value / self.slider.maximum()) * max_width)  # Calculate new width
+        self.fake_slider.setGeometry(
+            self.fake_slider.geometry().x(),  # Keep the same X position
+            self.fake_slider.geometry().y(),  # Keep the same Y position
+            new_width,  # Dynamically adjust the width
+            self.fake_slider.geometry().height()  # Keep the same height
+        )
 
         # Update the value of the active variable in variables.py
         if self.active_variable:
@@ -111,6 +125,7 @@ class FullScreenWindow(QMainWindow):
                 self.dynamic_elements[label_key].setText(f"{value}°")
             else:
                 print(f"Label key {label_key} not found in dynamic elements.")
+
 
 
     def update_slider_value(self, variable_name):
