@@ -42,6 +42,9 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
     # Apply alignment
     label.setAlignment(alignment)
 
+    # Make the label transparent to mouse events
+    label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+
     return label
 
 

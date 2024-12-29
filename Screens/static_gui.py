@@ -104,19 +104,4 @@ def initialize_static_elements(parent_widget, assets_path):
     # Merge dictionaries and return
     return {**static_images, **static_text}
 
-def initialize_dynamic_elements(parent_widget, assets_path):
-    """
-    Initialize all dynamic GUI elements and combine them into a single dictionary.
 
-    Parameters:
-    parent_widget (QWidget): The widget to which dynamic elements will be added.
-    assets_path (str): The base path for the assets directory.
-
-    Returns:
-    dict: A dictionary containing references to all the dynamic elements.
-    """
-    # Initialize images and text separately
-    dynamic_text = initialize_dynamic_text(parent_widget)
-
-    # Merge dictionaries and return
-    return {**static_text}
