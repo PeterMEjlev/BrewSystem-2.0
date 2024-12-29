@@ -1,9 +1,9 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from PyQt5.QtCore import Qt
-from Common.utils import create_slider, create_label, create_image, create_button, toggle_images_visibility
+from Common.utils import toggle_images_visibility
 from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
 import Common.constants as constants
+from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -27,126 +27,24 @@ class FullScreenWindow(QMainWindow):
 
         # Initialize static GUI elements
         self.static_elements = initialize_static_elements(self.central_widget, self.path)
-        
+
         # Hide necessary GUI elements
-        self.hide_GUI_elements()
-        
+        hide_GUI_elements(self.static_elements)
+
         # Initialize slider
-        self.initialize_slider()
-        
+        self.slider, self.value_label = initialize_slider(
+            central_widget=self.central_widget,
+            constants=constants,
+            on_slider_change_callback=self.on_slider_change
+        )
+
         # Initialize buttons
-        self.initialize_buttons()
-
-    def hide_GUI_elements(self):
-        """
-        Hides specific static images initialized in the static GUI.
-        """
-        # Pot on gradients
-        self.static_elements['IMG_Pot_BK_On_Background'].hide()
-        self.static_elements['IMG_Pot_BK_On_Foreground'].hide()
-        self.static_elements['IMG_Pot_MLT_On_Background'].hide()
-        self.static_elements['IMG_Pot_MLT_On_Foreground'].hide()
-        self.static_elements['IMG_Pot_HLT_On_Background'].hide()
-        self.static_elements['IMG_Pot_HLT_On_Foreground'].hide()
-        
-        # Selection Boxes
-        self.static_elements['IMG_BK_Selected'].hide()
-        self.static_elements['IMG_HLT_Selected'].hide()
-        self.static_elements['IMG_P1_Selected'].hide()
-        self.static_elements['IMG_P2_Selected'].hide()
-        self.static_elements['IMG_REGBK_Selected'].hide()
-        self.static_elements['IMG_REGHLT_Selected'].hide()
-
-        # Pot and Pump Names
-        self.static_elements['TXT_POT_NAME_BK'].show()
-        self.static_elements['TXT_POT_NAME_MLT'].show()
-        self.static_elements['TXT_POT_NAME_HLT'].show()
-        self.static_elements['TXT_P1'].show()
-        self.static_elements['TXT_P2'].show()
-
-        # Slider Labels
-        self.static_elements['TXT_Slider_0'].hide()
-        self.static_elements['TXT_Slider_100'].hide()
-
-    def initialize_slider(self):
-        """
-        Initializes the slider and its value label.
-        """
-        # Add slider to the screen
-        self.slider = create_slider(
-            parent_widget=self.central_widget,
-            orientation=Qt.Horizontal,
-            minimum=constants.SLIDER_MIN,
-            maximum=constants.SLIDER_MAX,
-            value=50,
-            location=constants.SLIDER_COORDINATES,
-            size=constants.SLIDER_SIZE
-        )
-        self.slider.hide()  # Start with the slider hidden
-        # Connect slider change to a function
-        self.slider.valueChanged.connect(self.on_slider_change)
-
-        # Add a label to display the slider value
-        self.value_label = create_label(
-            parent_widget=self.central_widget,
-            text=str(self.slider.value()),
-            color='white',
-            size=constants.TXT_SLIDER_VALUE_SIZE,
-            location=(constants.TXT_SLIDER_VALUE_COORDINATES)
-        )
-        self.value_label.hide()  # Start with the label hidden
-
-    def initialize_buttons(self):
-        """
-        Initializes the buttons used in the GUI.
-        """
-        self.BTN_toggle_BK = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_POT_BK_COORDINATES,
-            size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
-            on_long_click=lambda: toggle_images_visibility(self.static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
-            invisible=True
-        )
-        self.BTN_toggle_HLT = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_POT_HLT_COORDINATES,
-            size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
-            on_long_click=lambda: toggle_images_visibility(self.static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
-            invisible=True
-        )
-        self.BTN_toggle_P1 = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_PUMP_BOX_P1_COORDINATES,
-            size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_P1_Selected', 'TXT_P1'),
-            on_long_click=None,
-            invisible=True
-        )
-        self.BTN_toggle_P2 = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_PUMP_BOX_P2_COORDINATES,
-            size=constants.BTN_PUMP_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_P2_Selected', 'TXT_P2'),
-            on_long_click=None,
-            invisible=True
-        )
-        self.BTN_toggle_REGBK = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_REG_BOX_BK_COORDINATES,
-            size=constants.BTN_REG_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_REGBK_Selected', 'TXT_REG_BK'),
-            on_long_click=None,
-            invisible=True
-        )
-        self.BTN_toggle_REGBK = create_button(
-            parent_widget=self.central_widget,
-            position=constants.IMG_REG_BOX_HLT_COORDINATES,
-            size=constants.BTN_REG_ON_OFF,
-            on_normal_click=lambda: self.select_button('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
-            on_long_click=None,
-            invisible=True
+        self.buttons = initialize_buttons(
+            central_widget=self.central_widget,
+            constants=constants,
+            static_elements=self.static_elements,
+            toggle_images_visibility_callback=toggle_images_visibility,
+            select_button_callback=self.select_button
         )
 
     def select_button(self, selected_key, name_key):
@@ -167,19 +65,20 @@ class FullScreenWindow(QMainWindow):
             self.current_selection = None  # Reset the current selection
             self.slider.hide()  # Hide slider
             self.value_label.hide()  # Hide label
-            self.static_elements['TXT_Slider_0'].hide() # Hide slider labels
-            self.static_elements['TXT_Slider_100'].hide() # Hide slider labels
+            self.static_elements['TXT_Slider_0'].hide()  # Hide slider labels
+            self.static_elements['TXT_Slider_100'].hide()  # Hide slider labels
         else:
             # Hide all selection boxes
-            selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected','IMG_REGBK_Selected','IMG_REGHLT_Selected']
-            name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2','TXT_REG_BK','TXT_REG_HLT']
+            selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected',
+                              'IMG_REGBK_Selected', 'IMG_REGHLT_Selected']
+            name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2', 'TXT_REG_BK', 'TXT_REG_HLT']
             for key in selection_keys:
                 if key in self.static_elements:
                     self.static_elements[key].hide()
             for key in name_keys:
                 if key in self.static_elements:
                     self.static_elements[key].show()
-            
+
             # Show the new selected selection box
             if selected_key in self.static_elements:
                 self.static_elements[selected_key].show()
@@ -188,8 +87,8 @@ class FullScreenWindow(QMainWindow):
             self.current_selection = selected_key  # Update current selection
             self.slider.show()  # Show slider
             self.value_label.show()  # Show label
-            self.static_elements['TXT_Slider_0'].show() # Show slider labels
-            self.static_elements['TXT_Slider_100'].show() # Show slider labels
+            self.static_elements['TXT_Slider_0'].show()  # Show slider labels
+            self.static_elements['TXT_Slider_100'].show()  # Show slider labels
 
     def on_slider_change(self, value):
         """

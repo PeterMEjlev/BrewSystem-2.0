@@ -55,7 +55,6 @@ def create_label(parent_widget, text, color='white', size=40, location=(0, 0), w
 
     return label
 
-
 def create_image(parent_widget, image_path, location=(0, 0), size=None):
     """
     Creates and returns a QLabel with an image displayed, respecting transparency.
@@ -273,7 +272,6 @@ def toggle_images_visibility(static_elements, image_keys):
             else:
                 element.show()
 
-    
 def load_custom_font():
     """
     Loads the Cascadia Code Bold font from a .ttf file and sets it as the default font.
