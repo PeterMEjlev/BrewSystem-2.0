@@ -10,7 +10,7 @@ BACKGROUND_COLOR = "#3E3E3F"
 # Slider configuration
 SLIDER_MIN = 0
 SLIDER_MAX = 100
-SLIDER_COORDINATES = (660, 981)  # (x, y) position for the slider
+SLIDER_COORDINATES = (660, 960)  # (x, y) position for the slider
 SLIDER_SIZE = (1000, 30)          # (width, height) of the slider
 IMG_SLIDER_DROP_SHADOW_COORDINATES = (632, 973)
 

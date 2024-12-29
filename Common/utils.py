@@ -133,27 +133,24 @@ def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=1
             QSlider::groove:horizontal {
                 border: none;
                 height: 40px; /* Set the slider bar height */
-                background: #F58361; /* The color of the unselected portion */
+                background: transparent; 
                 border-radius: 20px;
             }
             QSlider::sub-page:horizontal {
                 border: none;
                 height: 40px; /* Match the slider bar height */
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                            stop:0 #F04C65, stop:1 #F58361); /* Gradient for selected portion */
+                background: transparent;
                 border-radius: 20px;
             }
             QSlider::handle:horizontal {
-                background-color: white; /* Handle color */
+                background-color: transparent; /* Handle color */
                 border: none;
                 height: 50px; /* Increase handle height */
                 width: 75px; /* Increase handle width */
                 margin: -15px 0; /* Ensure handle extends above and below groove */
                 border-radius: 10px; /* Make handle circular */
             }
-            QSlider::handle:horizontal:pressed {
-                background-color: rgb(65, 255, 195); /* Change handle color when pressed */
-            }
+            
         """)
 
     return slider

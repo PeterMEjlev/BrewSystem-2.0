@@ -33,11 +33,16 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
         constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        constants.SLIDER_COORDINATES[1] - 30,  # Slightly above the real slider
+        constants.SLIDER_COORDINATES[1] + 15 , 
         int(constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
         constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
-    fake_slider.setStyleSheet("background-color: #F58361; border-radius: 15px;")
+    fake_slider.setStyleSheet("""
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                    stop:0 #F04C65, stop:1 #F58361); /* Gradient for the fake slider */
+        border-radius: 20px;
+    """)
+    fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider.hide()
 
     # Add a label to display the slider value
@@ -51,6 +56,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     value_label.hide()  # Start with the label hidden
 
     return slider, value_label, fake_slider
+
 
 
 
