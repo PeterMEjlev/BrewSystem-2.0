@@ -13,3 +13,12 @@ temp_REG_HLT = 70
 pump_speed_P1 = 100
 pump_speed_P2 = 100
 
+# Active Units
+STATE = {
+    'BK_ON': False,
+    'HLT_ON': False,
+    'P1_ON': False,
+    'P2_ON': False,
+}
+
+

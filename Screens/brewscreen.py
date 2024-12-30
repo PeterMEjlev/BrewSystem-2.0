@@ -43,7 +43,8 @@ class FullScreenWindow(QMainWindow):
         self.slider, self.value_label, self.fake_slider, self.fake_slider_background = initialize_slider(
             central_widget=self.central_widget,
             constants=constants,
-            on_slider_change_callback=self.on_slider_change
+            on_slider_change_callback=self.on_slider_change,
+            dynamic_elements=self.dynamic_elements
         )
         self.buttons = initialize_buttons(
             central_widget=self.central_widget,

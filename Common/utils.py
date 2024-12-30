@@ -152,9 +152,7 @@ def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=1
         """)
 
     return slider
-
-
-   
+  
 def create_button(parent_widget, position=(0, 0), size=(100, 50), image_path=None,
                   on_normal_click=None, on_long_click=None, invisible=False, long_click_duration=300):
     """
@@ -285,3 +283,24 @@ def load_custom_font():
     font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
 
     return QFont(font_family)
+
+def toggle_variable(variable_name, globals_dict):
+    """
+    Toggles the value of a variable between True and False.
+
+    Parameters:
+    - variable_name (str): The name of the variable to toggle.
+    - globals_dict (dict): The dictionary of global variables to search for the variable.
+
+    Returns:
+    - None
+    """
+    if variable_name in globals_dict:
+        current_value = globals_dict[variable_name]
+        if isinstance(current_value, bool):  # Ensure it's a boolean before toggling
+            globals_dict[variable_name] = not current_value
+            print(f"{variable_name} toggled to {globals_dict[variable_name]}")
+        else:
+            print(f"{variable_name} is not a boolean. Current value: {current_value}")
+    else:
+        print(f"{variable_name} does not exist in the provided scope.")

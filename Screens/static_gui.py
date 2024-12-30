@@ -72,9 +72,11 @@ def initialize_static_text(parent_widget):
         'TXT_POT_NAME_MLT': create_label(parent_widget, "MLT", color='white', size=constants.TXT_POT_NAMES_SIZE, center=constants.TXT_POT_NAMES_MLT_COORDINATES),
         'TXT_POT_NAME_HLT': create_label(parent_widget, "HLT", color='white', size=constants.TXT_POT_NAMES_SIZE, center=constants.TXT_POT_NAMES_HLT_COORDINATES),
 
-        # Slider Min/Max
+        # Slider Min/Max & + -
         'TXT_Slider_0': create_label(parent_widget, "0", color='white', size=constants.TXT_SLIDER_MINMAX_SIZE, center=constants.TXT_SLIDER_MIN_COORDINATES),
         'TXT_Slider_100': create_label(parent_widget, "100", color='white', size=constants.TXT_SLIDER_MINMAX_SIZE, center=constants.TXT_SLIDER_MAX_COORDINATES),
+        'TXT_Slider_MINUS': create_label(parent_widget, "-", color='white', size=constants.TXT_SLIDER_PLUSMINUS, center=constants.TXT_SLIDER_MINUS_COORDINATES),
+        'TXT_Slider_PLUS': create_label(parent_widget, "+", color='white', size=constants.TXT_SLIDER_PLUSMINUS, center=constants.TXT_SLIDER_PLUS_COORDINATES),
 
         # Pump Names
         'TXT_P1': create_label(parent_widget, "P1", color='white', size=constants.TXT_SLIDER_VALUE_SIZE, center=constants.TXT_P1_COORDINATES),
@@ -83,8 +85,6 @@ def initialize_static_text(parent_widget):
         # Reg Labels
         'TXT_REG_BK': create_label(parent_widget, "REG", color='white', size=constants.TXT_REG_SIZE, center=constants.TXT_REG_BK_COORDINATES),
         'TXT_REG_HLT': create_label(parent_widget, "REG", color='white', size=constants.TXT_REG_SIZE, center=constants.TXT_REG_HLT_COORDINATES),
-        
-
     }
 
 def initialize_static_elements(parent_widget, assets_path):

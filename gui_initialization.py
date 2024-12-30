@@ -1,20 +1,13 @@
 # gui_initialization.py
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
-from Common.utils import create_slider, create_label, create_button
+from Common.utils import create_slider, create_label, create_button, toggle_variable
+from Common.variables import STATE
 
 
-def initialize_slider(central_widget, constants, on_slider_change_callback):
+def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
     """
     Initializes the slider, its value label, and a fake slider to visually represent dynamic width.
-
-    Parameters:
-    - central_widget: The parent widget for the slider.
-    - constants: Constants containing slider properties.
-    - on_slider_change_callback: Function to call when the slider value changes.
-
-    Returns:
-    A tuple containing the slider, its associated label, and the fake slider.
     """
     # Create the real slider
     slider = create_slider(
@@ -33,22 +26,22 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     fake_slider_background = QtWidgets.QFrame(central_widget)
     fake_slider_background.setGeometry(
         constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        constants.SLIDER_COORDINATES[1] + 15 , 
+        constants.SLIDER_COORDINATES[1] + 15,
         int(constants.SLIDER_SIZE[0]),  # Initial width based on 50% value
         constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
     fake_slider_background.setStyleSheet("""
         background-color: #292728; /* Solid color for the fake slider */
         border-radius: 20px;
-        """)
+    """)
     fake_slider_background.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider_background.hide()
 
-    # Create the fake slider (a QFrame positioned above the real slider)
+    # Create the fake slider
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
         constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        constants.SLIDER_COORDINATES[1] + 15 , 
+        constants.SLIDER_COORDINATES[1] + 15,
         int(constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
         constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
@@ -60,19 +53,10 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider.hide()
 
-    # Add a label to display the slider value
-    value_label = create_label(
-        parent_widget=central_widget,
-        text=str(slider.value()),
-        color='white',
-        size=constants.TXT_SLIDER_VALUE_SIZE,
-        center=(constants.TXT_SLIDER_VALUE_COORDINATES)
-    )
-    value_label.hide()  # Start with the label hidden
+    # Retrieve the slider value label from dynamic_elements
+    value_label = dynamic_elements.get('TXT_SLIDER_VALUE', None)
 
     return slider, value_label, fake_slider, fake_slider_background
-
-
 
 
 def initialize_buttons(central_widget, constants, static_elements, toggle_images_visibility_callback, select_button_callback):
@@ -98,7 +82,11 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
                 central_widget.parent().update_slider_value('temp_BK')  # Update slider for BK
             ),
-            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
+            on_long_click=lambda: (
+                toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
+                toggle_variable('BK_ON', STATE)
+
+            ),
             invisible=True
         ),
         'BTN_toggle_HLT': create_button(
@@ -109,7 +97,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
                 central_widget.parent().update_slider_value('temp_HLT')  # Update slider for HLT
             ),
-            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
+            on_long_click=lambda: (
+                toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
+                toggle_variable('HLT_ON', STATE)
+            ),
             invisible=True
         ),
         'BTN_toggle_P1': create_button(
@@ -120,7 +111,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_P1_Selected', 'TXT_P1'),
                 central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
             ),
-            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
+            on_long_click=lambda: (
+                toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
+                toggle_variable('P1_ON', STATE)
+            ),
             invisible=True
         ),
         'BTN_toggle_P2': create_button(
@@ -131,7 +125,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
                 select_button_callback('IMG_P2_Selected', 'TXT_P2'),
                 central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
             ),
-            on_long_click=lambda: toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
+            on_long_click=lambda: (
+                toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
+                toggle_variable('P2_ON', STATE)                
+            ),
             invisible=True
         ),
         'BTN_toggle_REGBK': create_button(
@@ -158,7 +155,6 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         )
     }
     return buttons
-
 
 def hide_GUI_elements(static_elements):
     """
