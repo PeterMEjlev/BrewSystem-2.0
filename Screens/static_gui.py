@@ -13,6 +13,10 @@ def initialize_static_images(parent_widget):
         
         # Sidebar and Title
         'IMG_Title': create_image(parent_widget, "Banner_Title.png", center=(0, 0)),
+        'IMG_Sidebar_Active_Button': create_image(parent_widget, "Sidebar_Active_Button.png", center=gui_constants.IMG_SIDEBAR_ACTIVE_BUTTON),
+        'IMG_Sidebar_Icon_Home': create_image(parent_widget, "Icon_Home.png", center=gui_constants.IMG_SIDEBAR_ICON_HOME),
+        'IMG_Sidebar_Icon_Graph': create_image(parent_widget, "Icon_Graph.png", center=(gui_constants.IMG_SIDEBAR_ICON_HOME[0], gui_constants.IMG_SIDEBAR_ICON_HOME[1] + gui_constants.SIDEBAR_BUTTON_DISTANCE)),
+        'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, "Konfus_Logo.png", center=gui_constants.IMG_KONFUS_LOGO),
 
         # Pots
         'IMG_Pot_BK_Off_Background': create_image(parent_widget, "Pot_Off_Background.png", center=gui_constants.IMG_POT_BK_COORDINATES),
@@ -66,6 +70,8 @@ def initialize_static_text(parent_widget):
     return {
         # Title
         'TXT_Title': create_label(parent_widget, "BrewSystem 2.0", color='white', size=gui_constants.TXT_TITLE_SIZE, center=gui_constants.TXT_TITLE_COORDINATES, width = 500),
+        'TXT_SIDEBAR_HOME': create_label(parent_widget, "Overview", color='white', size=gui_constants.TXT_SIDEBAR_TEXT_SIZE, center=gui_constants.TXT_SIDEBAR_TEXT_HOME,  alignment=Qt.AlignLeft),
+        'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=gui_constants.TXT_SIDEBAR_TEXT_SIZE, center=(gui_constants.TXT_SIDEBAR_TEXT_HOME[0],gui_constants.TXT_SIDEBAR_TEXT_HOME[1] + gui_constants.SIDEBAR_BUTTON_DISTANCE),  alignment=Qt.AlignLeft),
 
         # Pot Names
         'TXT_POT_NAME_BK': create_label(parent_widget, "BK", color='white', size=gui_constants.TXT_POT_NAMES_SIZE, center=gui_constants.TXT_POT_NAMES_BK_COORDINATES),

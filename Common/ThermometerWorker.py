@@ -1,6 +1,7 @@
 # ThermometerWorker.py
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import time, random
+import Common.constants as constants
 
 class ThermometerWorker(QObject):
     temperature_updated = pyqtSignal(float)  # Signal to send the temperature reading
@@ -16,7 +17,7 @@ class ThermometerWorker(QObject):
             # Simulate temperature reading (replace this with actual thermometer code)
             temperature = self.read_thermometer()
             self.temperature_updated.emit(temperature)  # Emit the new temperature
-            time.sleep(1)  # Wait for a second between readings
+            QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
 
     def read_thermometer(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
