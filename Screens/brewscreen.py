@@ -86,10 +86,37 @@ class FullScreenWindow(QMainWindow):
 
     def select_new_button(self, selected_key, name_key):
         self.hide_all_selection_boxes()
-        self.show_element(selected_key)
-        self.hide_element(name_key)
+
+        # Reset gradients for all labels
+        labels_to_reset = [
+            'TXT_TEMP_REG_BK',
+            'TXT_TEMP_REG_HLT',
+            'TXT_PUMP_SPEED_P1',
+            'TXT_PUMP_SPEED_P2'
+        ]
+        for label_key in labels_to_reset:
+            self.dynamic_elements[label_key].gradient_colors = None
+            self.dynamic_elements[label_key].update()
+
+        # Apply gradient only to the selected label
+        if selected_key == 'IMG_REGBK_Selected':
+            self.dynamic_elements['TXT_TEMP_REG_BK'].gradient_colors = ('#D04158', '#F58360')
+            self.dynamic_elements['TXT_TEMP_REG_BK'].update()  # Force the label to redraw
+        elif selected_key == 'IMG_REGHLT_Selected':
+            self.dynamic_elements['TXT_TEMP_REG_HLT'].gradient_colors = ('#D04158', '#F58360')
+            self.dynamic_elements['TXT_TEMP_REG_HLT'].update()  # Force the label to redraw
+        elif selected_key == 'IMG_P1_Selected':
+            self.dynamic_elements['TXT_PUMP_SPEED_P1'].gradient_colors = ('#D04158', '#F58360')
+            self.dynamic_elements['TXT_PUMP_SPEED_P1'].update()  # Force the label to redraw
+        elif selected_key == 'IMG_P2_Selected':
+            self.dynamic_elements['TXT_PUMP_SPEED_P2'].gradient_colors = ('#D04158', '#F58360')
+            self.dynamic_elements['TXT_PUMP_SPEED_P2'].update()  # Force the label to redraw
+
+        # Update the current selection
         self.current_selection = selected_key
         self.show_slider_elements()
+
+
 
     def hide_all_selection_boxes(self):
         selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected', 'IMG_REGBK_Selected', 'IMG_REGHLT_Selected']
