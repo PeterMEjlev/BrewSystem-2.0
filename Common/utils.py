@@ -1,19 +1,42 @@
 from PyQt5.QtWidgets import QLabel, QSlider, QPushButton
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon
+from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon, QLinearGradient, QBrush, QPainter, QPen, QColor
+
 from PyQt5 import QtWidgets, QtCore
 import os
 
-def create_label(parent_widget, text, color='white', size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
+def create_label(parent_widget, text, color='white', gradient_colors=None, size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
     """
     Creates and returns a QLabel with specified text, color, size, and alignment at a fixed center point.
+
+    If gradient_colors is provided (a tuple of two colors), the text will be rendered with a gradient.
     """
+
+    class GradientLabel(QLabel):
+        def __init__(self, text, gradient_colors, *args, **kwargs):
+            super().__init__(text, *args, **kwargs)
+            self.gradient_colors = gradient_colors
+
+        def paintEvent(self, event):
+            if self.gradient_colors:
+                painter = QPainter(self)
+                gradient = QLinearGradient(0, 0, self.width(), 0)  # Horizontal gradient
+                gradient.setColorAt(0.0, QColor(self.gradient_colors[0]))  # Convert start color to QColor
+                gradient.setColorAt(1.0, QColor(self.gradient_colors[1]))  # Convert end color to QColor
+                brush = QBrush(gradient)
+
+                pen = QPen(brush, 0)  # Use gradient as pen
+                painter.setPen(pen)
+                painter.setFont(self.font())
+                painter.drawText(self.rect(), self.alignment(), self.text())
+            else:
+                super().paintEvent(event)
+
     # Load the custom font
     custom_font = load_custom_font()
 
     # Create the label
-    label = QLabel(parent_widget)
-    label.setText(text)
+    label = GradientLabel(text, gradient_colors, parent_widget)
 
     # Set the font size and custom font
     if custom_font:
@@ -35,13 +58,17 @@ def create_label(parent_widget, text, color='white', size=40, center=(0, 0), wid
     # Set the position and size of the label
     label.setGeometry(x, y, width, height)
 
-    # Set the style for colors and background
-    label.setStyleSheet(f"""
-        color: {color};
-        background-color: transparent;
-        margin: 0px;
-        padding: 0px;
-    """)
+    # Set the style for background and alignment
+    label.setStyleSheet("background-color: transparent; margin: 0px; padding: 0px;")
+
+    # Set the style for plain text
+    if not gradient_colors:
+        label.setStyleSheet(f"""
+            color: {color};
+            background-color: transparent;
+            margin: 0px;
+            padding: 0px;
+        """)
 
     # Apply alignment
     label.setAlignment(alignment)
@@ -50,6 +77,7 @@ def create_label(parent_widget, text, color='white', size=40, center=(0, 0), wid
     label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
     return label
+
 
 def create_image(parent_widget, image_path, center=(0, 0), size=None):
     """

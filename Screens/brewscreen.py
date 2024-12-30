@@ -162,8 +162,6 @@ class FullScreenWindow(QMainWindow):
             else:
                 print(f"Label key {label_key} not found in dynamic elements.")
 
-            print(self.active_variable)
-
     def update_slider_value(self, variable_name):
         variables.active_variable = variable_name  # Store the active variable globally
         self.active_variable = variable_name  # Update the local reference
