@@ -90,8 +90,6 @@ def create_image(parent_widget, image_path, center=(0, 0), size=None):
     image_label.setAttribute(Qt.WA_TranslucentBackground)
     image_label.setStyleSheet("background: transparent;")
 
-    print("successfully created image: ", image_path)
-
     return image_label
     
 def create_slider(parent_widget, orientation=Qt.Horizontal, minimum=0, maximum=100, value=50, location=(0, 0), size=(200, 70), style=None):
@@ -265,7 +263,6 @@ def toggle_images_visibility(static_elements, image_keys):
     static_elements (dict): Dictionary containing the static elements (e.g., images).
     image_keys (list): List of keys for the images in the static_elements dictionary.
     """
-    print("Toggling visibility")
     for key in image_keys:
         if key in static_elements:
             element = static_elements[key]
@@ -283,9 +280,6 @@ def load_custom_font():
     
     # Add the font to the application
     font_id = QFontDatabase.addApplicationFont(font_path)
-    if font_id == -1:
-        print(f"Failed to load the Cascadia Code Bold font from {font_path}.")
-        return None
 
     # Retrieve the font family and create the font object
     font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
