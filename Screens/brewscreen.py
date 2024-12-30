@@ -3,8 +3,8 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt
 from Common.utils import toggle_images_visibility
-from Screens.static_gui import initialize_static_elements  # Import the static elements initializer
-from Screens.dynamic_gui import initialize_dynamic_elements  # Import the dynamic elements initializer
+from Screens.static_gui import initialize_static_elements, create_slider_plus_minus_labels
+from Screens.dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants as constants
 import Common.variables as variables
 from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
@@ -23,6 +23,7 @@ class FullScreenWindow(QMainWindow):
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
 
+
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Brewsystem 2.0")
@@ -40,12 +41,30 @@ class FullScreenWindow(QMainWindow):
         hide_GUI_elements(self.static_elements)
 
     def initialize_slider_and_buttons(self):
-        self.slider, self.value_label, self.fake_slider, self.fake_slider_background = initialize_slider(
+        """
+        Initialize the slider and buttons for the GUI.
+        """
+        # Initialize the slider and its related elements
+        self.slider, _, self.fake_slider, self.fake_slider_background = initialize_slider(
             central_widget=self.central_widget,
             constants=constants,
             on_slider_change_callback=self.on_slider_change,
             dynamic_elements=self.dynamic_elements
         )
+
+        # Create the slider value label and set it to self.value_label
+        self.slider_value_label = create_slider_value_label(self.central_widget)
+        self.dynamic_elements['TXT_SLIDER_VALUE'] = self.slider_value_label
+
+        # Create the plus/minus slider labels and store them in self.slider_plus_minus_labels
+        self.slider_plus_minus_labels = create_slider_plus_minus_labels(self.central_widget)
+        self.dynamic_elements.update(self.slider_plus_minus_labels)
+
+        
+        for label in self.slider_plus_minus_labels.values():
+            label.hide()
+
+        # Initialize the buttons
         self.buttons = initialize_buttons(
             central_widget=self.central_widget,
             constants=constants,
@@ -53,6 +72,10 @@ class FullScreenWindow(QMainWindow):
             toggle_images_visibility_callback=toggle_images_visibility,
             select_button_callback=self.select_button
         )
+
+
+        
+
 
     def select_button(self, selected_key, name_key):
         if self.current_selection == selected_key:
@@ -93,20 +116,28 @@ class FullScreenWindow(QMainWindow):
         self.slider.hide()
         self.fake_slider.hide()
         self.fake_slider_background.hide()
-        self.value_label.hide()
+        self.slider_value_label.hide()
         self.static_elements['TXT_Slider_0'].hide()
         self.static_elements['TXT_Slider_100'].hide()
+
+        # Hide plus minus labels for slider
+        for label in self.slider_plus_minus_labels.values():
+            label.hide()
 
     def show_slider_elements(self):
         self.slider.show()
         self.fake_slider.show()
         self.fake_slider_background.show()
-        self.value_label.show()
+        self.slider_value_label.show()
         self.static_elements['TXT_Slider_0'].show()
         self.static_elements['TXT_Slider_100'].show()
 
+        # Show plus minus labels for slider
+        for label in self.slider_plus_minus_labels.values():
+            label.show()
+        
     def on_slider_change(self, value):
-        self.value_label.setText(str(value))
+        self.slider_value_label.setText(str(value))
         self.adjust_fake_slider_width(value)
         self.update_active_variable(value)
 
@@ -134,4 +165,4 @@ class FullScreenWindow(QMainWindow):
         value = getattr(variables, variable_name, None)
         if value is not None:
             self.slider.setValue(value)
-            self.value_label.setText(str(value))
+            self.slider_value_label.setText(str(value))
