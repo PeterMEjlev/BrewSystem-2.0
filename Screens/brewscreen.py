@@ -83,20 +83,11 @@ class FullScreenWindow(QMainWindow):
         self.show_element(name_key)
         self.current_selection = None
         self.hide_slider_elements()
+        self.reset_all_gradients()
 
     def select_new_button(self, selected_key, name_key):
-        self.hide_all_selection_boxes()
-
         # Reset gradients for all labels
-        labels_to_reset = [
-            'TXT_TEMP_REG_BK',
-            'TXT_TEMP_REG_HLT',
-            'TXT_PUMP_SPEED_P1',
-            'TXT_PUMP_SPEED_P2'
-        ]
-        for label_key in labels_to_reset:
-            self.dynamic_elements[label_key].gradient_colors = None
-            self.dynamic_elements[label_key].update()
+        self.reset_all_gradients()
 
         # Apply gradient only to the selected label
         if selected_key == 'IMG_REGBK_Selected':
@@ -116,6 +107,19 @@ class FullScreenWindow(QMainWindow):
         self.current_selection = selected_key
         self.show_slider_elements()
 
+    def reset_all_gradients(self):
+        """
+        Reset gradients for all labels to their default state (white).
+        """
+        labels_to_reset = [
+            'TXT_TEMP_REG_BK',
+            'TXT_TEMP_REG_HLT',
+            'TXT_PUMP_SPEED_P1',
+            'TXT_PUMP_SPEED_P2'
+        ]
+        for label_key in labels_to_reset:
+            self.dynamic_elements[label_key].gradient_colors = None
+            self.dynamic_elements[label_key].update()
 
 
     def hide_all_selection_boxes(self):
@@ -199,17 +203,19 @@ class FullScreenWindow(QMainWindow):
             self.slider_value_label.setText(str(value))
 
     def mousePressEvent(self, event):
-            """
-            Handle mouse press events to deselect button when clicking outside of a button.
-            """
-            # Check if the click was inside any button's geometry
-            clicked_on_button = any(
-                button.geometry().contains(event.pos()) for button in self.buttons.values()
-            )
+        """
+        Handle mouse press events to deselect button when clicking outside of a button.
+        """
+        # Check if the click was inside any button's geometry
+        clicked_on_button = any(
+            button.geometry().contains(event.pos()) for button in self.buttons.values()
+        )
 
-            if not clicked_on_button and self.current_selection is not None:
-                # If click is outside buttons and a button is currently selected, deselect it
-                self.deselect_button(self.current_selection, f"TXT_{self.current_selection.split('_')[1]}")
+        if not clicked_on_button and self.current_selection is not None:
+            # If click is outside buttons and a button is currently selected, reset colors and deselect
+            self.reset_all_gradients()
+            self.current_selection = None
+            self.hide_slider_elements()
 
-            # Call the base class method to ensure other events are handled
-            super().mousePressEvent(event)
+        # Call the base class method to ensure other events are handled
+        super().mousePressEvent(event)
