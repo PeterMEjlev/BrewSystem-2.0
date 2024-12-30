@@ -23,7 +23,6 @@ class FullScreenWindow(QMainWindow):
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
 
-
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Brewsystem 2.0")
@@ -174,3 +173,18 @@ class FullScreenWindow(QMainWindow):
             self.slider.setValue(value)
             self.slider_value_label.setText(str(value))
 
+    def mousePressEvent(self, event):
+            """
+            Handle mouse press events to deselect button when clicking outside of a button.
+            """
+            # Check if the click was inside any button's geometry
+            clicked_on_button = any(
+                button.geometry().contains(event.pos()) for button in self.buttons.values()
+            )
+
+            if not clicked_on_button and self.current_selection is not None:
+                # If click is outside buttons and a button is currently selected, deselect it
+                self.deselect_button(self.current_selection, f"TXT_{self.current_selection.split('_')[1]}")
+
+            # Call the base class method to ensure other events are handled
+            super().mousePressEvent(event)
