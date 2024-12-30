@@ -73,10 +73,6 @@ class FullScreenWindow(QMainWindow):
             select_button_callback=self.select_button
         )
 
-
-        
-
-
     def select_button(self, selected_key, name_key):
         if self.current_selection == selected_key:
             self.deselect_button(selected_key, name_key)
@@ -155,10 +151,18 @@ class FullScreenWindow(QMainWindow):
         if self.active_variable:
             setattr(variables, self.active_variable, value)
             label_key = f'TXT_{self.active_variable.upper()}'
+
+            # Determine the appropriate suffix based on the variable type
+            if 'PUMP_SPEED' in self.active_variable.upper():
+                suffix = '%'  # Percentage for pump speed
+            else:
+                suffix = '°'  # Degree for temperature
+
             if label_key in self.dynamic_elements:
-                self.dynamic_elements[label_key].setText(f"{value}°")
+                self.dynamic_elements[label_key].setText(f"{value}{suffix}")
             else:
                 print(f"Label key {label_key} not found in dynamic elements.")
+
 
     def update_slider_value(self, variable_name):
         self.active_variable = variable_name
