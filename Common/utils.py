@@ -47,7 +47,7 @@ def create_label(parent_widget, text, color='white', gradient_colors=None, size=
     # Calculate text dimensions dynamically
     metrics = QFontMetrics(label.font())
     if width is None:
-        width = metrics.horizontalAdvance("999°") + 30  # Fixed width based on the longest text
+        width = metrics.horizontalAdvance("110.10°") + 30  # Fixed width based on the longest text
     if height is None:
         height = metrics.height() + 10  # Add padding for height
 

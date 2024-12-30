@@ -1,13 +1,15 @@
 # brewscreen.py
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QThread
 from Common.utils import toggle_images_visibility
 from Screens.static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants as constants
 import Common.variables as variables
 from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
+from Common.ThermometerWorker import ThermometerWorker
+
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -15,7 +17,10 @@ class FullScreenWindow(QMainWindow):
         self.path = os.path.join(os.path.dirname(__file__), "..", "Assets")
         self.current_selection = None  # Tracks the currently selected button
         self.active_variable = None  # Tracks the active variable being adjusted
+        self.worker_thread = None  # Thread for thermometer
+        self.thermometer_worker = None  # Worker instance
         self.init_ui()
+        self.start_thermometer_thread()
 
     def init_ui(self):
         self.setup_window()
@@ -33,6 +38,40 @@ class FullScreenWindow(QMainWindow):
         self.central_widget.setStyleSheet(f"background-color: {constants.BACKGROUND_COLOR};")
         self.central_widget.setContentsMargins(0, 0, 0, 0)
         self.setCentralWidget(self.central_widget)
+
+    def start_thermometer_thread(self):
+        """Start the thermometer worker in a separate thread."""
+        self.worker_thread = QThread()
+        self.thermometer_worker = ThermometerWorker()
+
+        self.thermometer_worker.moveToThread(self.worker_thread)
+        self.worker_thread.started.connect(self.thermometer_worker.run)
+        self.thermometer_worker.temperature_updated.connect(self.update_temperature_label)
+        self.thermometer_worker.finished.connect(self.worker_thread.quit)
+        self.thermometer_worker.finished.connect(self.thermometer_worker.deleteLater)
+        self.worker_thread.finished.connect(self.worker_thread.deleteLater)
+
+        self.worker_thread.start()
+
+    def stop_thermometer_thread(self):
+        """Stop the thermometer worker and thread."""
+        if self.thermometer_worker:
+            self.thermometer_worker.stop()
+        if self.worker_thread:
+            self.worker_thread.quit()
+            self.worker_thread.wait()
+
+    def update_temperature_label(self, temperature):
+        """Update the GUI with the new temperature."""
+        # Update the temperature label dynamically
+        label_key = 'TXT_TEMP_BK'  # Replace with the appropriate label key
+        if label_key in self.dynamic_elements:
+            self.dynamic_elements[label_key].setText(f"{temperature:.1f}°C")
+
+    def closeEvent(self, event):
+        """Ensure threads are stopped when the application is closed."""
+        self.stop_thermometer_thread()
+        super().closeEvent(event)
 
     def initialize_gui_elements(self):
         self.static_elements = initialize_static_elements(self.central_widget, self.path)
