@@ -60,7 +60,6 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-
 def initialize_buttons(central_widget, constants, static_elements, toggle_images_visibility_callback, select_button_callback):
     """
     Initializes the buttons used in the GUI.
@@ -80,10 +79,7 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_BK_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: (
-                select_button_callback('IMG_BK_Selected', 'TXT_POT_NAME_BK'),
-                central_widget.parent().update_slider_value('temp_BK')  # Update slider for BK
-            ),
+            on_normal_click=None,
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE)
@@ -95,10 +91,7 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_HLT_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=lambda: (
-                select_button_callback('IMG_HLT_Selected', 'TXT_POT_NAME_HLT'),
-                central_widget.parent().update_slider_value('temp_HLT')  # Update slider for HLT
-            ),
+            on_normal_click=None,
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE)
