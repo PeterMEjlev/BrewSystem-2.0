@@ -1,0 +1,31 @@
+/* Style for the real slider */
+QSlider {
+    background: transparent;
+}
+QSlider::groove:horizontal {
+    border: none;
+    height: 40px;
+    background: transparent;
+    border-radius: 20px;
+}
+QSlider::sub-page:horizontal {
+    border: none;
+    height: 40px;
+    background: transparent;
+    border-radius: 20px;
+}
+QSlider::handle:horizontal {
+    background-color: transparent;
+    border: none;
+    height: 50px;
+    width: 75px;
+    margin: -15px 0;
+    border-radius: 10px;
+}
+
+/* Style for the fake slider */
+.fake-slider {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                stop:0 #F04C65, stop:1 #F58361);
+    border-radius: 20px;
+}

@@ -29,6 +29,21 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     slider.hide()  # Start with the slider hidden
     slider.valueChanged.connect(on_slider_change_callback)
 
+    # Create background for the fake slider
+    fake_slider_background = QtWidgets.QFrame(central_widget)
+    fake_slider_background.setGeometry(
+        constants.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants.SLIDER_COORDINATES[1] + 15 , 
+        int(constants.SLIDER_SIZE[0]),  # Initial width based on 50% value
+        constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+    )
+    fake_slider_background.setStyleSheet("""
+        background-color: #292728; /* Solid color for the fake slider */
+        border-radius: 20px;
+        """)
+    fake_slider_background.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+    fake_slider_background.hide()
+
     # Create the fake slider (a QFrame positioned above the real slider)
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
@@ -55,7 +70,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback):
     )
     value_label.hide()  # Start with the label hidden
 
-    return slider, value_label, fake_slider
+    return slider, value_label, fake_slider, fake_slider_background
 
 
 

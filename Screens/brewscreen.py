@@ -37,7 +37,7 @@ class FullScreenWindow(QMainWindow):
         hide_GUI_elements(self.static_elements)
 
         # Initialize slider and fake slider
-        self.slider, self.value_label, self.fake_slider = initialize_slider(
+        self.slider, self.value_label, self.fake_slider, self.fake_slider_background = initialize_slider(
             central_widget=self.central_widget,
             constants=constants,
             on_slider_change_callback=self.on_slider_change
@@ -71,6 +71,7 @@ class FullScreenWindow(QMainWindow):
             self.current_selection = None  # Reset the current selection
             self.slider.hide()# Hide slider
             self.fake_slider.hide()  # Hide fake slider
+            self.fake_slider_background.hide()  # Hide fake slider background
             self.value_label.hide()  # Hide label
             self.static_elements['TXT_Slider_0'].hide()  # Hide slider labels
             self.static_elements['TXT_Slider_100'].hide()  # Hide slider labels
@@ -94,6 +95,7 @@ class FullScreenWindow(QMainWindow):
             self.current_selection = selected_key  # Update current selection
             self.slider.show()  # Show slider
             self.fake_slider.show()  # Show fake slider
+            self.fake_slider_background.show()  # Show fake slider background
             self.value_label.show()  # Show label
             self.static_elements['TXT_Slider_0'].show()  # Show slider labels
             self.static_elements['TXT_Slider_100'].show()  # Show slider labels
