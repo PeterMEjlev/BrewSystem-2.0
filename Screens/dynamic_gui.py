@@ -1,7 +1,7 @@
 # dynamic_gui.py
 from Common.utils import create_label
 import Common.variables as variables
-import Common.constants as constants
+import Common.gui_constants as gui_constants
 from PyQt5.QtCore import Qt
 
 def initialize_dynamic_text(parent_widget):
@@ -10,17 +10,17 @@ def initialize_dynamic_text(parent_widget):
     """
     return {
         # Pot Temperatures
-        'TXT_TEMP_BK': create_label(parent_widget, f"{variables.temp_BK}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, center=constants.TXT_TEMP_BK_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_TEMP_MLT': create_label(parent_widget, f"{variables.temp_MLT}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, center=constants.TXT_TEMP_MLT_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_TEMP_HLT': create_label(parent_widget, f"{variables.temp_HLT}°", color='white', size=constants.TXT_POT_TEMPERATURES_SIZE, center=constants.TXT_TEMP_HLT_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_BK': create_label(parent_widget, f"{variables.temp_BK}°", color='white', size=gui_constants.TXT_POT_TEMPERATURES_SIZE, center=gui_constants.TXT_TEMP_BK_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_MLT': create_label(parent_widget, f"{variables.temp_MLT}°", color='white', size=gui_constants.TXT_POT_TEMPERATURES_SIZE, center=gui_constants.TXT_TEMP_MLT_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_HLT': create_label(parent_widget, f"{variables.temp_HLT}°", color='white', size=gui_constants.TXT_POT_TEMPERATURES_SIZE, center=gui_constants.TXT_TEMP_HLT_COORDINATES, alignment=Qt.AlignCenter),
 
         # Reg Temperatures
-        'TXT_TEMP_REG_BK': create_label(parent_widget, f"{variables.temp_REG_BK}°", color='white', size=constants.TXT_REG_VALUE_SIZE, center=constants.TXT_REG_BK_VALUE_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_TEMP_REG_HLT': create_label(parent_widget, f"{variables.temp_REG_HLT}°", color='white', size=constants.TXT_REG_VALUE_SIZE, center=constants.TXT_REG_HLT_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_REG_BK': create_label(parent_widget, f"{variables.temp_REG_BK}°", color='white', size=gui_constants.TXT_REG_VALUE_SIZE, center=gui_constants.TXT_REG_BK_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_TEMP_REG_HLT': create_label(parent_widget, f"{variables.temp_REG_HLT}°", color='white', size=gui_constants.TXT_REG_VALUE_SIZE, center=gui_constants.TXT_REG_HLT_VALUE_COORDINATES, alignment=Qt.AlignCenter),
     
         # Pump Speeds (PWM)
-        'TXT_PUMP_SPEED_P1': create_label(parent_widget, f"{variables.pump_speed_P1}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P1_VALUE_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_PUMP_SPEED_P2': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=constants.TXT_PUMP_SPEED_SIZE, center=constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_PUMP_SPEED_P1': create_label(parent_widget, f"{variables.pump_speed_P1}%", color='white', size=gui_constants.TXT_PUMP_SPEED_SIZE, center=gui_constants.TXT_P1_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_PUMP_SPEED_P2': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=gui_constants.TXT_PUMP_SPEED_SIZE, center=gui_constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),
     }
 
 def create_slider_value_label(parent_widget):
@@ -37,8 +37,8 @@ def create_slider_value_label(parent_widget):
         parent_widget=parent_widget,
         text=str(),
         color='white',
-        size=constants.TXT_SLIDER_VALUE_SIZE,
-        center=constants.TXT_SLIDER_VALUE_COORDINATES
+        size=gui_constants.TXT_SLIDER_VALUE_SIZE,
+        center=gui_constants.TXT_SLIDER_VALUE_COORDINATES
     )
 
 def initialize_dynamic_elements(parent_widget, assets_path):

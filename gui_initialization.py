@@ -4,6 +4,8 @@ import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button, toggle_variable
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
+import Common.gui_constants as gui_constants
+
 
 
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
@@ -17,8 +19,8 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         minimum=constants.SLIDER_MIN,
         maximum=constants.SLIDER_MAX,
         value=50,
-        location=constants.SLIDER_COORDINATES,
-        size=constants.SLIDER_SIZE
+        location=gui_constants.SLIDER_COORDINATES,
+        size=gui_constants.SLIDER_SIZE
     )
     slider.setPageStep(SLIDER_PAGESTEP)  # Set the page step to 1 instead of the default 10
     slider.hide()  # Start with the slider hidden
@@ -27,10 +29,10 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     # Create background for the fake slider
     fake_slider_background = QtWidgets.QFrame(central_widget)
     fake_slider_background.setGeometry(
-        constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        constants.SLIDER_COORDINATES[1] + 15,
-        int(constants.SLIDER_SIZE[0]),  # Initial width based on 50% value
-        constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        gui_constants.SLIDER_COORDINATES[0],  # Same X as the real slider
+        gui_constants.SLIDER_COORDINATES[1] + 15,
+        int(gui_constants.SLIDER_SIZE[0]),  # Initial width based on 50% value
+        gui_constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
     fake_slider_background.setStyleSheet("""
         background-color: #292728; /* Solid color for the fake slider */
@@ -42,10 +44,10 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     # Create the fake slider
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
-        constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        constants.SLIDER_COORDINATES[1] + 15,
-        int(constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
-        constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        gui_constants.SLIDER_COORDINATES[0],  # Same X as the real slider
+        gui_constants.SLIDER_COORDINATES[1] + 15,
+        int(gui_constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
+        gui_constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
     fake_slider.setStyleSheet("""
         background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
@@ -60,7 +62,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-def initialize_buttons(central_widget, constants, static_elements, toggle_images_visibility_callback, select_button_callback):
+def initialize_buttons(central_widget, gui_constants, static_elements, toggle_images_visibility_callback, select_button_callback):
     """
     Initializes the buttons used in the GUI.
 
@@ -77,8 +79,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
     buttons = {
         'BTN_toggle_BK': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_POT_BK_COORDINATES,
-            size=constants.BTN_POT_ON_OFF,
+            position=gui_constants.IMG_POT_BK_COORDINATES,
+            size=gui_constants.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
@@ -92,8 +94,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         ),
         'BTN_toggle_HLT': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_POT_HLT_COORDINATES,
-            size=constants.BTN_POT_ON_OFF,
+            position=gui_constants.IMG_POT_HLT_COORDINATES,
+            size=gui_constants.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
@@ -106,8 +108,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         ),
         'BTN_toggle_P1': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_PUMP_BOX_P1_COORDINATES,
-            size=constants.BTN_PUMP_ON_OFF,
+            position=gui_constants.IMG_PUMP_BOX_P1_COORDINATES,
+            size=gui_constants.BTN_PUMP_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_P1_Selected', 'TXT_P1'),
                 central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
@@ -120,8 +122,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         ),
         'BTN_toggle_P2': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_PUMP_BOX_P2_COORDINATES,
-            size=constants.BTN_PUMP_ON_OFF,
+            position=gui_constants.IMG_PUMP_BOX_P2_COORDINATES,
+            size=gui_constants.BTN_PUMP_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_P2_Selected', 'TXT_P2'),
                 central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
@@ -134,8 +136,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         ),
         'BTN_toggle_REGBK': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_REG_BOX_BK_COORDINATES,
-            size=constants.BTN_REG_ON_OFF,
+            position=gui_constants.IMG_REG_BOX_BK_COORDINATES,
+            size=gui_constants.BTN_REG_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
@@ -145,8 +147,8 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
         ),
         'BTN_toggle_REGHLT': create_button(
             parent_widget=central_widget,
-            position=constants.IMG_REG_BOX_HLT_COORDINATES,
-            size=constants.BTN_REG_ON_OFF,
+            position=gui_constants.IMG_REG_BOX_HLT_COORDINATES,
+            size=gui_constants.BTN_REG_ON_OFF,
             on_normal_click=lambda: (
                 select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
