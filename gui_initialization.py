@@ -79,7 +79,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_BK_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=None,
+            on_normal_click=lambda: (
+                select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
+                central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
+            ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE)
@@ -91,7 +94,10 @@ def initialize_buttons(central_widget, constants, static_elements, toggle_images
             parent_widget=central_widget,
             position=constants.IMG_POT_HLT_COORDINATES,
             size=constants.BTN_POT_ON_OFF,
-            on_normal_click=None,
+            on_normal_click=lambda: (
+                select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
+                central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
+            ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE)
