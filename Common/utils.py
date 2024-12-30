@@ -78,7 +78,6 @@ def create_label(parent_widget, text, color='white', gradient_colors=None, size=
 
     return label
 
-
 def create_image(parent_widget, image_path, center=(0, 0), size=None):
     """
     Creates and returns a QLabel with an image displayed, respecting transparency.
