@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button, toggle_variable
 from Common.variables import STATE
+from Common.constants import SLIDER_PAGESTEP
 
 
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
@@ -19,6 +20,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         location=constants.SLIDER_COORDINATES,
         size=constants.SLIDER_SIZE
     )
+    slider.setPageStep(SLIDER_PAGESTEP)  # Set the page step to 1 instead of the default 10
     slider.hide()  # Start with the slider hidden
     slider.valueChanged.connect(on_slider_change_callback)
 
