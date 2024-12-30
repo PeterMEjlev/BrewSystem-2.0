@@ -21,4 +21,6 @@ STATE = {
     'P2_ON': False,
 }
 
+active_variable = None
+
 
