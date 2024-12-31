@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from Screens.brewscreen import FullScreenWindow
+from Screens.Brewscreen.brewscreen import FullScreenWindow
 
  
 def main():
