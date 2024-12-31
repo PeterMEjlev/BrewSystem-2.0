@@ -1,4 +1,4 @@
-# gui_initialization.py
+# brewscreen_gui_initialization.py
 from PyQt5.QtCore import Qt
 from Common.utils import create_slider, create_label, create_button
 

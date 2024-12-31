@@ -12,6 +12,7 @@ def initialize_static_images(parent_widget):
         'IMG_Dropshadows': create_image(parent_widget, "Dropshadows.png", center=gui_constants.IMG_DROPSHADOWS_COORDINATES),
         
         # Sidebar and Title
+        'IMG_Sidebar': create_image(parent_widget, "Sidebar.png", center=(0, 0)),
         'IMG_Title': create_image(parent_widget, "Banner_Title.png", center=(0, 0)),
         'IMG_Sidebar_Active_Button': create_image(parent_widget, "Sidebar_Active_Button.png", center=gui_constants.IMG_SIDEBAR_ACTIVE_BUTTON),
         'IMG_Sidebar_Icon_Home': create_image(parent_widget, "Icon_Home.png", center=gui_constants.IMG_SIDEBAR_ICON_HOME),

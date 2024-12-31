@@ -16,6 +16,7 @@ class GraphScreen(QWidget):
     def init_ui(self):
         self.setup_window()
         self.setup_layout()
+        self.setStyleSheet(f"background-color: {constants.BACKGROUND_COLOR};")
         self.initialize_gui_elements()
 
     def setup_window(self):
