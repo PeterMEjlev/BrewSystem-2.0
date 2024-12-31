@@ -62,7 +62,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-def initialize_buttons(central_widget, gui_constants, static_elements, toggle_images_visibility_callback, select_button_callback):
+def initialize_buttons(central_widget, gui_constants, static_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback):
     """
     Initializes the buttons used in the GUI.
 
@@ -143,7 +143,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
             on_long_click=None,
-            invisible=False
+            invisible=True
         ),
         'BTN_toggle_REGHLT': create_button(
             parent_widget=central_widget,
@@ -160,9 +160,9 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             parent_widget=central_widget,
             position=gui_constants.IMG_SIDEBAR_GRAPHS_BUTTON,
             size=gui_constants.BTN_SIDEBAR_MENU,
-            on_normal_click=None,
+            on_normal_click=show_graph_screen_callback,
             on_long_click=None,
-            invisible=False
+            invisible=True
         )
     }
     return buttons

@@ -10,6 +10,7 @@ import Common.constants as constants
 import Common.variables as variables
 from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 from Common.ThermometerWorker import ThermometerWorker
+from Screens.graphscreen import GraphScreen
 
 
 class FullScreenWindow(QMainWindow):
@@ -22,6 +23,7 @@ class FullScreenWindow(QMainWindow):
         self.thermometer_worker = None  # Worker instance
         self.init_ui()
         self.start_thermometer_thread()
+        self.graph_screen = None  # Placeholder for the graph window
 
     def init_ui(self):
         self.setup_window()
@@ -109,7 +111,8 @@ class FullScreenWindow(QMainWindow):
             gui_constants=gui_constants,
             static_elements=self.static_elements,
             toggle_images_visibility_callback=toggle_images_visibility,
-            select_button_callback=self.select_button
+            select_button_callback=self.select_button,
+            show_graph_screen_callback=self.show_graph_screen
         )
 
     def select_button(self, selected_key, name_key):
@@ -273,3 +276,9 @@ class FullScreenWindow(QMainWindow):
 
         # Call the base class method to ensure other events are handled
         super().mousePressEvent(event)
+
+    # Add this method to handle the graph button
+    def show_graph_screen(self):
+        if not self.graph_screen:
+            self.graph_screen = GraphScreen()
+        self.graph_screen.show()
