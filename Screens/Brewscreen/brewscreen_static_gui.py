@@ -1,4 +1,4 @@
-# static_gui.py
+# brewscreen_static_gui.py
 from Common.utils import create_image, create_label
 import Common.gui_constants as gui_constants
 from PyQt5.QtCore import Qt
@@ -71,7 +71,7 @@ def initialize_static_text(parent_widget):
         # Title
         'TXT_Title': create_label(parent_widget, "BrewSystem 2.0", color='white', size=gui_constants.TXT_TITLE_SIZE, center=gui_constants.TXT_TITLE_COORDINATES, width = 500),
         'TXT_SIDEBAR_HOME': create_label(parent_widget, "Overview", color='white', size=gui_constants.TXT_SIDEBAR_TEXT_SIZE, center=gui_constants.TXT_SIDEBAR_TEXT_HOME,  alignment=Qt.AlignLeft),
-        'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=gui_constants.TXT_SIDEBAR_TEXT_SIZE, center=(gui_constants.TXT_SIDEBAR_TEXT_HOME[0],gui_constants.TXT_SIDEBAR_TEXT_HOME[1] + gui_constants.SIDEBAR_BUTTON_DISTANCE),  alignment=Qt.AlignLeft),
+        'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=gui_constants.TXT_SIDEBAR_TEXT_SIZE, center=gui_constants.TXT_SIDEBAR_TEXT_GRAPHS,  alignment=Qt.AlignLeft),
 
         # Pot Names
         'TXT_POT_NAME_BK': create_label(parent_widget, "BK", color='white', size=gui_constants.TXT_POT_NAMES_SIZE, center=gui_constants.TXT_POT_NAMES_BK_COORDINATES),

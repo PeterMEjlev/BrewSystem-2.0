@@ -1,6 +1,8 @@
-# graphscreen.py
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+import os
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import Common.constants as constants
+from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
+
 
 class GraphScreen(QWidget):
     """
@@ -8,24 +10,24 @@ class GraphScreen(QWidget):
     """
     def __init__(self):
         super().__init__()
+        self.path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Assets"))
         self.init_ui()
-
-    def init_ui(self):
-        self.init_ui()
-
-        layout = QVBoxLayout()
-
-        # Placeholder content, replace with actual graphing widgets
-        self.label = QLabel("Graph Screen - Add your graphs here")
-        self.label.setStyleSheet("font-size: 20px; margin: 10px;")
-        layout.addWidget(self.label)
-
-        self.setLayout(layout)
 
     def init_ui(self):
         self.setup_window()
+        self.setup_layout()
+        self.initialize_gui_elements()
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Graph Screen")
         self.showFullScreen()
+
+    def setup_layout(self):
+        # Set up a layout for the widget
+        self.layout = QVBoxLayout()
+        self.setLayout(self.layout)
+
+    def initialize_gui_elements(self):
+        # Delegate GUI initialization to the external file
+        initialize_gui_elements(self, self.path)

@@ -3,8 +3,8 @@ import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
 from Common.utils import toggle_images_visibility
-from Screens.Brewscreen.static_gui import initialize_static_elements, create_slider_plus_minus_labels
-from Screens.Brewscreen.dynamic_gui import initialize_dynamic_elements, create_slider_value_label
+from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
+from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.gui_constants as gui_constants
 import Common.constants as constants
 import Common.variables as variables
