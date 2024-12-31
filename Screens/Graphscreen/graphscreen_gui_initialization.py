@@ -1,6 +1,6 @@
-# graphscreen_gui_initialization.py
 from Screens.Graphscreen.graphscreen_static_gui import initialize_static_elements
 from Common.utils import create_button
+import Common.gui_constants as gui_constants
 
 def initialize_gui_elements(parent_widget, assets_path):
     """
@@ -18,7 +18,7 @@ def initialize_gui_elements(parent_widget, assets_path):
 
     # Explicitly show all elements
     for key, element in parent_widget.static_elements.items():
-        print(f"Static Element: {key}, Is Visible: {element.isVisible()}")
+        print(f"Static Element: {key}, Is Visible: {element.isVisible()}") 
         element.show()
 
     # Initialize buttons
@@ -36,13 +36,14 @@ def initialize_buttons(parent_widget):
     A dictionary containing the button(s).
     """
     buttons = {
-        'BTN_Show_Plot': create_button(
-            parent_widget=parent_widget, position=(100, 100),  
-            size=(200, 50), 
-            on_normal_click=lambda: print("Show Plot button clicked!"), 
+        'BTN_close_graph_window': create_button(
+            parent_widget=parent_widget,
+            position=gui_constants.IMG_SIDEBAR_ACTIVE_BUTTON,  # Example position
+            size=gui_constants.BTN_SIDEBAR_MENU,  # Example size
+            on_normal_click=parent_widget.close,  # Close the parent widget
             on_long_click=None,
-            invisible=False
-        )
+            invisible=True  
+        ),
     }
 
     # Show the button explicitly
