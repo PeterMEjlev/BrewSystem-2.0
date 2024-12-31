@@ -15,7 +15,7 @@ def initialize_static_images(parent_widget):
         'IMG_Title': create_image(parent_widget, "Banner_Title.png", center=(0, 0)),
         'IMG_Sidebar_Active_Button': create_image(parent_widget, "Sidebar_Active_Button.png", center=gui_constants.IMG_SIDEBAR_ACTIVE_BUTTON),
         'IMG_Sidebar_Icon_Home': create_image(parent_widget, "Icon_Home.png", center=gui_constants.IMG_SIDEBAR_ICON_HOME),
-        'IMG_Sidebar_Icon_Graph': create_image(parent_widget, "Icon_Graph.png", center=(gui_constants.IMG_SIDEBAR_ICON_HOME[0], gui_constants.IMG_SIDEBAR_ICON_HOME[1] + gui_constants.SIDEBAR_BUTTON_DISTANCE)),
+        'IMG_Sidebar_Icon_Graph': create_image(parent_widget, "Icon_Graph.png", center=gui_constants.IMG_SIDEBAR_ICON_GRAPHS),
         'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, "Konfus_Logo.png", center=gui_constants.IMG_KONFUS_LOGO),
 
         # Pots

@@ -143,7 +143,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
             on_long_click=None,
-            invisible=True
+            invisible=False
         ),
         'BTN_toggle_REGHLT': create_button(
             parent_widget=central_widget,
@@ -155,6 +155,14 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             ),
             on_long_click=None,
             invisible=True
+        ),
+        'BTN_toggle_sidebar_graphs': create_button(
+            parent_widget=central_widget,
+            position=gui_constants.IMG_SIDEBAR_GRAPHS_BUTTON,
+            size=gui_constants.BTN_SIDEBAR_MENU,
+            on_normal_click=None,
+            on_long_click=None,
+            invisible=False
         )
     }
     return buttons

@@ -246,11 +246,11 @@ def create_button(parent_widget, position=(0, 0), size=(100, 50), image_path=Non
     if image_path:
         base_path = os.path.join(os.path.dirname(__file__), "..", "Assets")
         absolute_path = os.path.join(base_path, image_path)
-        pixmap = QtGui.QPixmap(absolute_path)
+        pixmap = QPixmap(absolute_path)
 
         # Use the size of the image if specified
         button.setGeometry(position[0], position[1], pixmap.width(), pixmap.height())
-        button.setIcon(QtGui.QIcon(pixmap))
+        button.setIcon(QIcon(pixmap))
         button.setIconSize(pixmap.size())
 
     # Set styles based on invisibility
@@ -271,10 +271,10 @@ def create_button(parent_widget, position=(0, 0), size=(100, 50), image_path=Non
     else:
         button.setStyleSheet("""
             QPushButton {
-                background: transparent;
+                background: rgba(255, 105, 180, 0.5); /* Hot Pink */
             }
             QPushButton:pressed {
-                background: rgba(0, 0, 0, 0.1); /* Slightly visible when pressed */
+                background: rgba(0, 0, 0, 0.15); /* Slightly visible when pressed */
             }
         """)
 
