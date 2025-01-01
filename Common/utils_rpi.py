@@ -57,3 +57,34 @@ def set_gpio_low(pin_number):
             GPIO.cleanup(pin_number)
     else:
         print(f"GPIO pin {pin_number} set to LOW (simulated).")
+
+def set_pwm_signal(pin_number, frequency, duty_cycle):
+    """
+    Turns on a PWM signal on a specified GPIO pin on the Raspberry Pi.
+
+    Args:
+        pin_number (int): The GPIO pin number to use for PWM.
+        frequency (float): The frequency of the PWM signal in Hz.
+        duty_cycle (float): The duty cycle of the PWM signal as a percentage (0.0 to 100.0).
+    """
+    if IS_RPI:
+        try:
+            # Use Broadcom pin numbering
+            GPIO.setmode(GPIO.BCM)
+
+            # Set up the pin as an output
+            GPIO.setup(pin_number, GPIO.OUT)
+
+            # Initialize PWM on the pin with the specified frequency
+            pwm = GPIO.PWM(pin_number, frequency)
+
+            # Start PWM with the specified duty cycle
+            pwm.start(duty_cycle)
+
+            print(f"PWM started on GPIO pin {pin_number} with frequency {frequency}Hz and duty cycle {duty_cycle}%.")
+
+            return pwm  # Return the PWM object to allow further control (e.g., stop, change frequency/duty cycle)
+        except Exception as e:
+            print(f"An error occurred while starting PWM on GPIO pin {pin_number}: {e}")
+    else:
+        print(f"PWM started on GPIO pin {pin_number} with frequency {frequency}Hz and duty cycle {duty_cycle}% (simulated).")

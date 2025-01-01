@@ -20,7 +20,7 @@ def initialize_dynamic_text(parent_widget):
     
         # Pump Speeds (PWM)
         'TXT_PUMP_SPEED_P1': create_label(parent_widget, f"{variables.pump_speed_P1}%", color='white', size=gui_constants.TXT_PUMP_SPEED_SIZE, center=gui_constants.TXT_P1_VALUE_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_PUMP_SPEED_P2': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=gui_constants.TXT_PUMP_SPEED_SIZE, center=gui_constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_PUMP_SPEED_P2': create_label(parent_widget, f"{variables.pump_speed_P2}%", color='white', size=gui_constants.TXT_PUMP_SPEED_SIZE, center=gui_constants.TXT_P2_VALUE_COORDINATES, alignment=Qt.AlignCenter),    
     }
 
 def create_slider_value_label(parent_widget):

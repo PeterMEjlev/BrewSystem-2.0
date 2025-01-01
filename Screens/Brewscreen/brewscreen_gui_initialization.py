@@ -5,8 +5,7 @@ from Common.utils import create_slider, create_label, create_button, toggle_vari
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
 import Common.gui_constants as gui_constants
-from Common.utils_rpi import set_gpio_high
-import Common.constants_rpi as constants
+
 
 
 

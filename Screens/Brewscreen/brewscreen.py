@@ -8,7 +8,7 @@ from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_element
 import Common.gui_constants as gui_constants
 import Common.constants as constants
 import Common.variables as variables
-from gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
+from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
 
