@@ -88,3 +88,36 @@ def set_pwm_signal(pin_number, frequency, duty_cycle):
             print(f"An error occurred while starting PWM on GPIO pin {pin_number}: {e}")
     else:
         print(f"PWM started on GPIO pin {pin_number} with frequency {frequency}Hz and duty cycle {duty_cycle}% (simulated).")
+
+def stop_pwm_signal(pwm):
+    """
+    Stops the PWM signal on the specified PWM object.
+
+    Args:
+        pwm (GPIO.PWM): The PWM object to stop.
+    """
+    if IS_RPI and pwm:
+        try:
+            pwm.stop()
+            print("PWM signal stopped.")
+        except Exception as e:
+            print(f"An error occurred while stopping the PWM signal: {e}")
+    else:
+        print("PWM signal stopped (simulated).")
+
+def change_pwm_duty_cycle(pwm, duty_cycle):
+    """
+    Changes the duty cycle of an active PWM signal.
+
+    Args:
+        pwm (GPIO.PWM): The PWM object to modify.
+        duty_cycle (float): The new duty cycle as a percentage (0.0 to 100.0).
+    """
+    if IS_RPI and pwm:
+        try:
+            pwm.ChangeDutyCycle(duty_cycle)
+            print(f"PWM duty cycle changed to {duty_cycle}%.")
+        except Exception as e:
+            print(f"An error occurred while changing the PWM duty cycle: {e}")
+    else:
+        print(f"PWM duty cycle changed to {duty_cycle}% (simulated).")
