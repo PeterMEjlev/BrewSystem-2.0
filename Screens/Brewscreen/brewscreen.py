@@ -2,7 +2,7 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
-from Common.utils import toggle_images_visibility
+from Common.utils import toggle_images_visibility, apply_gradient_to_label
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.gui_constants as gui_constants
@@ -140,30 +140,12 @@ class FullScreenWindow(QMainWindow):
         self.reset_all_gradients()
 
         # Apply gradient only to the selected label
-        self.apply_gradient_to_label(selected_key)
+        apply_gradient_to_label(self, selected_key)
 
         # Update the current selection
         self.current_selection = selected_key
         self.show_slider_elements()
-
-    def apply_gradient_to_label(self, selected_key):
-        """
-        Apply a gradient to the label associated with the selected key.
-
-        Parameters:
-        selected_key (str): The key of the selected element.
-        """
-        label_mapping = {
-            'IMG_REGBK_Selected': 'TXT_TEMP_REG_BK',
-            'IMG_REGHLT_Selected': 'TXT_TEMP_REG_HLT',
-            'IMG_P1_Selected': 'TXT_PUMP_SPEED_P1',
-            'IMG_P2_Selected': 'TXT_PUMP_SPEED_P2'
-        }
-
-        label_key = label_mapping.get(selected_key)
-        if label_key and label_key in self.dynamic_elements:
-            self.dynamic_elements[label_key].gradient_colors = ('#D04158', '#F58360')
-            self.dynamic_elements[label_key].update()  # Force the label to redraw
+    
 
     def reset_all_gradients(self):
         """

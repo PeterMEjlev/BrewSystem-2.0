@@ -1,4 +1,4 @@
-# brewscreen_static_gui.py
+# graphscreen_static_gui.py
 from Common.utils import create_image, create_label
 import Common.gui_constants as gui_constants
 from PyQt5.QtCore import Qt

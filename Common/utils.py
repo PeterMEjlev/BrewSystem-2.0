@@ -1,6 +1,9 @@
+# utils.py
 from PyQt5.QtWidgets import QLabel, QSlider, QPushButton
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon, QLinearGradient, QBrush, QPainter, QPen, QColor
+from Common.utils_rpi import set_gpio_high, set_gpio_low
+import Common.constants_rpi as constants
 
 from PyQt5 import QtWidgets, QtCore
 import os
@@ -77,6 +80,25 @@ def create_label(parent_widget, text, color='white', gradient_colors=None, size=
     label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
     return label
+
+def apply_gradient_to_label(self, selected_key):
+        """
+        Apply a gradient to the label associated with the selected key.
+
+        Parameters:
+        selected_key (str): The key of the selected element.
+        """
+        label_mapping = {
+            'IMG_REGBK_Selected': 'TXT_TEMP_REG_BK',
+            'IMG_REGHLT_Selected': 'TXT_TEMP_REG_HLT',
+            'IMG_P1_Selected': 'TXT_PUMP_SPEED_P1',
+            'IMG_P2_Selected': 'TXT_PUMP_SPEED_P2'
+        }
+
+        label_key = label_mapping.get(selected_key)
+        if label_key and label_key in self.dynamic_elements:
+            self.dynamic_elements[label_key].gradient_colors = ('#D04158', '#F58360')
+            self.dynamic_elements[label_key].update()  # Force the label to redraw
 
 def create_image(parent_widget, image_path, center=(0, 0), size=None):
     """
@@ -313,7 +335,7 @@ def load_custom_font():
 
 def toggle_variable(variable_name, globals_dict):
     """
-    Toggles the value of a variable between True and False.
+    Toggles the value of a variable between True and False, and updates the GPIO state.
 
     Parameters:
     - variable_name (str): The name of the variable to toggle.
@@ -325,8 +347,24 @@ def toggle_variable(variable_name, globals_dict):
     if variable_name in globals_dict:
         current_value = globals_dict[variable_name]
         if isinstance(current_value, bool):  # Ensure it's a boolean before toggling
+            # Toggle the variable
             globals_dict[variable_name] = not current_value
-            print(f"{variable_name} toggled to {globals_dict[variable_name]}")
+            new_value = globals_dict[variable_name]
+            print(f"{variable_name} toggled to {new_value}")
+
+            # Update GPIO state based on the variable
+            if variable_name == 'BK_ON':  # Example: BK corresponds to the BK GPIO pin
+                if new_value:
+                    set_gpio_high(constants.RPI_GPIO_PIN_BK)
+                else:
+                    set_gpio_low(constants.RPI_GPIO_PIN_BK)
+            elif variable_name == 'HLT_ON':  # Example: HLT corresponds to the HLT GPIO pin
+                if new_value:
+                    set_gpio_high(constants.RPI_GPIO_PIN_HLT)
+                else:
+                    set_gpio_low(constants.RPI_GPIO_PIN_HLT)
+            else:
+                print(f"No GPIO action defined for {variable_name}.")
         else:
             print(f"{variable_name} is not a boolean. Current value: {current_value}")
     else:
