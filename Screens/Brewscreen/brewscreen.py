@@ -128,6 +128,24 @@ class FullScreenWindow(QMainWindow):
         self.hide_slider_elements()
         self.reset_all_gradients()
 
+    def select_new_button(self, selected_key, name_key):
+        # If the same label is already active, deselect it and reset colors
+        if self.current_selection == selected_key:
+            self.current_selection = None
+            self.reset_all_gradients()
+            self.hide_slider_elements()
+            return
+
+        # Reset gradients for all labels
+        self.reset_all_gradients()
+
+        # Apply gradient only to the selected label
+        self.apply_gradient_to_label(selected_key)
+
+        # Update the current selection
+        self.current_selection = selected_key
+        self.show_slider_elements()
+
     def apply_gradient_to_label(self, selected_key):
         """
         Apply a gradient to the label associated with the selected key.
@@ -146,24 +164,6 @@ class FullScreenWindow(QMainWindow):
         if label_key and label_key in self.dynamic_elements:
             self.dynamic_elements[label_key].gradient_colors = ('#D04158', '#F58360')
             self.dynamic_elements[label_key].update()  # Force the label to redraw
-
-    def select_new_button(self, selected_key, name_key):
-        # If the same label is already active, deselect it and reset colors
-        if self.current_selection == selected_key:
-            self.current_selection = None
-            self.reset_all_gradients()
-            self.hide_slider_elements()
-            return
-
-        # Reset gradients for all labels
-        self.reset_all_gradients()
-
-        # Apply gradient only to the selected label
-        self.apply_gradient_to_label(selected_key)
-
-        # Update the current selection
-        self.current_selection = selected_key
-        self.show_slider_elements()
 
     def reset_all_gradients(self):
         """
