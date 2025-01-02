@@ -360,6 +360,9 @@ def toggle_variable(variable_name, globals_dict):
                     set_gpio_high(constants.RPI_GPIO_PIN_BK)
                 else:
                     set_gpio_low(constants.RPI_GPIO_PIN_BK)
+
+                
+
             elif variable_name == 'HLT_ON':  # Example: HLT corresponds to the HLT GPIO pin
                 if new_value:
                     set_gpio_high(constants.RPI_GPIO_PIN_HLT)
@@ -371,3 +374,40 @@ def toggle_variable(variable_name, globals_dict):
             print(f"{variable_name} is not a boolean. Current value: {current_value}")
     else:
         print(f"{variable_name} does not exist in the provided scope.")
+
+def adjust_image_height(image_label, percentage, original_height):
+    """
+    Adjust the height of an image based on a percentage of a given original height without maintaining the aspect ratio,
+    ensuring the height is reduced or increased from the top-center of the image.
+
+    Parameters:
+    - image_label (QLabel): The QLabel displaying the image.
+    - percentage (float): The percentage (0.0 to 100.0) to adjust the height.
+                          A value of 100 means the original height.
+    - original_height (int): The reference height for the percentage calculation.
+    """
+    if not isinstance(image_label, QLabel) or image_label.pixmap() is None:
+        print("Invalid image label or no pixmap set.")
+        return
+
+    # Get the original pixmap and its width
+    pixmap = image_label.pixmap()
+    original_width = pixmap.width()
+
+    # Calculate the new height based on the percentage and given original height
+    new_height = int(original_height * (percentage / 100.0))
+    if new_height <= 0:
+        print("Invalid percentage: height cannot be zero or negative.")
+        return
+
+    # Resize the pixmap to the original width and the new height
+    resized_pixmap = pixmap.scaled(original_width, new_height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+
+    # Set the resized pixmap back to the label
+    image_label.setPixmap(resized_pixmap)
+
+    # Calculate the new position for the QLabel to keep the top-center alignment
+    current_geometry = image_label.geometry()
+    new_top = current_geometry.top() + (current_geometry.height() - new_height)
+    image_label.setGeometry(current_geometry.left(), new_top, resized_pixmap.width(), resized_pixmap.height())
+

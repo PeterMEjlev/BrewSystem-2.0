@@ -2,7 +2,7 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
-from Common.utils import toggle_images_visibility, apply_gradient_to_label
+from Common.utils import toggle_images_visibility, apply_gradient_to_label, adjust_image_height
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants_gui as constants_gui
@@ -33,13 +33,14 @@ class FullScreenWindow(QMainWindow):
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
 
-        if (IS_RPI):
-            self.setCursor(Qt.BlankCursor)
+        
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Brewsystem 2.0")
         self.showFullScreen()
+        if (IS_RPI):
+            self.setCursor(Qt.BlankCursor)
 
     def setup_central_widget(self):
         self.central_widget = QWidget(self)
@@ -50,7 +51,7 @@ class FullScreenWindow(QMainWindow):
     def start_thermometer_thread(self):
         """Start the thermometer worker in a separate thread."""
         self.worker_thread = QThread()
-        self.thermometer_worker = ThermometerWorker()
+        self.thermometer_worker = ThermometerWorker(self.static_elements)
 
         self.thermometer_worker.moveToThread(self.worker_thread)
         self.worker_thread.started.connect(self.thermometer_worker.run)
@@ -235,6 +236,7 @@ class FullScreenWindow(QMainWindow):
 
     def update_active_variable(self, value):
         if self.active_variable:
+            print(f"Updating {self.active_variable} to {value}")
             setattr(variables, self.active_variable, value)
             label_key = f'TXT_{self.active_variable.upper()}'
 
@@ -248,6 +250,12 @@ class FullScreenWindow(QMainWindow):
                 self.dynamic_elements[label_key].setText(f"{value}{suffix}")
             else:
                 print(f"Label key {label_key} not found in dynamic elements.")
+
+            # Update the REG values specifically if the active variable is temp_REG_BK or temp_REG_HLT
+            if self.active_variable == 'temp_REG_BK':
+                variables.temp_REG_BK = value
+            elif self.active_variable == 'temp_REG_HLT':
+                variables.temp_REG_HLT = value
 
             # Update the PWM duty cycle if the active variable is a PWM signal
             if self.active_variable == 'efficiency_BK':

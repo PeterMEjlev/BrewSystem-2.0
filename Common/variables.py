@@ -5,6 +5,9 @@ temp_BK = 100
 temp_MLT = 68
 temp_HLT = 70
 
+temp_progress_BK = 0
+temp_progress_HLT = 0
+
 # Efficiency
 efficiency_BK = 100
 efficiency_HLT = 100
