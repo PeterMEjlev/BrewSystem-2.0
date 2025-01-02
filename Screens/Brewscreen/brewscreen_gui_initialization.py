@@ -4,7 +4,7 @@ import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button, toggle_variable
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
-import Common.gui_constants as gui_constants
+import Common.constants_gui as constants_gui
 
 
 
@@ -20,8 +20,8 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         minimum=constants.SLIDER_MIN,
         maximum=constants.SLIDER_MAX,
         value=50,
-        location=gui_constants.SLIDER_COORDINATES,
-        size=gui_constants.SLIDER_SIZE
+        location=constants_gui.SLIDER_COORDINATES,
+        size=constants_gui.SLIDER_SIZE
     )
     slider.setPageStep(SLIDER_PAGESTEP)  # Set the page step to 1 instead of the default 10
     slider.hide()  # Start with the slider hidden
@@ -30,10 +30,10 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     # Create background for the fake slider
     fake_slider_background = QtWidgets.QFrame(central_widget)
     fake_slider_background.setGeometry(
-        gui_constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        gui_constants.SLIDER_COORDINATES[1] + 15,
-        int(gui_constants.SLIDER_SIZE[0]),  # Initial width based on 50% value
-        gui_constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        constants_gui.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants_gui.SLIDER_COORDINATES[1] + 15,
+        int(constants_gui.SLIDER_SIZE[0]),  # Initial width based on 50% value
+        constants_gui.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
     fake_slider_background.setStyleSheet("""
         background-color: #292728; /* Solid color for the fake slider */
@@ -45,10 +45,10 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     # Create the fake slider
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
-        gui_constants.SLIDER_COORDINATES[0],  # Same X as the real slider
-        gui_constants.SLIDER_COORDINATES[1] + 15,
-        int(gui_constants.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
-        gui_constants.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        constants_gui.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants_gui.SLIDER_COORDINATES[1] + 15,
+        int(constants_gui.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
+        constants_gui.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
     fake_slider.setStyleSheet("""
         background: qlineargradient(x1:0, y1:0, x2:1, y2:0,

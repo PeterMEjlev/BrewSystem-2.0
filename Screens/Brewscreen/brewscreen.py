@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt, QThread
 from Common.utils import toggle_images_visibility, apply_gradient_to_label
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
-import Common.gui_constants as gui_constants
+import Common.constants_gui as constants_gui
 import Common.constants as constants
 import Common.variables as variables
 from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
@@ -24,6 +24,10 @@ class FullScreenWindow(QMainWindow):
         self.init_ui()
         self.start_thermometer_thread()
         self.graph_screen = None  # Placeholder for the graph window
+
+        from Common.utils_rpi import set_pwm_signal
+        set_pwm_signal(12, 0.5, 50) 
+        
 
     def init_ui(self):
         self.setup_window()
@@ -108,7 +112,7 @@ class FullScreenWindow(QMainWindow):
         # Initialize the buttons
         self.buttons = initialize_buttons(
             central_widget=self.central_widget,
-            gui_constants=gui_constants,
+            gui_constants=constants_gui,
             static_elements=self.static_elements,
             toggle_images_visibility_callback=toggle_images_visibility,
             select_button_callback=self.select_button,
@@ -207,7 +211,7 @@ class FullScreenWindow(QMainWindow):
         self.update_active_variable(value)
 
     def adjust_fake_slider_width(self, value):
-        max_width = gui_constants.SLIDER_SIZE[0]
+        max_width = constants_gui.SLIDER_SIZE[0]
         new_width = int((value / self.slider.maximum()) * max_width)
         self.fake_slider.setGeometry(
             self.fake_slider.geometry().x(),
