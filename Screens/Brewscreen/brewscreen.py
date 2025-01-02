@@ -108,7 +108,6 @@ class FullScreenWindow(QMainWindow):
         # Initialize the buttons
         self.buttons = initialize_buttons(
             central_widget=self.central_widget,
-            gui_constants=constants_gui,
             static_elements=self.static_elements,
             dynamic_elements=self.dynamic_elements,
             toggle_images_visibility_callback=toggle_images_visibility,
