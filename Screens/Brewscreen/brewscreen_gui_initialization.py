@@ -92,7 +92,7 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE),
-                handle_bk_on_toggle(dynamic_elements),
+                handle_bk_on_toggle(dynamic_elements, static_elements),
                 create_or_stop_pwm_for_bk(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
@@ -108,7 +108,7 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE),
-                handle_hlt_on_toggle(dynamic_elements),
+                handle_hlt_on_toggle(dynamic_elements, static_elements),
                 create_or_stop_pwm_for_hlt(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
@@ -174,17 +174,21 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
     }
     return buttons
 
-def handle_bk_on_toggle(dynamic_elements):
+def handle_bk_on_toggle(dynamic_elements, static_elements):
     if STATE['BK_ON']:
         dynamic_elements['TXT_EFFICIENCY_BK'].show()
     else:
         dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+        if 'IMG_Pot_BK_On_Temp_Reached' in static_elements:
+            static_elements['IMG_Pot_BK_On_Temp_Reached'].hide()
 
-def handle_hlt_on_toggle(dynamic_elements):
+def handle_hlt_on_toggle(dynamic_elements, static_elements):
     if STATE['HLT_ON']:
         dynamic_elements['TXT_EFFICIENCY_HLT'].show()
     else:
         dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+        if 'IMG_Pot_HLT_On_Temp_Reached' in static_elements:
+            static_elements['IMG_Pot_HLT_On_Temp_Reached'].hide()
 
 def create_or_stop_pwm_for_bk(dynamic_elements):
     """
@@ -225,12 +229,13 @@ def hide_GUI_elements(static_elements, dynamic_elements):
     """
     # Pot on gradients
     keys_to_hide = [
-        'IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground',
+        'IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground', 'IMG_Pot_BK_On_Temp_Reached',
         'IMG_Pot_MLT_On_Background', 'IMG_Pot_MLT_On_Foreground',
-        'IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground',
+        'IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground', 'IMG_Pot_HLT_On_Temp_Reached',
         'IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected',
         'IMG_REGBK_Selected', 'IMG_REGHLT_Selected',
         'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2', 'TXT_EFFICIENCY_BK', 'TXT_EFFICIENCY_HLT'
+
     ]
     for key in keys_to_hide:
         if key in static_elements:

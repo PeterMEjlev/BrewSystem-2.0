@@ -14,5 +14,6 @@ SLIDER_PAGESTEP = 1
 
 # Thermometer configuration
 THERMOMETER_READ_WAIT_TIME = 1000  # Time in milliseconds
+TEMP_REACHED_THRESHOLD = 1  # Temperature threshold for reaching target
 
 

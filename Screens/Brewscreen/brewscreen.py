@@ -2,7 +2,7 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
-from Common.utils import toggle_images_visibility, apply_gradient_to_label, adjust_image_height
+from Common.utils import toggle_images_visibility, apply_gradient_to_label
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants_gui as constants_gui
@@ -32,8 +32,6 @@ class FullScreenWindow(QMainWindow):
         self.setup_central_widget()
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
-
-        
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
@@ -76,14 +74,14 @@ class FullScreenWindow(QMainWindow):
         # Update the temperature label dynamically
         label_key = 'TXT_TEMP_BK' 
         if label_key in self.dynamic_elements:
-            self.dynamic_elements[label_key].setText(f"{temperature:.1f}°C")
+            self.dynamic_elements[label_key].setText(f"{temperature:.1f}°")
 
     def update_temperature_label_hlt(self, temperature):
         """Update the GUI with the new temperature."""
         # Update the temperature label dynamically
         label_key = 'TXT_TEMP_HLT' 
         if label_key in self.dynamic_elements:
-            self.dynamic_elements[label_key].setText(f"{temperature:.1f}°C")
+            self.dynamic_elements[label_key].setText(f"{temperature:.1f}°")
 
     def closeEvent(self, event):
         """Ensure threads are stopped when the application is closed."""

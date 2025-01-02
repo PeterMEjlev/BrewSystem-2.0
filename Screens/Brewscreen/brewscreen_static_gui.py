@@ -23,6 +23,7 @@ def initialize_static_images(parent_widget):
         'IMG_Pot_BK_Off_Background': create_image(parent_widget, "Pot_Off_Background.png", center=constants_gui.IMG_POT_BK_COORDINATES),
         'IMG_Pot_BK_On_Background': create_image(parent_widget, "Pot_On_Background.png", center=constants_gui.IMG_POT_BK_COORDINATES), # Hidden     
         'IMG_Pot_BK_On_Foreground': create_image(parent_widget, "Pot_On_Foreground.png", center=constants_gui.IMG_POT_BK_COORDINATES), # Hidden 
+        'IMG_Pot_BK_On_Temp_Reached': create_image(parent_widget, "Pot_BK_On_Temp_Reached.png", center=constants_gui.IMG_POT_BK_COORDINATES), # Hidden 
         'IMG_Pot_BK': create_image(parent_widget, "Pot_Outline.png", center=constants_gui.IMG_POT_BK_COORDINATES),
         
         'IMG_Pot_MLT_Off_Background': create_image(parent_widget, "Pot_Off_Background.png", center=constants_gui.IMG_POT_MLT_COORDINATES),        
@@ -32,7 +33,8 @@ def initialize_static_images(parent_widget):
         
         'IMG_Pot_HLT_Off_Background': create_image(parent_widget, "Pot_Off_Background.png", center=constants_gui.IMG_POT_HLT_COORDINATES),  
         'IMG_Pot_HLT_On_Background': create_image(parent_widget, "Pot_On_Background.png", center=constants_gui.IMG_POT_HLT_COORDINATES), # Hidden     
-        'IMG_Pot_HLT_On_Foreground': create_image(parent_widget, "Pot_On_Foreground.png", center=constants_gui.IMG_POT_HLT_COORDINATES), # Hidden       
+        'IMG_Pot_HLT_On_Foreground': create_image(parent_widget, "Pot_On_Foreground.png", center=constants_gui.IMG_POT_HLT_COORDINATES), # Hidden    
+        'IMG_Pot_HLT_On_Temp_Reached': create_image(parent_widget, "Pot_HLT_On_Temp_Reached.png", center=constants_gui.IMG_POT_HLT_COORDINATES), # Hidden    
         'IMG_Pot_HLT': create_image(parent_widget, "Pot_Outline.png", center=constants_gui.IMG_POT_HLT_COORDINATES),
 
         # Pipes and Reg Boxes
