@@ -8,7 +8,8 @@ import Common.variables as variables
 
 
 class ThermometerWorker(QObject):
-    temperature_updated = pyqtSignal(float)  # Signal to send the temperature reading
+    temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
+    temperature_updated_hlt = pyqtSignal(float)
     finished = pyqtSignal()  # Signal to indicate the thread is finished
 
     def __init__(self, static_elements):
@@ -20,22 +21,27 @@ class ThermometerWorker(QObject):
         """Worker's main loop to read temperatures."""
         while self._running:
             # Simulate temperature reading (replace this with actual thermometer code)
-            temp_BK = self.read_thermometer()
-            self.temperature_updated.emit(temp_BK)  # Emit the new temperature
+            variables.temp_BK = self.read_thermometer_bk()
+            variables.temp_HLT = self.read_thermometer_hlt()
+            self.temperature_updated_bk.emit(variables.temp_BK)  
+            self.temperature_updated_hlt.emit(variables.temp_HLT) 
 
-            print(f"Temperature: {temp_BK}")
-            print(f"REG Temperature: {variables.temp_REG_BK}")
-
-            temp_progress_bk = min(100, max(0, (temp_BK / variables.temp_REG_BK) * 100))
+            temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100))
+            temp_progress_hlt = min(100, max(0, (variables.temp_HLT / variables.temp_REG_HLT) * 100))
 
             # Adjust image height dynamically based on a condition or logic
-            if 'IMG_Pot_BK_On_Foreground' in self.static_elements:
-                
+            if 'IMG_Pot_BK_On_Foreground' in self.static_elements:  
                 adjust_image_height(self.static_elements['IMG_Pot_BK_On_Foreground'], temp_progress_bk, POT_ON_FOREGROUND_HEIGHT)
+            if 'IMG_Pot_HLT_On_Foreground' in self.static_elements:  
+                adjust_image_height(self.static_elements['IMG_Pot_HLT_On_Foreground'], temp_progress_hlt, POT_ON_FOREGROUND_HEIGHT)
 
             QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
 
-    def read_thermometer(self):
+    def read_thermometer_bk(self):
+        """Simulate reading temperature. Replace with actual thermometer logic."""
+        return random.uniform(0.0, 101.9)  # Simulated temperature
+    
+    def read_thermometer_hlt(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
         return random.uniform(0.0, 101.9)  # Simulated temperature
 
