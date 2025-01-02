@@ -8,6 +8,8 @@ temp_HLT = 70
 # Efficiency
 efficiency_BK = 100
 efficiency_HLT = 100
+BK_PWM = None
+HLT_PWM = None
 
 # REG values
 temp_REG_BK = 85

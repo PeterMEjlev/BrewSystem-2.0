@@ -7,5 +7,5 @@ RPI_GPIO_PIN_HLT = 17
 # GPIO pin numbers for heating element efficiency control (PWM)
 RPI_GPIO_PWN_BK = 12
 RPI_GPIO_PWN_HLT = 13
-
+PWM_FREQUENCY = 1000
 

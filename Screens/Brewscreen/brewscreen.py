@@ -11,6 +11,7 @@ import Common.variables as variables
 from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
+from Common.utils_rpi import change_pwm_duty_cycle
 
 
 class FullScreenWindow(QMainWindow):
@@ -239,11 +240,16 @@ class FullScreenWindow(QMainWindow):
             else:
                 suffix = '°'  # Degree for temperature
 
-
             if label_key in self.dynamic_elements:
                 self.dynamic_elements[label_key].setText(f"{value}{suffix}")
             else:
                 print(f"Label key {label_key} not found in dynamic elements.")
+
+            # Update the PWM duty cycle if the active variable is a PWM signal
+            if self.active_variable == 'efficiency_BK':
+                change_pwm_duty_cycle(variables.BK_PWM, value)
+            elif self.active_variable == 'efficiency_HLT':
+                change_pwm_duty_cycle(variables.HLT_PWM, value)
 
     def update_slider_value(self, variable_name):
         variables.active_variable = variable_name  # Store the active variable globally
@@ -277,7 +283,6 @@ class FullScreenWindow(QMainWindow):
         # Call the base class method to ensure other events are handled
         super().mousePressEvent(event)
 
-    # Add this method to handle the graph button
     def show_graph_screen(self):
         if not self.graph_screen:
             self.graph_screen = GraphScreen()

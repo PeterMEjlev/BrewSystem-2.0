@@ -2,9 +2,12 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button, toggle_variable
+from Common.utils_rpi import set_pwm_signal, stop_pwm_signal
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
+import Common.constants_rpi as constants_rpi
 import Common.constants_gui as constants_gui
+import Common.variables as variables
 
 
 
@@ -89,7 +92,8 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE),
-                handle_bk_on_toggle(dynamic_elements)
+                handle_bk_on_toggle(dynamic_elements),
+                create_or_stop_pwm_for_bk(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -104,7 +108,8 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE),
-                handle_hlt_on_toggle(dynamic_elements)
+                handle_hlt_on_toggle(dynamic_elements),
+                create_or_stop_pwm_for_hlt(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -181,6 +186,35 @@ def handle_hlt_on_toggle(dynamic_elements):
     else:
         dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
 
+def create_or_stop_pwm_for_bk(dynamic_elements):
+    """
+    Create or stop the PWM signal for BK based on the state.
+    """
+    if STATE['BK_ON']:
+        if variables.BK_PWM is None:  # Create PWM only if it doesn't exist
+            variables.BK_PWM = set_pwm_signal(
+                pin_number=constants_rpi.RPI_GPIO_PWN_BK,  
+                frequency=constants_rpi.PWM_FREQUENCY,  
+                duty_cycle=variables.efficiency_BK  
+            )
+    else:
+            stop_pwm_signal(variables.BK_PWM)
+            variables.BK_PWM = None
+
+def create_or_stop_pwm_for_hlt(dynamic_elements):
+    """
+    Create or stop the PWM signal for HLT based on the state.
+    """
+    if STATE['HLT_ON']:
+        if variables.HLT_PWM is None:  # Create PWM only if it doesn't exist
+            variables.HLT_PWM = set_pwm_signal(
+                pin_number=constants_rpi.RPI_GPIO_PWN_HLT,  
+                frequency=constants_rpi.PWM_FREQUENCY,  
+                duty_cycle=variables.efficiency_HLT  
+            )
+    else:
+            stop_pwm_signal(variables.HLT_PWM)
+            variables.HLT_PWM = None
 
 def hide_GUI_elements(static_elements, dynamic_elements):
     """

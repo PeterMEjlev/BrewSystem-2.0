@@ -41,7 +41,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
             on_normal_click=parent_widget.close,  # Close the parent widget
             on_long_click=None,
-            invisible=True  
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
     }
 

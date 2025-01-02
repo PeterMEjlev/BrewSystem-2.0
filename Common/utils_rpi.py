@@ -116,8 +116,8 @@ def change_pwm_duty_cycle(pwm, duty_cycle):
     if IS_RPI and pwm:
         try:
             pwm.ChangeDutyCycle(duty_cycle)
-            print(f"PWM duty cycle changed to {duty_cycle}%.")
+            print(f"{pwm} duty cycle changed to {duty_cycle}%.")
         except Exception as e:
-            print(f"An error occurred while changing the PWM duty cycle: {e}")
+            print(f"An error occurred while changing the {pwm} duty cycle: {e}")
     else:
-        print(f"PWM duty cycle changed to {duty_cycle}% (simulated).")
+        print(f"{pwm} duty cycle changed to {duty_cycle}% (simulated).")
