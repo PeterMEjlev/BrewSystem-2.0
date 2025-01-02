@@ -42,7 +42,7 @@ class ThermometerWorker(QObject):
 
     def read_thermometer_bk(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
-        return random.uniform(0.0, 102.0)  # Simulated temperature
+        return random.uniform(99, 102.0)  # Simulated temperature
     
     def read_thermometer_hlt(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
@@ -57,21 +57,27 @@ class ThermometerWorker(QObject):
         if 'IMG_Pot_BK_On_Temp_Reached' in self.static_elements:
                 temp_reached_element_bk = self.static_elements['IMG_Pot_BK_On_Temp_Reached']
                 if variables.STATE['BK_ON']:
-                    temp_diff = abs(variables.temp_BK - variables.temp_REG_BK)
-                    if temp_diff <= constants.TEMP_REACHED_THRESHOLD:
+                    if variables.temp_BK >= 100 and variables.temp_REG_BK == 100: # Check if temp is over 100 and REG is set to 100
                         temp_reached_element_bk.show()
                     else:
-                        temp_reached_element_bk.hide()
+                        temp_diff = abs(variables.temp_BK - variables.temp_REG_BK)
+                        if temp_diff <= constants.TEMP_REACHED_THRESHOLD:
+                            temp_reached_element_bk.show()
+                        else:
+                            temp_reached_element_bk.hide()
                 else:
                     temp_reached_element_bk.hide()
 
         if 'IMG_Pot_HLT_On_Temp_Reached' in self.static_elements:
                 temp_reached_element_hlt = self.static_elements['IMG_Pot_HLT_On_Temp_Reached']
                 if variables.STATE['HLT_ON']:
-                    temp_diff = abs(variables.temp_HLT - variables.temp_REG_HLT)
-                    if temp_diff <= constants.TEMP_REACHED_THRESHOLD:
+                    if variables.temp_HLT >= 100 and variables.temp_REG_HLT == 100: # Check if temp is over 100 and REG is set to 100
                         temp_reached_element_hlt.show()
                     else:
-                        temp_reached_element_hlt.hide()
+                        temp_diff = abs(variables.temp_HLT - variables.temp_REG_HLT)
+                        if temp_diff <= constants.TEMP_REACHED_THRESHOLD:
+                            temp_reached_element_hlt.show()
+                        else:
+                            temp_reached_element_hlt.hide()
                 else:
                     temp_reached_element_hlt.hide()
