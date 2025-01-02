@@ -5,6 +5,10 @@ temp_BK = 100
 temp_MLT = 68
 temp_HLT = 70
 
+# Efficiency
+efficiency_BK = 100
+efficiency_HLT = 100
+
 # REG values
 temp_REG_BK = 85
 temp_REG_HLT = 70

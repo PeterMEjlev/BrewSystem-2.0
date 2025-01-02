@@ -89,6 +89,8 @@ def apply_gradient_to_label(self, selected_key):
         selected_key (str): The key of the selected element.
         """
         label_mapping = {
+            'IMG_BK_Selected': 'TXT_EFFICIENCY_BK',
+            'IMG_HLT_Selected': 'TXT_EFFICIENCY_HLT',
             'IMG_REGBK_Selected': 'TXT_TEMP_REG_BK',
             'IMG_REGHLT_Selected': 'TXT_TEMP_REG_HLT',
             'IMG_P1_Selected': 'TXT_PUMP_SPEED_P1',

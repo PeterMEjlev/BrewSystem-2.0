@@ -9,11 +9,15 @@ def initialize_dynamic_text(parent_widget):
     Initialize dynamic text on the GUI.
     """
     return {
-        # Pot Temperatures
+        # Pot Temperatures & Efficiency
         'TXT_TEMP_BK': create_label(parent_widget, f"{variables.temp_BK}°", color='white', size=constants_gui.TXT_POT_TEMPERATURES_SIZE, center=constants_gui.TXT_TEMP_BK_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_TEMP_MLT': create_label(parent_widget, f"{variables.temp_MLT}°", color='white', size=constants_gui.TXT_POT_TEMPERATURES_SIZE, center=constants_gui.TXT_TEMP_MLT_COORDINATES, alignment=Qt.AlignCenter),
-        'TXT_TEMP_HLT': create_label(parent_widget, f"{variables.temp_HLT}°", color='white', size=constants_gui.TXT_POT_TEMPERATURES_SIZE, center=constants_gui.TXT_TEMP_HLT_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_EFFICIENCY_BK': create_label(parent_widget, f"{variables.efficiency_BK}%", color='white', size=constants_gui.TXT_POT_EFFICIENCY_SIZE, center=constants_gui.TXT_EFFICIENCY_BK_COORDINATES, alignment=Qt.AlignCenter),
 
+        'TXT_TEMP_MLT': create_label(parent_widget, f"{variables.temp_MLT}°", color='white', size=constants_gui.TXT_POT_TEMPERATURES_SIZE, center=constants_gui.TXT_TEMP_MLT_COORDINATES, alignment=Qt.AlignCenter),
+
+        'TXT_TEMP_HLT': create_label(parent_widget, f"{variables.temp_HLT}°", color='white', size=constants_gui.TXT_POT_TEMPERATURES_SIZE, center=constants_gui.TXT_TEMP_HLT_COORDINATES, alignment=Qt.AlignCenter),
+        'TXT_EFFICIENCY_HLT': create_label(parent_widget, f"{variables.efficiency_HLT}%", color='white', size=constants_gui.TXT_POT_EFFICIENCY_SIZE, center=constants_gui.TXT_EFFICIENCY_HLT_COORDINATES, alignment=Qt.AlignCenter),
+        
         # Reg Temperatures
         'TXT_TEMP_REG_BK': create_label(parent_widget, f"{variables.temp_REG_BK}°", color='white', size=constants_gui.TXT_REG_VALUE_SIZE, center=constants_gui.TXT_REG_BK_VALUE_COORDINATES, alignment=Qt.AlignCenter),
         'TXT_TEMP_REG_HLT': create_label(parent_widget, f"{variables.temp_REG_HLT}°", color='white', size=constants_gui.TXT_REG_VALUE_SIZE, center=constants_gui.TXT_REG_HLT_VALUE_COORDINATES, alignment=Qt.AlignCenter),

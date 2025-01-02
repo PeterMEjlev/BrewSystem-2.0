@@ -23,11 +23,7 @@ class FullScreenWindow(QMainWindow):
         self.thermometer_worker = None  # Worker instance
         self.init_ui()
         self.start_thermometer_thread()
-        self.graph_screen = None  # Placeholder for the graph window
-
-        from Common.utils_rpi import set_pwm_signal
-        set_pwm_signal(12, 0.5, 50) 
-        
+        self.graph_screen = None  # Placeholder for the graph window        
 
     def init_ui(self):
         self.setup_window()
@@ -156,6 +152,8 @@ class FullScreenWindow(QMainWindow):
         Reset gradients for all labels to their default state (white).
         """
         labels_to_reset = [
+            'TXT_EFFICIENCY_BK',
+            'TXT_EFFICIENCY_HLT',
             'TXT_TEMP_REG_BK',
             'TXT_TEMP_REG_HLT',
             'TXT_PUMP_SPEED_P1',
@@ -172,6 +170,8 @@ class FullScreenWindow(QMainWindow):
             self.hide_element(key)
         for key in name_keys:
             self.show_element(key)
+
+        print("Hiding all selection boxes.")
 
     def hide_element(self, key):
         if key in self.static_elements:
@@ -226,10 +226,11 @@ class FullScreenWindow(QMainWindow):
             label_key = f'TXT_{self.active_variable.upper()}'
 
             # Determine the appropriate suffix based on the variable type
-            if 'PUMP_SPEED' in self.active_variable.upper():
+            if 'PUMP_SPEED' in self.active_variable.upper() or 'EFFICIENCY' in self.active_variable.upper():
                 suffix = '%'  # Percentage for pump speed
             else:
                 suffix = '°'  # Degree for temperature
+
 
             if label_key in self.dynamic_elements:
                 self.dynamic_elements[label_key].setText(f"{value}{suffix}")

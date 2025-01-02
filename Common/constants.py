@@ -14,3 +14,5 @@ SLIDER_PAGESTEP = 1
 
 # Thermometer configuration
 THERMOMETER_READ_WAIT_TIME = 1000  # Time in milliseconds
+
+

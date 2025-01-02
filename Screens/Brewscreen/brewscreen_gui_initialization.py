@@ -83,29 +83,29 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             position=gui_constants.IMG_POT_BK_COORDINATES,
             size=gui_constants.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
-                central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
+                select_button_callback('IMG_BK_Selected', 'TXT_EFFICIENCY_BK'),
+                central_widget.parent().update_slider_value('efficiency_BK')  # Update slider for BK
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE)
 
             ),
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_HLT': create_button(
             parent_widget=central_widget,
             position=gui_constants.IMG_POT_HLT_COORDINATES,
             size=gui_constants.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
-                central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
+                select_button_callback('IMG_HLT_Selected', 'TXT_EFFICIENCY_HLT'),
+                central_widget.parent().update_slider_value('efficiency_HLT')  # Update slider for HLT
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE)
             ),
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_P1': create_button(
             parent_widget=central_widget,
@@ -119,7 +119,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
                 toggle_variable('P1_ON', STATE)
             ),
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_P2': create_button(
             parent_widget=central_widget,
@@ -133,7 +133,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
                 toggle_variable('P2_ON', STATE)                
             ),
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGBK': create_button(
             parent_widget=central_widget,
@@ -144,7 +144,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
             on_long_click=None,
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGHLT': create_button(
             parent_widget=central_widget,
@@ -155,7 +155,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
             ),
             on_long_click=None,
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         ),
         'BTN_toggle_sidebar_graphs': create_button(
             parent_widget=central_widget,
@@ -163,7 +163,7 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             size=gui_constants.BTN_SIDEBAR_MENU,
             on_normal_click=show_graph_screen_callback,
             on_long_click=None,
-            invisible=True
+            invisible=constants_gui.BTN_INVISIBILITY
         )
     }
     return buttons
