@@ -18,7 +18,6 @@ def initialize_gui_elements(parent_widget, assets_path):
 
     # Explicitly show all elements
     for key, element in parent_widget.static_elements.items():
-        print(f"Static Element: {key}, Is Visible: {element.isVisible()}") 
         element.show()
 
     # Initialize buttons

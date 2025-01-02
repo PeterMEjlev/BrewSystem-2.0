@@ -63,7 +63,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-def initialize_buttons(central_widget, gui_constants, static_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback):
+def initialize_buttons(central_widget, gui_constants, static_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, dynamic_elements):
     """
     Initializes the buttons used in the GUI.
 
@@ -88,8 +88,8 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
-                toggle_variable('BK_ON', STATE)
-
+                toggle_variable('BK_ON', STATE),
+                handle_bk_on_toggle(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -103,7 +103,8 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
-                toggle_variable('HLT_ON', STATE)
+                toggle_variable('HLT_ON', STATE),
+                handle_hlt_on_toggle(dynamic_elements)
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -168,7 +169,20 @@ def initialize_buttons(central_widget, gui_constants, static_elements, toggle_im
     }
     return buttons
 
-def hide_GUI_elements(static_elements):
+def handle_bk_on_toggle(dynamic_elements):
+    if STATE['BK_ON']:
+        dynamic_elements['TXT_EFFICIENCY_BK'].show()
+    else:
+        dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+
+def handle_hlt_on_toggle(dynamic_elements):
+    if STATE['HLT_ON']:
+        dynamic_elements['TXT_EFFICIENCY_HLT'].show()
+    else:
+        dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+
+
+def hide_GUI_elements(static_elements, dynamic_elements):
     """
     Hides specific static images initialized in the static GUI.
 
@@ -182,11 +196,13 @@ def hide_GUI_elements(static_elements):
         'IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground',
         'IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected',
         'IMG_REGBK_Selected', 'IMG_REGHLT_Selected',
-        'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2'
+        'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2', 'TXT_EFFICIENCY_BK', 'TXT_EFFICIENCY_HLT'
     ]
     for key in keys_to_hide:
         if key in static_elements:
             static_elements[key].hide()
+        elif key in dynamic_elements:
+            dynamic_elements[key].hide()
 
     # Pot and Pump Names
     keys_to_show = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_MLT', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2']

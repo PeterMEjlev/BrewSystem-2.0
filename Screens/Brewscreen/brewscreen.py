@@ -79,7 +79,7 @@ class FullScreenWindow(QMainWindow):
     def initialize_gui_elements(self):
         self.static_elements = initialize_static_elements(self.central_widget, self.path)
         self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
-        hide_GUI_elements(self.static_elements)
+        hide_GUI_elements(self.static_elements, self.dynamic_elements)
 
     def initialize_slider_and_buttons(self):
         """
@@ -110,6 +110,7 @@ class FullScreenWindow(QMainWindow):
             central_widget=self.central_widget,
             gui_constants=constants_gui,
             static_elements=self.static_elements,
+            dynamic_elements=self.dynamic_elements,
             toggle_images_visibility_callback=toggle_images_visibility,
             select_button_callback=self.select_button,
             show_graph_screen_callback=self.show_graph_screen
@@ -128,6 +129,11 @@ class FullScreenWindow(QMainWindow):
         self.hide_slider_elements()
         self.reset_all_gradients()
 
+        if selected_key == 'IMG_BK_Selected' and not variables.STATE['BK_ON']:
+            self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+        elif selected_key == 'IMG_HLT_Selected' and not variables.STATE['HLT_ON']:
+            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+
     def select_new_button(self, selected_key, name_key):
         # If the same label is already active, deselect it and reset colors
         if self.current_selection == selected_key:
@@ -145,8 +151,21 @@ class FullScreenWindow(QMainWindow):
         # Update the current selection
         self.current_selection = selected_key
         self.show_slider_elements()
-    
 
+        if selected_key == 'IMG_BK_Selected':
+            self.dynamic_elements['TXT_EFFICIENCY_BK'].show()
+            if not variables.STATE['HLT_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+
+        elif selected_key == 'IMG_HLT_Selected':
+            self.dynamic_elements['TXT_EFFICIENCY_HLT'].show()
+            if not variables.STATE['BK_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+        
+        else:
+            self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()    
+   
     def reset_all_gradients(self):
         """
         Reset gradients for all labels to their default state (white).
@@ -162,16 +181,6 @@ class FullScreenWindow(QMainWindow):
         for label_key in labels_to_reset:
             self.dynamic_elements[label_key].gradient_colors = None
             self.dynamic_elements[label_key].update()
-
-    def hide_all_selection_boxes(self):
-        selection_keys = ['IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected', 'IMG_REGBK_Selected', 'IMG_REGHLT_Selected']
-        name_keys = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2', 'TXT_REG_BK', 'TXT_REG_HLT']
-        for key in selection_keys:
-            self.hide_element(key)
-        for key in name_keys:
-            self.show_element(key)
-
-        print("Hiding all selection boxes.")
 
     def hide_element(self, key):
         if key in self.static_elements:
@@ -260,6 +269,11 @@ class FullScreenWindow(QMainWindow):
             self.reset_all_gradients()
             self.current_selection = None
             self.hide_slider_elements()
+
+            if not variables.STATE['BK_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+            if not variables.STATE['HLT_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
 
         # Call the base class method to ensure other events are handled
         super().mousePressEvent(event)
