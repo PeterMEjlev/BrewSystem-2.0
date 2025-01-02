@@ -20,14 +20,22 @@ class ThermometerWorker(QObject):
     def run(self):
         """Worker's main loop to read temperatures."""
         while self._running:
-            # Simulate temperature reading (replace this with actual thermometer code)
             variables.temp_BK = self.read_thermometer_bk()
+            variables.temp_MLT = self.read_thermometer_hlt()
             variables.temp_HLT = self.read_thermometer_hlt()
             self.temperature_updated_bk.emit(variables.temp_BK)  
             self.temperature_updated_hlt.emit(variables.temp_HLT) 
 
-            temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100))
-            temp_progress_hlt = min(100, max(0, (variables.temp_HLT / variables.temp_REG_HLT) * 100))
+            if variables.temp_REG_BK > 0:
+                temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100))
+            else:
+                temp_progress_bk = 0
+
+            if variables.temp_REG_HLT > 0:
+                temp_progress_hlt = min(100, max(0, (variables.temp_HLT / variables.temp_REG_HLT) * 100))
+            else:
+                temp_progress_hlt = 0
+
 
             # Adjust image height dynamically based on a condition or logic
             if 'IMG_Pot_BK_On_Foreground' in self.static_elements:  
@@ -44,6 +52,10 @@ class ThermometerWorker(QObject):
         """Simulate reading temperature. Replace with actual thermometer logic."""
         return random.uniform(99, 102.0)  # Simulated temperature
     
+    def read_thermometer_mlt(self):
+            """Simulate reading temperature. Replace with actual thermometer logic."""
+            return random.uniform(0.0, 102.0)  # Simulated temperature
+
     def read_thermometer_hlt(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
         return random.uniform(0.0, 102.0)  # Simulated temperature

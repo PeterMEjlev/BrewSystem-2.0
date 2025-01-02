@@ -14,7 +14,6 @@ from Screens.Graphscreen.graphscreen import GraphScreen
 from Common.utils_rpi import change_pwm_duty_cycle
 from Common.config import IS_RPI
 
-
 class FullScreenWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -97,7 +96,16 @@ class FullScreenWindow(QMainWindow):
     def initialize_gui_elements(self):
         self.static_elements = initialize_static_elements(self.central_widget, self.path)
         self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
-        hide_GUI_elements(self.static_elements, self.dynamic_elements)
+
+        self.buttons = initialize_buttons(
+        central_widget=self.central_widget,
+        static_elements=self.static_elements,
+        dynamic_elements=self.dynamic_elements,
+        toggle_images_visibility_callback=toggle_images_visibility,
+        select_button_callback=self.select_button,
+        show_graph_screen_callback=self.show_graph_screen)
+
+        hide_GUI_elements(self.static_elements, self.dynamic_elements, self.buttons)
 
     def initialize_slider_and_buttons(self):
         """
@@ -122,16 +130,6 @@ class FullScreenWindow(QMainWindow):
         
         for label in self.slider_plus_minus_labels.values():
             label.hide()
-
-        # Initialize the buttons
-        self.buttons = initialize_buttons(
-            central_widget=self.central_widget,
-            static_elements=self.static_elements,
-            dynamic_elements=self.dynamic_elements,
-            toggle_images_visibility_callback=toggle_images_visibility,
-            select_button_callback=self.select_button,
-            show_graph_screen_callback=self.show_graph_screen
-        )
 
     def select_button(self, selected_key, name_key):
         if self.current_selection == selected_key:
@@ -219,6 +217,11 @@ class FullScreenWindow(QMainWindow):
         for label in self.slider_plus_minus_labels.values():
             label.hide()
 
+        # Hide the slider set buttons
+        if 'BTN_set_slider_0' in self.buttons and 'BTN_set_slider_100' in self.buttons:
+            self.buttons['BTN_set_slider_0'].hide()
+            self.buttons['BTN_set_slider_100'].hide()
+
     def show_slider_elements(self):
         self.slider.show()
         self.fake_slider.show()
@@ -230,6 +233,11 @@ class FullScreenWindow(QMainWindow):
         # Show plus minus labels for slider
         for label in self.slider_plus_minus_labels.values():
             label.show()
+
+        # Show the slider set buttons
+        if 'BTN_set_slider_0' in self.buttons and 'BTN_set_slider_100' in self.buttons:
+            self.buttons['BTN_set_slider_0'].show()
+            self.buttons['BTN_set_slider_100'].show()
         
     def on_slider_change(self, value):
         self.slider_value_label.setText(str(value))
@@ -283,6 +291,14 @@ class FullScreenWindow(QMainWindow):
         if value is not None:
             self.slider.setValue(value)
             self.slider_value_label.setText(str(value))
+
+    def set_slider_value(self, value):
+        """
+        Sets the slider to a specified value and updates the active variable.
+        """
+        if self.active_variable is not None:
+            self.slider.setValue(value)  # Set the slider value
+            self.update_active_variable(value)  # Update the active variable and UI
 
     def mousePressEvent(self, event):
         """

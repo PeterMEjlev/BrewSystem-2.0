@@ -170,6 +170,22 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             on_normal_click=show_graph_screen_callback,
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_set_slider_0': create_button(
+            parent_widget=central_widget,
+            position=constants_gui.BTN_SLIDER_SET_MIN_COORDINATES,
+            size=constants_gui.BTN_SLIDER_SET_MINMAX,
+            on_normal_click=lambda: central_widget.parent().set_slider_value(0),
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_set_slider_100': create_button(
+            parent_widget=central_widget,
+            position=constants_gui.BTN_SLIDER_SET_MAX_COORDINATES,
+            size=constants_gui.BTN_SLIDER_SET_MINMAX,
+            on_normal_click=lambda: central_widget.parent().set_slider_value(100),
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
         )
     }
     return buttons
@@ -220,7 +236,7 @@ def create_or_stop_pwm_for_hlt(dynamic_elements):
             stop_pwm_signal(variables.HLT_PWM)
             variables.HLT_PWM = None
 
-def hide_GUI_elements(static_elements, dynamic_elements):
+def hide_GUI_elements(static_elements, dynamic_elements, buttons):
     """
     Hides specific static images initialized in the static GUI.
 
@@ -242,6 +258,12 @@ def hide_GUI_elements(static_elements, dynamic_elements):
             static_elements[key].hide()
         elif key in dynamic_elements:
             dynamic_elements[key].hide()
+    
+    # Hide slider set buttons
+    button_keys_to_hide = ['BTN_set_slider_0', 'BTN_set_slider_100']
+    for key in button_keys_to_hide:
+        if key in buttons:
+            buttons[key].hide()
 
     # Pot and Pump Names
     keys_to_show = ['TXT_POT_NAME_BK', 'TXT_POT_NAME_MLT', 'TXT_POT_NAME_HLT', 'TXT_P1', 'TXT_P2']
