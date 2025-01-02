@@ -1,3 +1,5 @@
+# utils.py
+
 try:
     import RPi.GPIO as GPIO
     IS_RPI = True
@@ -5,3 +7,5 @@ try:
 except ImportError:
     IS_RPI = False
     print("Running on non-Raspberry Pi platform. GPIO functionality will be disabled.")
+
+

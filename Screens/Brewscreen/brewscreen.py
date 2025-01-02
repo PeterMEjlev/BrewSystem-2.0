@@ -12,6 +12,7 @@ from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, 
 from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
 from Common.utils_rpi import change_pwm_duty_cycle
+from Common.config import IS_RPI
 
 
 class FullScreenWindow(QMainWindow):
@@ -31,6 +32,9 @@ class FullScreenWindow(QMainWindow):
         self.setup_central_widget()
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
+
+        if (IS_RPI):
+            self.setCursor(Qt.BlankCursor)
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
