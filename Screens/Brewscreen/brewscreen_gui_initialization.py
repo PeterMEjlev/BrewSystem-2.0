@@ -8,6 +8,7 @@ from Common.constants import SLIDER_PAGESTEP
 import Common.constants_rpi as constants_rpi
 import Common.constants_gui as constants_gui
 import Common.variables as variables
+from Common.shutdown import perform_shutdown
 
 
 
@@ -199,7 +200,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             parent_widget=central_widget,
             position=constants_gui.BTN_QUIT_COORDINATES,
             size=constants_gui.BTN_QUIT,
-            on_normal_click=lambda: QtWidgets.QApplication.quit(),
+            on_normal_click=lambda: perform_shutdown(),
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         )

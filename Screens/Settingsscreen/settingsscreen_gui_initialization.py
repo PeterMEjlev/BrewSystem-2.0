@@ -4,6 +4,7 @@ import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_button
 import Common.constants_gui as constants_gui
 from PyQt5.QtCore import QTimer
+from Common.shutdown import perform_shutdown
 
 def initialize_gui_elements(parent_widget, assets_path):
     """
@@ -61,7 +62,7 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_QUIT_COORDINATES,
             size=constants_gui.BTN_QUIT,
-            on_normal_click=lambda: QtWidgets.QApplication.quit(),
+            on_normal_click=lambda: perform_shutdown(),
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
