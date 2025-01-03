@@ -1,11 +1,11 @@
 # ThermometerWorker.py
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
-import time, random
 import Common.constants as constants
 from Common.utils import adjust_image_height
 from Common.constants_gui import POT_ON_FOREGROUND_HEIGHT
 import Common.variables as variables
 import Common.constants_rpi as constants_rpi
+from Common.utils_rpi import read_ds18b20
 
 
 class ThermometerWorker(QObject):
@@ -50,23 +50,14 @@ class ThermometerWorker(QObject):
             QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
 
     def read_thermometer_bk(self):
-        """Simulate reading temperature. Replace with actual thermometer logic."""
-        return self.read_ds18b20(constants_rpi.DS18B20_BK)  # Replace with actual serial code
+        return read_ds18b20(constants_rpi.DS18B20_BK)  
     
     def read_thermometer_mlt(self):
-        """Simulate reading temperature. Replace with actual thermometer logic."""
-        return self.read_ds18b20(constants_rpi.DS18B20_MLT)  # Replace with actual serial code
+        return read_ds18b20(constants_rpi.DS18B20_MLT)  
 
     def read_thermometer_hlt(self):
-        """Simulate reading temperature. Replace with actual thermometer logic."""
-        return self.read_ds18b20(constants_rpi.DS18B20_HLT)  # Replace with actual serial code
+        return read_ds18b20(constants_rpi.DS18B20_HLT)  
     
-    def read_ds18b20(self, serial_code):
-        try:
-            return random.uniform(35.0, 102.0)  # Simulated temperature
-        except Exception as e:
-            print(e)
-
     def stop(self):
         """Stop the worker loop."""
         self._running = False

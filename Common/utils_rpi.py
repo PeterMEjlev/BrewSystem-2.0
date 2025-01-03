@@ -1,5 +1,6 @@
 # utils_rpi.py
 from Common.config import IS_RPI
+import random
 
 if (IS_RPI):
     import RPi.GPIO as GPIO
@@ -121,3 +122,12 @@ def change_pwm_duty_cycle(pwm, duty_cycle):
             print(f"An error occurred while changing the {pwm} duty cycle: {e}")
     else:
         print(f"{pwm} duty cycle changed to {duty_cycle}% (simulated).")
+
+def read_ds18b20(serial_code):
+    if IS_RPI:
+        try:
+            return random.uniform(35.0, 102.0) # Replace with actual code to read the DS18B20 sensor
+        except Exception as e:
+            print(e)
+    else:
+        return random.uniform(35.0, 102.0)  # Simulated temperature
