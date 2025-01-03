@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QLabel, QSlider, QPushButton
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon, QLinearGradient, QBrush, QPainter, QPen, QColor
 from Common.utils_rpi import set_gpio_high, set_gpio_low
-import Common.constants_rpi as constants
+import Common.constants_rpi as constants_rpi
 
 from PyQt5 import QtWidgets, QtCore
 import os
@@ -354,26 +354,13 @@ def toggle_variable(variable_name, globals_dict):
             new_value = globals_dict[variable_name]
             print(f"{variable_name} toggled to {new_value}")
 
-            # Update GPIO state based on the variable
-            if variable_name == 'BK_ON':  # Example: BK corresponds to the BK GPIO pin
-                if new_value:
-                    set_gpio_high(constants.RPI_GPIO_PIN_BK)
-                else:
-                    set_gpio_low(constants.RPI_GPIO_PIN_BK)
-
-                
-
-            elif variable_name == 'HLT_ON':  # Example: HLT corresponds to the HLT GPIO pin
-                if new_value:
-                    set_gpio_high(constants.RPI_GPIO_PIN_HLT)
-                else:
-                    set_gpio_low(constants.RPI_GPIO_PIN_HLT)
-            else:
-                print(f"No GPIO action defined for {variable_name}.")
+            # Call the separate GPIO state update function
+            update_gpio_state(variable_name, new_value)
         else:
             print(f"{variable_name} is not a boolean. Current value: {current_value}")
     else:
         print(f"{variable_name} does not exist in the provided scope.")
+
 
 def adjust_image_height(image_label, percentage, original_height):
     """
@@ -410,4 +397,38 @@ def adjust_image_height(image_label, percentage, original_height):
     current_geometry = image_label.geometry()
     new_top = current_geometry.top() + (current_geometry.height() - new_height)
     image_label.setGeometry(current_geometry.left(), new_top, resized_pixmap.width(), resized_pixmap.height())
+
+def update_gpio_state(variable_name, new_value):
+    """
+    Updates the GPIO state based on the variable name.
+
+    Parameters:
+    - variable_name (str): The name of the variable to check.
+    - new_value (bool): The new value of the variable (True or False).
+    """
+    if variable_name == 'BK_ON':  # Example: BK corresponds to the BK GPIO pin
+        if new_value:
+            set_gpio_high(constants_rpi.RPI_GPIO_PIN_BK)
+        else:
+            set_gpio_low(constants_rpi.RPI_GPIO_PIN_BK)
+
+    elif variable_name == 'HLT_ON':  # Example: HLT corresponds to the HLT GPIO pin
+        if new_value:
+            set_gpio_high(constants_rpi.RPI_GPIO_PIN_HLT)
+        else:
+            set_gpio_low(constants_rpi.RPI_GPIO_PIN_HLT)
+    else:
+        print(f"No GPIO action defined for {variable_name}.")
+
+    if variable_name == 'P1_ON':
+        if new_value:
+            set_gpio_high(constants_rpi.RPI_GPIO_PIN_P1)
+        else:
+            set_gpio_low(constants_rpi.RPI_GPIO_PIN_P1)
+
+    if variable_name == 'P2_ON':
+        if new_value:
+            set_gpio_high(constants_rpi.RPI_GPIO_PIN_P2)
+        else:
+            set_gpio_low(constants_rpi.RPI_GPIO_PIN_P2)
 

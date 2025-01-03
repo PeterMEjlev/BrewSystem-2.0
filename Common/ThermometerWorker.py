@@ -7,7 +7,6 @@ import Common.variables as variables
 import Common.constants_rpi as constants_rpi
 from Common.utils_rpi import read_ds18b20
 
-
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
     temperature_updated_hlt = pyqtSignal(float)
@@ -37,7 +36,6 @@ class ThermometerWorker(QObject):
             else:
                 temp_progress_hlt = 0
 
-
             # Adjust image height dynamically based on a condition or logic
             if 'IMG_Pot_BK_On_Foreground' in self.static_elements:  
                 adjust_image_height(self.static_elements['IMG_Pot_BK_On_Foreground'], temp_progress_bk, POT_ON_FOREGROUND_HEIGHT)
@@ -45,7 +43,6 @@ class ThermometerWorker(QObject):
                 adjust_image_height(self.static_elements['IMG_Pot_HLT_On_Foreground'], temp_progress_hlt, POT_ON_FOREGROUND_HEIGHT)
 
             self.update_pot_foregrounds_if_temp_reached()
-
 
             QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
 

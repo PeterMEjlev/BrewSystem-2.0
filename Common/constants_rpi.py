@@ -1,8 +1,12 @@
 # constants_rpi.py
 
 # GPIO pin numbers for heating element SSRs (3.3V)
-RPI_GPIO_PIN_BK = 1
-RPI_GPIO_PIN_HLT = 17
+RPI_GPIO_PIN_BK = 17
+RPI_GPIO_PIN_HLT = 27
+
+# GPIO pin numbers for pump control
+RPI_GPIO_PIN_P1 = 22
+RPI_GPIO_PIN_P2 = 23
 
 # GPIO pin numbers for heating element efficiency control (PWM)
 RPI_GPIO_PWN_BK = 12
