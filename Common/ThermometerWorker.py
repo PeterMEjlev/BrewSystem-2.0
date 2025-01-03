@@ -5,6 +5,7 @@ import Common.constants as constants
 from Common.utils import adjust_image_height
 from Common.constants_gui import POT_ON_FOREGROUND_HEIGHT
 import Common.variables as variables
+import Common.constants_rpi as constants_rpi
 
 
 class ThermometerWorker(QObject):
@@ -50,15 +51,21 @@ class ThermometerWorker(QObject):
 
     def read_thermometer_bk(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
-        return random.uniform(99, 102.0)  # Simulated temperature
+        return self.read_ds18b20(constants_rpi.DS18B20_BK)  # Replace with actual serial code
     
     def read_thermometer_mlt(self):
-            """Simulate reading temperature. Replace with actual thermometer logic."""
-            return random.uniform(0.0, 102.0)  # Simulated temperature
+        """Simulate reading temperature. Replace with actual thermometer logic."""
+        return self.read_ds18b20(constants_rpi.DS18B20_MLT)  # Replace with actual serial code
 
     def read_thermometer_hlt(self):
         """Simulate reading temperature. Replace with actual thermometer logic."""
-        return random.uniform(0.0, 102.0)  # Simulated temperature
+        return self.read_ds18b20(constants_rpi.DS18B20_HLT)  # Replace with actual serial code
+    
+    def read_ds18b20(self, serial_code):
+        try:
+            return random.uniform(35.0, 102.0)  # Simulated temperature
+        except Exception as e:
+            print(e)
 
     def stop(self):
         """Stop the worker loop."""
