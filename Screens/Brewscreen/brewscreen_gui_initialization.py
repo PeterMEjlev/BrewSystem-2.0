@@ -194,6 +194,14 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             on_normal_click=lambda: central_widget.parent().set_slider_value(100),
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_quit': create_button(
+            parent_widget=central_widget,
+            position=constants_gui.BTN_QUIT_COORDINATES,
+            size=constants_gui.BTN_QUIT,
+            on_normal_click=lambda: QtWidgets.QApplication.quit(),
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
         )
     }
     return buttons

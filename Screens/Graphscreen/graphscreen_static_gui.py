@@ -34,6 +34,9 @@ def initialize_static_text(parent_widget):
         'TXT_SIDEBAR_HOME': create_label(parent_widget, "Overview", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_HOME,  alignment=Qt.AlignLeft),
         'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_GRAPHS,  alignment=Qt.AlignLeft),
         'TXT_SIDEBAR_SETTINGS': create_label(parent_widget, "Settings", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_SETTINGS,  alignment=Qt.AlignLeft),
+
+        # Quit
+        'TXT_EXIT': create_label(parent_widget, "exit", color='grey', size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
     }
 
 def initialize_static_elements(parent_widget, assets_path):
