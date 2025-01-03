@@ -96,7 +96,7 @@ def initialize_static_text(parent_widget):
         'TXT_REG_HLT': create_label(parent_widget, "REG", color='white', size=constants_gui.TXT_REG_SIZE, center=constants_gui.TXT_REG_HLT_COORDINATES),
 
         # Quit
-        'TXT_EXIT': create_label(parent_widget, "exit", color='grey', size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
+        'TXT_EXIT': create_label(parent_widget, "exit", color=constants_gui.TXT_EXIT_COLOUR, size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
     }
 
 def create_slider_plus_minus_labels(parent_widget):

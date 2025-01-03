@@ -38,10 +38,6 @@ class FullScreenWindow(QMainWindow):
         self.setWindowTitle("Brewsystem 2.0")
         self.showFullScreen()
 
-        from Common.config import IS_RPI
-        if (IS_RPI):
-            self.setCursor(Qt.BlankCursor)
-
     def setup_central_widget(self):
         self.central_widget = QWidget(self)
         self.central_widget.setStyleSheet(f"background-color: {constants.BACKGROUND_COLOR};")

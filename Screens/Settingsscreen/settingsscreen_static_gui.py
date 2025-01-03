@@ -36,7 +36,7 @@ def initialize_static_text(parent_widget):
         'TXT_SIDEBAR_SETTINGS': create_label(parent_widget, "Settings", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_SETTINGS,  alignment=Qt.AlignLeft),
 
         # Quit
-        'TXT_EXIT': create_label(parent_widget, "exit", color='grey', size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
+        'TXT_EXIT': create_label(parent_widget, "exit", color=constants_gui.TXT_EXIT_COLOUR, size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
     }
 
 def initialize_static_elements(parent_widget, assets_path):
