@@ -1,4 +1,4 @@
-# graphscreen_static_gui.py
+# settingsscreen_static_gui.py
 from Common.utils import create_image, create_label
 import Common.constants_gui as constants_gui
 from PyQt5.QtCore import Qt
@@ -17,7 +17,7 @@ def initialize_static_images(parent_widget, assets_path):
         # Sidebar and Title
         'IMG_Sidebar': create_image(parent_widget, "Sidebar.png", center=(0, 0)),
         'IMG_Title': create_image(parent_widget, os.path.join(assets_path, "Banner_Title.png"), center=(0, 0)),
-        'IMG_Sidebar_Active_Button': create_image(parent_widget, os.path.join(assets_path, "Sidebar_Active_Button.png"), center=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_GRAPHS_COORDINATES),
+        'IMG_Sidebar_Active_Button': create_image(parent_widget, os.path.join(assets_path, "Sidebar_Active_Button.png"), center=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_SETTINGS_COORDINATES),
         'IMG_Sidebar_Icon_Home': create_image(parent_widget, os.path.join(assets_path, "Icon_Home.png"), center=constants_gui.IMG_SIDEBAR_ICON_HOME),
         'IMG_Sidebar_Icon_Graph': create_image(parent_widget, os.path.join(assets_path, "Icon_Graph.png"), center=constants_gui.IMG_SIDEBAR_ICON_GRAPHS),
         'IMG_Sidebar_Icon_Settings': create_image(parent_widget, "Icon_Settings.png", center=constants_gui.IMG_SIDEBAR_ICON_SETTINGS),

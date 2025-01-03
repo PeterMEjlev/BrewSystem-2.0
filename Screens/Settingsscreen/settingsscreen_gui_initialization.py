@@ -1,11 +1,12 @@
-from Screens.Graphscreen.graphscreen_static_gui import initialize_static_elements
+# settingsscreen_gui_initialization.py
+from Screens.Settingsscreen.settingsscreen_static_gui import initialize_static_elements
 from Common.utils import create_button
 import Common.constants_gui as constants_gui
 from PyQt5.QtCore import QTimer
 
 def initialize_gui_elements(parent_widget, assets_path):
     """
-    Initializes GUI elements for the GraphScreen.
+    Initializes GUI elements for the SettingsScreen.
 
     Parameters:
     - parent_widget: The widget to which the elements are added.
@@ -27,7 +28,7 @@ def initialize_gui_elements(parent_widget, assets_path):
 
 def initialize_buttons(parent_widget):
     """
-    Initializes buttons for the GraphScreen.
+    Initializes buttons for the SettingsScreen.
 
     Parameters:
     - parent_widget: The widget to which the button is added.
@@ -36,7 +37,7 @@ def initialize_buttons(parent_widget):
     A dictionary containing the button(s).
     """
     buttons = {
-        'BTN_close_graph_window': create_button(
+        'BTN_close_settings_window': create_button(
             parent_widget=parent_widget,
             position=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_COORDINATES,  # Example position
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
@@ -44,12 +45,12 @@ def initialize_buttons(parent_widget):
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
-        'BTN_open_settings_window': create_button(
+        'BTN_open_graphs_window': create_button(
             parent_widget=parent_widget,
-            position=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_SETTINGS_COORDINATES,  # Example position
+            position=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_GRAPHS_COORDINATES,  # Example position
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
             on_normal_click=lambda: (
-                parent_widget.open_settings_screen(),
+                parent_widget.open_graph_screen(),
                 QTimer.singleShot(100, parent_widget.close)
             ),         
             on_long_click=None,

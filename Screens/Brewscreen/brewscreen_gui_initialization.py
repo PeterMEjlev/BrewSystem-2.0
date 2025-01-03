@@ -66,7 +66,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-def initialize_buttons(central_widget, static_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, dynamic_elements):
+def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback):
     """
     Initializes the buttons used in the GUI.
 
@@ -168,6 +168,14 @@ def initialize_buttons(central_widget, static_elements, toggle_images_visibility
             position=constants_gui.IMG_SIDEBAR_GRAPHS_BUTTON,
             size=constants_gui.BTN_SIDEBAR_MENU,
             on_normal_click=show_graph_screen_callback,
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_toggle_sidebar_settings': create_button(
+            parent_widget=central_widget,
+            position=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_SETTINGS_COORDINATES,
+            size=constants_gui.BTN_SIDEBAR_MENU,
+            on_normal_click=show_settings_screen_callback,
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),

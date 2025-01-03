@@ -11,6 +11,7 @@ import Common.variables as variables
 from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
+from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle
 from Common.config import IS_RPI
 
@@ -25,6 +26,7 @@ class FullScreenWindow(QMainWindow):
         self.init_ui()
         self.start_thermometer_thread()
         self.graph_screen = None  # Placeholder for the graph window        
+        self.settings_screen = None  # Placeholder for the settings window        
 
     def init_ui(self):
         self.setup_window()
@@ -103,7 +105,9 @@ class FullScreenWindow(QMainWindow):
         dynamic_elements=self.dynamic_elements,
         toggle_images_visibility_callback=toggle_images_visibility,
         select_button_callback=self.select_button,
-        show_graph_screen_callback=self.show_graph_screen)
+        show_graph_screen_callback=self.show_graph_screen,
+        show_settings_screen_callback=self.show_settings_screen
+        )
 
         hide_GUI_elements(self.static_elements, self.dynamic_elements, self.buttons)
 
@@ -327,3 +331,8 @@ class FullScreenWindow(QMainWindow):
         if not self.graph_screen:
             self.graph_screen = GraphScreen()
         self.graph_screen.show()
+
+    def show_settings_screen(self):
+        if not self.settings_screen:
+            self.settings_screen = SettingsScreen()
+        self.settings_screen.show()

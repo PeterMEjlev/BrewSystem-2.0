@@ -14,9 +14,10 @@ def initialize_static_images(parent_widget):
         # Sidebar and Title
         'IMG_Sidebar': create_image(parent_widget, "Sidebar.png", center=(0, 0)),
         'IMG_Title': create_image(parent_widget, "Banner_Title.png", center=(0, 0)),
-        'IMG_Sidebar_Active_Button': create_image(parent_widget, "Sidebar_Active_Button.png", center=constants_gui.IMG_SIDEBAR_ACTIVE_BUTTON),
+        'IMG_Sidebar_Active_Button': create_image(parent_widget, "Sidebar_Active_Button.png", center=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_COORDINATES),
         'IMG_Sidebar_Icon_Home': create_image(parent_widget, "Icon_Home.png", center=constants_gui.IMG_SIDEBAR_ICON_HOME),
         'IMG_Sidebar_Icon_Graph': create_image(parent_widget, "Icon_Graph.png", center=constants_gui.IMG_SIDEBAR_ICON_GRAPHS),
+        'IMG_Sidebar_Icon_Settings': create_image(parent_widget, "Icon_Settings.png", center=constants_gui.IMG_SIDEBAR_ICON_SETTINGS),
         'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, "Konfus_Logo.png", center=constants_gui.IMG_KONFUS_LOGO),
 
         # Pots
@@ -75,6 +76,7 @@ def initialize_static_text(parent_widget):
         'TXT_Title': create_label(parent_widget, "BrewSystem 2.0", color='white', size=constants_gui.TXT_TITLE_SIZE, center=constants_gui.TXT_TITLE_COORDINATES, width = 500),
         'TXT_SIDEBAR_HOME': create_label(parent_widget, "Overview", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_HOME,  alignment=Qt.AlignLeft),
         'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_GRAPHS,  alignment=Qt.AlignLeft),
+        'TXT_SIDEBAR_SETTINGS': create_label(parent_widget, "Settings", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_SETTINGS,  alignment=Qt.AlignLeft),
 
         # Pot Names
         'TXT_POT_NAME_BK': create_label(parent_widget, "BK", color='white', size=constants_gui.TXT_POT_NAMES_SIZE, center=constants_gui.TXT_POT_NAMES_BK_COORDINATES),

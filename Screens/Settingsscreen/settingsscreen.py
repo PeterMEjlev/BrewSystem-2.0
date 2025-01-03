@@ -1,13 +1,13 @@
+# settingsscreen.py
 import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import Common.constants as constants
-from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
+from Screens.Settingsscreen.settingsscreen_gui_initialization import initialize_gui_elements
 
 
-
-class GraphScreen(QWidget):
+class SettingsScreen(QWidget):
     """
-    This class represents the graph screen that opens when 'BTN_toggle_sidebar_graphs' is clicked.
+    This class represents the settings screen that opens when 'BTN_toggle_sidebar_settings' is clicked.
     """
     def __init__(self):
         super().__init__()
@@ -22,7 +22,7 @@ class GraphScreen(QWidget):
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
-        self.setWindowTitle("Graph Screen")
+        self.setWindowTitle("Settings screen")
         self.showFullScreen()
 
     def setup_layout(self):
@@ -34,7 +34,7 @@ class GraphScreen(QWidget):
         # Delegate GUI initialization to the external file
         initialize_gui_elements(self, self.path)
 
-    def open_settings_screen(self):
-        from Screens.Settingsscreen.settingsscreen import SettingsScreen
-        self.settings_screen = SettingsScreen()  # Instantiate the GraphScreen
-        self.settings_screen.show()  # Show the graph screen
+    def open_graph_screen(self):
+        from Screens.Graphscreen.graphscreen import GraphScreen
+        self.graph_screen = GraphScreen()  # Instantiate the GraphScreen
+        self.graph_screen.show()  # Show the graph screen
