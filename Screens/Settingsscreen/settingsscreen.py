@@ -3,6 +3,7 @@ import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import Common.constants as constants
 from Screens.Settingsscreen.settingsscreen_gui_initialization import initialize_gui_elements
+from PyQt5.QtCore import Qt
 
 
 class SettingsScreen(QWidget):
@@ -24,6 +25,10 @@ class SettingsScreen(QWidget):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Settings screen")
         self.showFullScreen()
+
+        from Common.config import IS_RPI
+        if (IS_RPI):
+            self.setCursor(Qt.BlankCursor)
 
     def setup_layout(self):
         # Set up a layout for the widget

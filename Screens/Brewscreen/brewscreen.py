@@ -13,7 +13,6 @@ from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
 from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle
-from Common.config import IS_RPI
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -38,6 +37,8 @@ class FullScreenWindow(QMainWindow):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Brewsystem 2.0")
         self.showFullScreen()
+
+        from Common.config import IS_RPI
         if (IS_RPI):
             self.setCursor(Qt.BlankCursor)
 

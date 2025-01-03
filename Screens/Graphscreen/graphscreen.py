@@ -2,6 +2,8 @@ import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import Common.constants as constants
 from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
+from PyQt5.QtCore import Qt
+
 
 
 
@@ -24,6 +26,10 @@ class GraphScreen(QWidget):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Graph Screen")
         self.showFullScreen()
+
+        from Common.config import IS_RPI
+        if (IS_RPI):
+            self.setCursor(Qt.BlankCursor)
 
     def setup_layout(self):
         # Set up a layout for the widget
