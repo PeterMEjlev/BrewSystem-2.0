@@ -35,6 +35,12 @@ def initialize_static_text(parent_widget):
         'TXT_SIDEBAR_GRAPHS': create_label(parent_widget, "Graphs", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_GRAPHS,  alignment=Qt.AlignLeft),
         'TXT_SIDEBAR_SETTINGS': create_label(parent_widget, "Settings", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_SETTINGS,  alignment=Qt.AlignLeft),
 
+        # Settings
+        'TXT_Settings_1': create_label(parent_widget, "REG starting \n temperature BK", color='white', size=constants_gui.TXT_SETTINGS_SIZE, center=constants_gui.TXT_SETTINGS_1_COORDINATES, width = 300, height = 200),
+        'TXT_Settings_2': create_label(parent_widget, "REG starting \n temperature HLT", color='white', size=constants_gui.TXT_SETTINGS_SIZE, center=constants_gui.TXT_SETTINGS_2_COORDINATES, width = 300, height = 200),
+
+
+
         # Quit
         'TXT_EXIT': create_label(parent_widget, "exit", color=constants_gui.TXT_EXIT_COLOUR, size=constants_gui.TXT_EXIT_SIZE, center=constants_gui.TXT_EXIT_COORDINATES),
     }
