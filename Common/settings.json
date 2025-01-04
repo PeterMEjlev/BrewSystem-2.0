@@ -1,0 +1,24 @@
+{
+    "__comments": {
+        "voice": "Controls the voice output mode for the brewing system (e.g., 'normal' or 'sexy').",
+        "REG starting temperature BK": "Initial temperature at which the heating process for the Boil Kettle (BK) starts (in °C or °F).",
+        "REG starting temperature HLT": "Initial temperature at which the heating process for the Hot Liquor Tank (HLT) starts (in °C or °F).",
+        "starting efficiency BK": "Initial heating efficiency (0-100%) for the Boil Kettle (BK) when heating starts.",
+        "starting efficiency HLT": "Initial heating efficiency (0-100%) for the Hot Liquor Tank (HLT) when heating starts.",
+        "starting efficiency P1": "Initial operational efficiency (0-100%) of Pump 1 when it starts.",
+        "starting efficiency P2": "Initial operational efficiency (0-100%) of Pump 2 when it starts.",
+        "heating_efficiency_near_target": "Efficiency level (0-100%) of the heating elements as they approach the target temperature to minimize overshooting."
+    },
+
+    "voice": "normal",
+
+    "REG starting temperature BK": 0,
+    "REG starting temperature HLT": 0,
+
+    "starting efficiency BK": 0,
+    "starting efficiency HLT": 0,
+    "starting efficiency P1": 0,
+    "starting efficiency P2": 0,
+
+    "heating_efficiency_near_target": 50
+}
