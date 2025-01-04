@@ -12,13 +12,13 @@
 
     "voice": "normal",
 
-    "REG starting temperature BK": 0,
-    "REG starting temperature HLT": 0,
+    "REG starting temperature BK": 85,
+    "REG starting temperature HLT": 70,
 
-    "starting efficiency BK": 0,
-    "starting efficiency HLT": 0,
-    "starting efficiency P1": 0,
-    "starting efficiency P2": 0,
+    "starting efficiency BK": 100,
+    "starting efficiency HLT": 100,
+    "starting efficiency P1": 100,
+    "starting efficiency P2": 100,
 
     "heating_efficiency_near_target": 50
 }

@@ -1,5 +1,10 @@
-# variables.py
+import json
+import os
 
+# File path for settings.json
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
+
+# Default Variables
 # Temperatures
 temp_BK = 100
 temp_MLT = 68
@@ -24,12 +29,34 @@ pump_speed_P2 = 100
 
 # Active Units
 STATE = {
-    'BK_ON': False,
-    'HLT_ON': False,
-    'P1_ON': False,
-    'P2_ON': False,
+    "BK_ON": False,
+    "HLT_ON": False,
+    "P1_ON": False,
+    "P2_ON": False,
 }
 
 active_variable = None
 
 
+def initialize_variables_from_settings():
+    """Load settings from the JSON file and update variables."""
+    global temp_BK, temp_HLT, temp_REG_BK, temp_REG_HLT
+    global efficiency_BK, efficiency_HLT, pump_speed_P1, pump_speed_P2
+
+    if not os.path.exists(SETTINGS_FILE):
+        raise FileNotFoundError(f"Settings file not found at {SETTINGS_FILE}")
+
+    with open(SETTINGS_FILE, "r") as f:
+        settings = json.load(f)
+
+    # Update variables from settings
+    temp_REG_BK = settings.get("REG starting temperature BK", temp_REG_BK)
+    temp_REG_HLT = settings.get("REG starting temperature HLT", temp_REG_HLT)
+    efficiency_BK = settings.get("starting efficiency BK", efficiency_BK)
+    efficiency_HLT = settings.get("starting efficiency HLT", efficiency_HLT)
+    pump_speed_P1 = settings.get("starting efficiency P1", pump_speed_P1)
+    pump_speed_P2 = settings.get("starting efficiency P2", pump_speed_P2)
+
+
+# Initialize variables at the time of import
+initialize_variables_from_settings()
