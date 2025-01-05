@@ -12,12 +12,13 @@ from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, 
 from Common.ThermometerWorker import ThermometerWorker
 from Screens.Graphscreen.graphscreen import GraphScreen
 from Screens.Settingsscreen.settingsscreen import SettingsScreen
-from Common.utils_rpi import change_pwm_duty_cycle
+from Common.utils_rpi import change_pwm_duty_cycle, initialize_gpio
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.path = os.path.join(os.path.dirname(__file__), "..", "Assets")
+        initialize_gpio()
         self.current_selection = None  # Tracks the currently selected button
         self.active_variable = None  # Tracks the active variable being adjusted
         self.worker_thread = None  # Thread for thermometer

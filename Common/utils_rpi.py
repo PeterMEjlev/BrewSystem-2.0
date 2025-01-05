@@ -14,21 +14,10 @@ def set_gpio_high(pin_number):
     """
     if IS_RPI:
         try:
-            # Use Broadcom pin numbering
-            GPIO.setmode(GPIO.BCM)
-
-            # Set up the pin as an output
-            GPIO.setup(pin_number, GPIO.OUT)
-
-            # Set the pin to HIGH
             GPIO.output(pin_number, GPIO.HIGH)
-
             print(f"GPIO pin {pin_number} set to HIGH.")
         except Exception as e:
             print(f"An error occurred while setting GPIO pin {pin_number} to HIGH: {e}")
-        finally:
-            # It's good practice to clean up resources
-            GPIO.cleanup(pin_number)
     else:
         print(f"GPIO pin {pin_number} set to HIGH (simulated).")
 
@@ -41,21 +30,10 @@ def set_gpio_low(pin_number):
     """
     if IS_RPI:
         try:
-            # Use Broadcom pin numbering
-            GPIO.setmode(GPIO.BCM)
-
-            # Set up the pin as an output
-            GPIO.setup(pin_number, GPIO.OUT)
-
-            # Set the pin to LOW
             GPIO.output(pin_number, GPIO.LOW)
-
             print(f"GPIO pin {pin_number} set to LOW.")
         except Exception as e:
             print(f"An error occurred while setting GPIO pin {pin_number} to LOW: {e}")
-        finally:
-            # It's good practice to clean up resources
-            GPIO.cleanup(pin_number)
     else:
         print(f"GPIO pin {pin_number} set to LOW (simulated).")
 
@@ -131,3 +109,27 @@ def read_ds18b20(serial_code):
             print(e)
     else:
         return random.uniform(35.0, 102.0)  # Simulated temperature
+    
+def initialize_gpio():
+    """
+    Initializes the GPIO pins for the Raspberry Pi.
+    Sets the GPIO mode and configures the necessary pins as outputs.
+    """
+    if IS_RPI:
+        try:
+            # Set Broadcom numbering mode
+            GPIO.setmode(GPIO.BCM)
+
+            # Setup designated GPIO pins as outputs
+            GPIO.setup(RPI_GPIO_PIN_BK, GPIO.OUT)
+            GPIO.setup(RPI_GPIO_PIN_HLT, GPIO.OUT)
+            GPIO.setup(RPI_GPIO_PWN_BK, GPIO.OUT)
+            GPIO.setup(RPI_GPIO_PWN_HLT, GPIO.OUT)
+            GPIO.setup(RPI_GPIO_PIN_P1, GPIO.OUT)
+            GPIO.setup(RPI_GPIO_PIN_P2, GPIO.OUT)
+
+            print("GPIO pins initialized.")
+        except Exception as e:
+            print(f"An error occurred during GPIO initialization: {e}")
+    else:
+        print("GPIO initialization skipped (simulated mode).")
