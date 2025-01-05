@@ -114,23 +114,30 @@ def read_ds18b20(serial_code):
 def initialize_gpio():
     """
     Initializes the GPIO pins for the Raspberry Pi.
-    Sets the GPIO mode and configures the necessary pins as outputs.
+    Sets the GPIO mode and configures the necessary pins as outputs, defaulting them to LOW.
     """
     if IS_RPI:
         try:
             # Set Broadcom numbering mode
             GPIO.setmode(GPIO.BCM)
 
-            # Setup designated GPIO pins as outputs
-            GPIO.setup(constants_rpi.RPI_GPIO_PIN_BK, GPIO.OUT)
-            GPIO.setup(constants_rpi.RPI_GPIO_PIN_HLT, GPIO.OUT)
-            GPIO.setup(constants_rpi.RPI_GPIO_PWN_BK, GPIO.OUT)
-            GPIO.setup(constants_rpi.RPI_GPIO_PWN_HLT, GPIO.OUT)
-            GPIO.setup(constants_rpi.RPI_GPIO_PIN_P1, GPIO.OUT)
-            GPIO.setup(constants_rpi.RPI_GPIO_PIN_P2, GPIO.OUT)
+            # Setup designated GPIO pins as outputs and set them to LOW
+            pins = [
+                constants_rpi.RPI_GPIO_PIN_BK,
+                constants_rpi.RPI_GPIO_PIN_HLT,
+                constants_rpi.RPI_GPIO_PWN_BK,
+                constants_rpi.RPI_GPIO_PWN_HLT,
+                constants_rpi.RPI_GPIO_PIN_P1,
+                constants_rpi.RPI_GPIO_PIN_P2
+            ]
 
-            print("GPIO pins initialized.")
+            for pin in pins:
+                GPIO.setup(pin, GPIO.OUT)  # Set the pin as an output
+                GPIO.output(pin, GPIO.LOW)  # Default the pin to LOW (off)
+
+            print("GPIO pins initialized and set to LOW.")
         except Exception as e:
             print(f"An error occurred during GPIO initialization: {e}")
     else:
         print("GPIO initialization skipped (simulated mode).")
+
