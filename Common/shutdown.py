@@ -1,5 +1,6 @@
+from PyQt5.QtWidgets import QApplication
 from Common.utils_rpi import set_gpio_low, stop_pwm_signal
-from Common.constants_rpi import RPI_GPIO_PIN_BK, RPI_GPIO_PIN_HLT
+import Common.constants_rpi as constants_rpi
 from Common.config import IS_RPI
 import Common.variables as variables
 
@@ -14,8 +15,10 @@ def perform_shutdown():
     print("Performing shutdown...")
 
     # Turn off GPIO pins
-    set_gpio_low(RPI_GPIO_PIN_BK)
-    set_gpio_low(RPI_GPIO_PIN_HLT)
+    set_gpio_low(constants_rpi.RPI_GPIO_PIN_BK)
+    set_gpio_low(constants_rpi.RPI_GPIO_PIN_HLT)
+    set_gpio_low(constants_rpi.RPI_GPIO_PIN_P1)
+    set_gpio_low(constants_rpi.RPI_GPIO_PIN_P2)
 
     # Stop PWM signals
     if variables.BK_PWM:
@@ -32,3 +35,5 @@ def perform_shutdown():
         print("GPIO cleaned up.")
 
     print("Shutdown complete.")
+    # Quit the application
+    QApplication.quit()
