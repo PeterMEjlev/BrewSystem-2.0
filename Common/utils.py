@@ -417,18 +417,18 @@ def update_gpio_state(variable_name, new_value):
             set_gpio_high(constants_rpi.RPI_GPIO_PIN_HLT)
         else:
             set_gpio_low(constants_rpi.RPI_GPIO_PIN_HLT)
-    else:
-        print(f"No GPIO action defined for {variable_name}.")
-
-    if variable_name == 'P1_ON':
+    
+    elif variable_name == 'P1_ON':
         if new_value:
             set_gpio_high(constants_rpi.RPI_GPIO_PIN_P1)
         else:
             set_gpio_low(constants_rpi.RPI_GPIO_PIN_P1)
 
-    if variable_name == 'P2_ON':
+    elif variable_name == 'P2_ON':
         if new_value:
             set_gpio_high(constants_rpi.RPI_GPIO_PIN_P2)
         else:
             set_gpio_low(constants_rpi.RPI_GPIO_PIN_P2)
 
+    else:
+        print(f"No GPIO action defined for {variable_name}.")
