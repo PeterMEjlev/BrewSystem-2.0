@@ -1,7 +1,7 @@
 # utils_rpi.py
 from Common.config import IS_RPI
 import random
-import Common.utils_rpi as utils_rpi
+import Common.constants_rpi as constants_rpi
 
 if (IS_RPI):
     import RPi.GPIO as GPIO
@@ -122,12 +122,12 @@ def initialize_gpio():
             GPIO.setmode(GPIO.BCM)
 
             # Setup designated GPIO pins as outputs
-            GPIO.setup(utils_rpi.RPI_GPIO_PIN_BK, GPIO.OUT)
-            GPIO.setup(utils_rpi.RPI_GPIO_PIN_HLT, GPIO.OUT)
-            GPIO.setup(utils_rpi.RPI_GPIO_PWN_BK, GPIO.OUT)
-            GPIO.setup(utils_rpi.RPI_GPIO_PWN_HLT, GPIO.OUT)
-            GPIO.setup(utils_rpi.RPI_GPIO_PIN_P1, GPIO.OUT)
-            GPIO.setup(utils_rpi.RPI_GPIO_PIN_P2, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PIN_BK, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PIN_HLT, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PWN_BK, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PWN_HLT, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PIN_P1, GPIO.OUT)
+            GPIO.setup(constants_rpi.RPI_GPIO_PIN_P2, GPIO.OUT)
 
             print("GPIO pins initialized.")
         except Exception as e:
