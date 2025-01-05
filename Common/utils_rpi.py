@@ -3,15 +3,12 @@ from Common.config import IS_RPI
 import random
 import Common.constants_rpi as constants_rpi
 
-if (IS_RPI):
+if IS_RPI:
     import RPi.GPIO as GPIO
 
 def set_gpio_high(pin_number):
     """
     Sets a GPIO pin to HIGH (3.3V) on the Raspberry Pi.
-
-    Args:
-        pin_number (int): The GPIO pin number to set to HIGH.
     """
     if IS_RPI:
         try:
@@ -25,9 +22,6 @@ def set_gpio_high(pin_number):
 def set_gpio_low(pin_number):
     """
     Sets a GPIO pin to LOW (0V) on the Raspberry Pi.
-
-    Args:
-        pin_number (int): The GPIO pin number to set to LOW.
     """
     if IS_RPI:
         try:
@@ -41,40 +35,47 @@ def set_gpio_low(pin_number):
 def set_pwm_signal(pin_number, frequency, duty_cycle):
     """
     Turns on a PWM signal on a specified GPIO pin on the Raspberry Pi.
-
-    Args:
-        pin_number (int): The GPIO pin number to use for PWM.
-        frequency (float): The frequency of the PWM signal in Hz.
-        duty_cycle (float): The duty cycle of the PWM signal as a percentage (0.0 to 100.0).
     """
     if IS_RPI:
         try:
-            # Use Broadcom pin numbering
-            GPIO.setmode(GPIO.BCM)
-
-            # Set up the pin as an output
-            GPIO.setup(pin_number, GPIO.OUT)
-
-            # Initialize PWM on the pin with the specified frequency
-            pwm = GPIO.PWM(pin_number, frequency)
-
-            # Start PWM with the specified duty cycle
-            pwm.start(duty_cycle)
-
+            GPIO.setup(pin_number, GPIO.OUT)  # Ensure the pin is set as an output
+            pwm = GPIO.PWM(pin_number, frequency)  # Create PWM instance
+            pwm.start(duty_cycle)  # Start PWM with duty cycle
             print(f"PWM started on GPIO pin {pin_number} with frequency {frequency}Hz and duty cycle {duty_cycle}%.")
-
-            return pwm  # Return the PWM object to allow further control (e.g., stop, change frequency/duty cycle)
+            return pwm
         except Exception as e:
             print(f"An error occurred while starting PWM on GPIO pin {pin_number}: {e}")
     else:
         print(f"PWM started on GPIO pin {pin_number} with frequency {frequency}Hz and duty cycle {duty_cycle}% (simulated).")
+        return None
+
+def create_software_pwm(pin_number, frequency):
+    """
+    Creates a software PWM signal on a specified GPIO pin.
+
+    Args:
+        pin_number (int): The GPIO pin number to use for PWM.
+        frequency (float): The frequency of the PWM signal in Hz.
+
+    Returns:
+        GPIO.PWM: A software PWM object.
+    """
+    if IS_RPI:
+        try:
+            GPIO.setup(pin_number, GPIO.OUT)  # Ensure the pin is set as an output
+            pwm = GPIO.PWM(pin_number, frequency)  # Create software PWM instance
+            print(f"Software PWM created on GPIO pin {pin_number} with frequency {frequency}Hz.")
+            return pwm
+        except Exception as e:
+            print(f"An error occurred while creating software PWM on GPIO pin {pin_number}: {e}")
+            return None
+    else:
+        print(f"Software PWM created on GPIO pin {pin_number} with frequency {frequency}Hz (simulated).")
+        return None
 
 def stop_pwm_signal(pwm):
     """
     Stops the PWM signal on the specified PWM object.
-
-    Args:
-        pwm (GPIO.PWM): The PWM object to stop.
     """
     if IS_RPI and pwm:
         try:
@@ -88,10 +89,6 @@ def stop_pwm_signal(pwm):
 def change_pwm_duty_cycle(pwm, duty_cycle):
     """
     Changes the duty cycle of an active PWM signal.
-
-    Args:
-        pwm (GPIO.PWM): The PWM object to modify.
-        duty_cycle (float): The new duty cycle as a percentage (0.0 to 100.0).
     """
     if IS_RPI and pwm:
         try:
@@ -105,12 +102,12 @@ def change_pwm_duty_cycle(pwm, duty_cycle):
 def read_ds18b20(serial_code):
     if IS_RPI:
         try:
-            return random.uniform(35.0, 102.0) # Replace with actual code to read the DS18B20 sensor
+            return random.uniform(35.0, 102.0)  # Replace with actual code to read the DS18B20 sensor
         except Exception as e:
             print(e)
     else:
         return random.uniform(35.0, 102.0)  # Simulated temperature
-    
+
 def initialize_gpio():
     """
     Initializes the GPIO pins for the Raspberry Pi.
@@ -118,10 +115,7 @@ def initialize_gpio():
     """
     if IS_RPI:
         try:
-            # Set Broadcom numbering mode
-            GPIO.setmode(GPIO.BCM)
-
-            # Setup designated GPIO pins as outputs and set them to LOW
+            GPIO.setmode(GPIO.BCM)  # Set Broadcom numbering mode
             pins = [
                 constants_rpi.RPI_GPIO_PIN_BK,
                 constants_rpi.RPI_GPIO_PIN_HLT,
@@ -132,12 +126,11 @@ def initialize_gpio():
             ]
 
             for pin in pins:
-                GPIO.setup(pin, GPIO.OUT)  # Set the pin as an output
-                GPIO.output(pin, GPIO.LOW)  # Default the pin to LOW (off)
+                GPIO.setup(pin, GPIO.OUT)  # Set pin as output
+                GPIO.output(pin, GPIO.LOW)  # Default to LOW
 
             print("GPIO pins initialized and set to LOW.")
         except Exception as e:
             print(f"An error occurred during GPIO initialization: {e}")
     else:
         print("GPIO initialization skipped (simulated mode).")
-

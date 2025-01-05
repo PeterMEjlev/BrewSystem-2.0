@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_slider, create_label, create_button, toggle_variable
-from Common.utils_rpi import set_pwm_signal, stop_pwm_signal
+from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
 import Common.constants_rpi as constants_rpi
@@ -94,7 +94,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
                 toggle_variable('BK_ON', STATE),
                 handle_bk_on_toggle(dynamic_elements, static_elements),
-                create_or_stop_pwm_for_bk(dynamic_elements)
+                create_or_stop_pwm_for_bk()
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -110,7 +110,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
                 toggle_variable('HLT_ON', STATE),
                 handle_hlt_on_toggle(dynamic_elements, static_elements),
-                create_or_stop_pwm_for_hlt(dynamic_elements)
+                create_or_stop_pwm_for_hlt()
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -124,7 +124,8 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
-                toggle_variable('P1_ON', STATE)
+                toggle_variable('P1_ON', STATE),
+                create_or_stop_pwm_for_p1()
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -138,7 +139,8 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             ),
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
-                toggle_variable('P2_ON', STATE)                
+                toggle_variable('P2_ON', STATE),
+                create_or_stop_pwm_for_p2()               
             ),
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -223,7 +225,7 @@ def handle_hlt_on_toggle(dynamic_elements, static_elements):
         if 'IMG_Pot_HLT_On_Temp_Reached' in static_elements:
             static_elements['IMG_Pot_HLT_On_Temp_Reached'].hide()
 
-def create_or_stop_pwm_for_bk(dynamic_elements):
+def create_or_stop_pwm_for_bk():
     """
     Create or stop the PWM signal for BK based on the state.
     """
@@ -238,7 +240,7 @@ def create_or_stop_pwm_for_bk(dynamic_elements):
             stop_pwm_signal(variables.BK_PWM)
             variables.BK_PWM = None
 
-def create_or_stop_pwm_for_hlt(dynamic_elements):
+def create_or_stop_pwm_for_hlt():
     """
     Create or stop the PWM signal for HLT based on the state.
     """
@@ -252,6 +254,41 @@ def create_or_stop_pwm_for_hlt(dynamic_elements):
     else:
             stop_pwm_signal(variables.HLT_PWM)
             variables.HLT_PWM = None
+
+def create_or_stop_pwm_for_p1():
+    """
+    Create or stop the software PWM signal for P1 based on the state.
+    """
+    if STATE['P1_ON']:
+        if variables.P1_PWM is None:  # Create PWM only if it doesn't exist
+            variables.P1_PWM = create_software_pwm(
+                pin_number=constants_rpi.RPI_GPIO_PIN_P1,
+                frequency=constants_rpi.PWM_FREQUENCY
+            )
+            if variables.P1_PWM:  # Start PWM with initial duty cycle
+                variables.P1_PWM.start(variables.pump_speed_P1)
+    else:
+        if variables.P1_PWM:
+            stop_pwm_signal(variables.P1_PWM)
+            variables.P1_PWM = None
+
+def create_or_stop_pwm_for_p2():
+    """
+    Create or stop the software PWM signal for P2 based on the state.
+    """
+    if STATE['P2_ON']:
+        if variables.P2_PWM is None:  # Create PWM only if it doesn't exist
+            variables.P2_PWM = create_software_pwm(
+                pin_number=constants_rpi.RPI_GPIO_PIN_P2,
+                frequency=constants_rpi.PWM_FREQUENCY
+            )
+            if variables.P2_PWM:  # Start PWM with initial duty cycle
+                variables.P2_PWM.start(variables.pump_speed_P2)
+    else:
+        if variables.P2_PWM:
+            stop_pwm_signal(variables.P2_PWM)
+            variables.P2_PWM = None
+
 
 def hide_GUI_elements(static_elements, dynamic_elements, buttons):
     """
