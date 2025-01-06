@@ -26,16 +26,19 @@ class FullScreenWindow(QMainWindow):
         self.worker_thread = None  # Thread for thermometer
         self.thermometer_worker = None  # Worker instance
         self.graph = TemperatureGraph(self)
-        self.init_ui()
+        
         
 
         # Initialize the graph screen
         self.graph_screen = GraphScreen()
         self.graph_screen.hide()
         self.graph = self.graph_screen.temperature_graph  # Reference the temperature graph from GraphScreen
-        self.start_thermometer_thread()
+       
         
-        self.settings_screen = None  # Placeholder for the settings window        
+        self.settings_screen = None  # Placeholder for the settings window    
+
+        self.init_ui()  
+        self.start_thermometer_thread()  
 
     def init_ui(self):
         self.setup_window()
