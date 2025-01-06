@@ -5,6 +5,8 @@ import Common.constants_gui as constants_gui
 from PyQt5.QtCore import QTimer
 from Common.shutdown import perform_shutdown
 
+
+
 def initialize_gui_elements(parent_widget, assets_path):
     """
     Initializes GUI elements for the GraphScreen.
@@ -62,6 +64,22 @@ def initialize_buttons(parent_widget):
             position=constants_gui.BTN_QUIT_COORDINATES,
             size=constants_gui.BTN_QUIT,
             on_normal_click=lambda: perform_shutdown(),
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_graph_zoom_in': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_ZOOM_IN_COORDINATES,
+            size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
+            on_normal_click=parent_widget.temperature_graph.zoom_in,  # Updated
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_graph_zoom_out': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_ZOOM_OUT_COORDINATES,
+            size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
+            on_normal_click=parent_widget.temperature_graph.zoom_out,  # Updated
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),

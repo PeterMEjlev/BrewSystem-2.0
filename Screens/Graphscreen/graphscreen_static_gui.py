@@ -22,6 +22,11 @@ def initialize_static_images(parent_widget, assets_path):
         'IMG_Sidebar_Icon_Graph': create_image(parent_widget, os.path.join(assets_path, "Icon_Graph.png"), center=constants_gui.IMG_SIDEBAR_ICON_GRAPHS),
         'IMG_Sidebar_Icon_Settings': create_image(parent_widget, "Icon_Settings.png", center=constants_gui.IMG_SIDEBAR_ICON_SETTINGS),
         'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, os.path.join(assets_path, "Konfus_Logo.png"), center=constants_gui.IMG_KONFUS_LOGO),
+
+        # Graph Buttons
+        'IMG_Zoom_In': create_image(parent_widget, os.path.join(assets_path, "Zoom_In.png"), center=(constants_gui.BTN_GRAPH_ZOOM_IN_COORDINATES[0]+16,constants_gui.BTN_GRAPH_ZOOM_IN_COORDINATES[1]+16)),
+        'IMG_Zoom_Out': create_image(parent_widget, os.path.join(assets_path, "Zoom_Out.png"), center=(constants_gui.BTN_GRAPH_ZOOM_OUT_COORDINATES[0]+16,constants_gui.BTN_GRAPH_ZOOM_OUT_COORDINATES[1]+16)),
+    
     }
 
 def initialize_static_text(parent_widget):

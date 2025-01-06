@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class TemperatureGraph(QWidget):
-    def __init__(self, parent=None, width=1520, height=1050, x_pos=420, y_pos=0):
+    def __init__(self, parent=None, width=1420, height=1050, x_pos=420, y_pos=0):
         super().__init__(parent)
         self.width = width  # Graph width
         self.height = height  # Graph height
@@ -89,3 +89,17 @@ class TemperatureGraph(QWidget):
         self.bk_line.setData(times, bk_temps)
         self.mlt_line.setData(times, mlt_temps)
         self.hlt_line.setData(times, hlt_temps)
+
+    def zoom_in(self):
+        """Zoom in on the graph by adjusting the y-axis range."""
+        current_range = self.plot_widget.getViewBox().viewRange()[1]  # Get the current y-axis range
+        center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
+        new_range = [(center - (center - current_range[0]) * 0.8), (center + (current_range[1] - center) * 0.8)]  # Zoom in
+        self.plot_widget.setYRange(*new_range)
+
+    def zoom_out(self):
+        """Zoom out on the graph by adjusting the y-axis range."""
+        current_range = self.plot_widget.getViewBox().viewRange()[1]  # Get the current y-axis range
+        center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
+        new_range = [(center - (center - current_range[0]) * 1.25), (center + (current_range[1] - center) * 1.25)]  # Zoom out
+        self.plot_widget.setYRange(*new_range)
