@@ -5,7 +5,7 @@ from Common.constants_gui import POT_ON_FOREGROUND_HEIGHT
 import Common.variables as variables
 import Common.constants_rpi as constants_rpi
 from Common.utils_rpi import read_ds18b20
-from Common.TemperatureGraph import TemperatureGraph
+from datetime import datetime
 
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
@@ -17,7 +17,7 @@ class ThermometerWorker(QObject):
         super().__init__()
         self._running = True  # Control the thread execution
         self.static_elements = static_elements  # Store static elements for access
-        self.graph = graph  # Pass the graph instance to update
+        self.temperature_history = []
 
     def run(self):
         """Worker's main loop to read temperatures."""
@@ -29,6 +29,8 @@ class ThermometerWorker(QObject):
             self.temperature_updated_bk.emit(variables.temp_BK) 
             self.temperature_updated_mlt.emit(variables.temp_MLT) 
             self.temperature_updated_hlt.emit(variables.temp_HLT) 
+
+            self.record_current_time_and_temp()
 
             # Calculate temperature progress for BK and HLT
             temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100)) if variables.temp_REG_BK > 0 else 0
@@ -42,9 +44,6 @@ class ThermometerWorker(QObject):
 
             # Update temperature-reached visuals
             self.update_pot_foregrounds_if_temp_reached()
-
-            # Update the graph
-            self.graph.update_graph(variables.temp_BK, variables.temp_MLT, variables.temp_HLT)
 
             # Wait for the next reading
             QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
@@ -93,3 +92,13 @@ class ThermometerWorker(QObject):
                 self.static_elements['IMG_Pot_HLT_On_Temp_Reached'],
                 constants.TEMP_REACHED_THRESHOLD
             )
+
+    def record_current_time_and_temp(self):
+         # Record the current time and temperature readings
+            current_time = datetime.now()
+            self.temperature_history.append({
+                "time": current_time,
+                "bk": variables.temp_BK,
+                "mlt": variables.temp_MLT,
+                "hlt": variables.temp_HLT
+            })
