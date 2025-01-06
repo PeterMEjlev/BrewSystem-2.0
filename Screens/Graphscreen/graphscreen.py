@@ -1,5 +1,5 @@
 import os
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSlider
 import Common.constants as constants
 from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
 from PyQt5.QtCore import Qt
@@ -42,6 +42,19 @@ class GraphScreen(QWidget):
         self.temperature_graph = TemperatureGraph(self)
         self.layout.addWidget(self.temperature_graph)
 
+         # Add a slider for zoom control
+        self.zoom_slider = QSlider(Qt.Horizontal, self)
+        self.zoom_slider.setRange(1, 100)  # Adjust the range as needed
+        self.zoom_slider.setValue(50)  # Set the initial value
+        self.zoom_slider.setTickInterval(10)
+        self.zoom_slider.setTickPosition(QSlider.TicksBelow)
+
+        self.zoom_slider.setFixedSize(1000, 20)  # Fixed width and height
+        self.zoom_slider.setGeometry(500, 700, 1000, 20)  # x: 100, y: 700, width: 1000, height: 20
+
+        self.zoom_slider.valueChanged.connect(self.update_zoom_level)
+        self.layout.addWidget(self.zoom_slider)
+
     def initialize_gui_elements(self):
         # Delegate GUI initialization to the external file
         initialize_gui_elements(self, self.path)
@@ -55,3 +68,20 @@ class GraphScreen(QWidget):
         """Update the graph with new temperature data."""
         if hasattr(self, 'temperature_graph'):
             self.temperature_graph.update_graph(temp_bk, temp_mlt, temp_hlt)
+
+    def update_zoom_level(self, value):
+        """
+        Adjust the zoom level on the y-axis of the temperature graph based on slider value.
+
+        Parameters:
+        - value: The current value of the slider (1-100).
+        """
+        # Calculate zoom factor based on slider value
+        zoom_factor = value / 50  # Adjust this ratio as needed for desired sensitivity
+        current_range = self.temperature_graph.plot_widget.getViewBox().viewRange()[1]  # Get the current y-axis range
+        center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
+        new_range = [
+            center - (center - current_range[0]) * zoom_factor,
+            center + (current_range[1] - center) * zoom_factor,
+        ]
+        self.temperature_graph.plot_widget.setYRange(*new_range)
