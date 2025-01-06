@@ -9,6 +9,7 @@ from Common.TemperatureGraph import TemperatureGraph
 
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
+    temperature_updated_mlt = pyqtSignal(float)
     temperature_updated_hlt = pyqtSignal(float)
     finished = pyqtSignal()  # Signal to indicate the thread is finished
 
@@ -25,7 +26,8 @@ class ThermometerWorker(QObject):
             variables.temp_BK = self.read_thermometer_bk()
             variables.temp_MLT = self.read_thermometer_hlt()
             variables.temp_HLT = self.read_thermometer_hlt()
-            self.temperature_updated_bk.emit(variables.temp_BK)  
+            self.temperature_updated_bk.emit(variables.temp_BK) 
+            self.temperature_updated_mlt.emit(variables.temp_MLT) 
             self.temperature_updated_hlt.emit(variables.temp_HLT) 
 
             # Calculate temperature progress for BK and HLT
