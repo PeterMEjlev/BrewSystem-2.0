@@ -5,7 +5,6 @@ from Screens.Brewscreen.brewscreen import FullScreenWindow
 def main():
     app = QApplication(sys.argv)
     window = FullScreenWindow()
-    window.show()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

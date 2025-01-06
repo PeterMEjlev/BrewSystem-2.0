@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import Common.constants as constants
 from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
 from PyQt5.QtCore import Qt
+from Common.TemperatureGraph import TemperatureGraph
 
 
 
@@ -26,6 +27,7 @@ class GraphScreen(QWidget):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
         self.setWindowTitle("Graph Screen")
         self.showFullScreen()
+        #self.hide()
 
         from Common.config import IS_RPI
         if (IS_RPI):
@@ -36,6 +38,10 @@ class GraphScreen(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
+        # Add the temperature graph to the layout
+        self.temperature_graph = TemperatureGraph(self)
+        self.layout.addWidget(self.temperature_graph)
+
     def initialize_gui_elements(self):
         # Delegate GUI initialization to the external file
         initialize_gui_elements(self, self.path)
@@ -44,3 +50,8 @@ class GraphScreen(QWidget):
         from Screens.Settingsscreen.settingsscreen import SettingsScreen
         self.settings_screen = SettingsScreen()  # Instantiate the GraphScreen
         self.settings_screen.show()  # Show the graph screen
+
+    def update_graph(self, temp_bk, temp_mlt, temp_hlt):
+        """Update the graph with new temperature data."""
+        if hasattr(self, 'temperature_graph'):
+            self.temperature_graph.update_graph(temp_bk, temp_mlt, temp_hlt)

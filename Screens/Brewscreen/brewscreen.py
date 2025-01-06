@@ -10,9 +10,11 @@ import Common.constants as constants
 import Common.variables as variables
 from Screens.Brewscreen.brewscreen_gui_initialization import initialize_slider, initialize_buttons, hide_GUI_elements
 from Common.ThermometerWorker import ThermometerWorker
+from Common.TemperatureGraph import TemperatureGraph
 from Screens.Graphscreen.graphscreen import GraphScreen
 from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle, initialize_gpio
+
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -23,9 +25,16 @@ class FullScreenWindow(QMainWindow):
         self.active_variable = None  # Tracks the active variable being adjusted
         self.worker_thread = None  # Thread for thermometer
         self.thermometer_worker = None  # Worker instance
+        self.graph = TemperatureGraph(self)
         self.init_ui()
+        
+
+        # Initialize the graph screen
+        self.graph_screen = GraphScreen()
+        self.graph_screen.hide()
+        self.graph = self.graph_screen.temperature_graph  # Reference the temperature graph from GraphScreen
         self.start_thermometer_thread()
-        self.graph_screen = None  # Placeholder for the graph window        
+        
         self.settings_screen = None  # Placeholder for the settings window        
 
     def init_ui(self):
@@ -48,7 +57,7 @@ class FullScreenWindow(QMainWindow):
     def start_thermometer_thread(self):
         """Start the thermometer worker in a separate thread."""
         self.worker_thread = QThread()
-        self.thermometer_worker = ThermometerWorker(self.static_elements)
+        self.thermometer_worker = ThermometerWorker(self.static_elements, self.graph_screen.temperature_graph)
 
         self.thermometer_worker.moveToThread(self.worker_thread)
         self.worker_thread.started.connect(self.thermometer_worker.run)
