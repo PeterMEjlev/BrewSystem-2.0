@@ -13,7 +13,7 @@ class ThermometerWorker(QObject):
     temperature_updated_hlt = pyqtSignal(float)
     finished = pyqtSignal()  # Signal to indicate the thread is finished
 
-    def __init__(self, static_elements, graph):
+    def __init__(self, static_elements):
         super().__init__()
         self._running = True  # Control the thread execution
         self.static_elements = static_elements  # Store static elements for access
