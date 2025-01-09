@@ -57,9 +57,9 @@ class TemperatureGraph(QWidget):
         self.plot_widget.setLabel("bottom", "Time (s)", **label_style)  # Use unified font for x-axis label
 
         # Set up the plot lines for temperatures
-        self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=2), name="BK Temperature")
-        self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=2), name="MLT Temperature")
-        self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=2), name="HLT Temperature")
+        self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=2), name="BK Temperature", connect="finite")
+        self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=2), name="MLT Temperature", connect="finite")
+        self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=2), name="HLT Temperature", connect="finite")
 
 
     def update_graph(self, temp_bk, temp_mlt, temp_hlt):
