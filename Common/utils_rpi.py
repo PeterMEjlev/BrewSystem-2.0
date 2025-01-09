@@ -107,7 +107,7 @@ def read_ds18b20(serial_code):
         serial_code (str): The serial code of the DS18B20 sensor.
 
     Returns:
-        float: The temperature in Celsius, or None if an error occurs.
+        float: The temperature in Celsius, or a default value (e.g., -1.0) if an error occurs.
     """
     if IS_RPI:
         try:
@@ -132,13 +132,14 @@ def read_ds18b20(serial_code):
             return temp_c
         except FileNotFoundError:
             print(f"DS18B20 sensor with serial code {serial_code} not found.")
-            return None
+            return -1.0  # Return a default error value
         except Exception as e:
             print(f"An error occurred while reading the DS18B20 sensor: {e}")
-            return None
+            return -1.0  # Return a default error value
     else:
         # Simulated temperature for non-RPi environments
         return random.uniform(35.0, 102.0)
+
 
 
 def initialize_gpio():
