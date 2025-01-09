@@ -1,8 +1,5 @@
 # gui_constants.py
 
-# Button visibility
-BTN_INVISIBILITY = True
-
 # Sidebar button distance
 SIDEBAR_BUTTON_DISTANCE = 100
 

@@ -1,3 +1,4 @@
+import Common.constants
 from Screens.Graphscreen.graphscreen_static_gui import initialize_static_elements
 from Common.utils import create_button, set_opacity
 import Common.constants_gui as constants_gui
@@ -45,7 +46,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
             on_normal_click=parent_widget.close,  # Close the parent widget
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_open_settings_window': create_button(
             parent_widget=parent_widget,
@@ -56,7 +57,7 @@ def initialize_buttons(parent_widget):
                 QTimer.singleShot(100, parent_widget.close)
             ),         
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_quit': create_button(
             parent_widget=parent_widget,
@@ -64,7 +65,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_QUIT,
             on_normal_click=lambda: perform_shutdown(),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_y_zoom_in': create_button(
             parent_widget=parent_widget,
@@ -72,7 +73,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
             on_normal_click=lambda: parent_widget.temperature_graph.zoom_in(axis="y"),  # Updated
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_y_zoom_out': create_button(
             parent_widget=parent_widget,
@@ -80,7 +81,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
             on_normal_click=lambda: parent_widget.temperature_graph.zoom_out(axis="y"),  # Updated
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_x_zoom_in': create_button(
             parent_widget=parent_widget,
@@ -88,7 +89,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
             on_normal_click=lambda: parent_widget.temperature_graph.zoom_in(axis="x"),  # Updated
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_x_zoom_out': create_button(
             parent_widget=parent_widget,
@@ -96,7 +97,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
             on_normal_click=lambda: parent_widget.temperature_graph.zoom_out(axis="x"),  # Updated
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_zoom_auto': create_button(
             parent_widget=parent_widget,
@@ -104,7 +105,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
             on_normal_click=lambda: parent_widget.temperature_graph.enable_auto_range(),  # Updated
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_toggle_bk_visibility': create_button(
             parent_widget=parent_widget,
@@ -115,7 +116,7 @@ def initialize_buttons(parent_widget):
                     toggle_opacity(parent_widget, "bk")
             ),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_toggle_mlt_visibility': create_button(
             parent_widget=parent_widget,
@@ -126,7 +127,7 @@ def initialize_buttons(parent_widget):
                 toggle_opacity(parent_widget, "mlt")
             ),  
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_graph_toggle_hlt_visibility': create_button(
             parent_widget=parent_widget,
@@ -137,7 +138,7 @@ def initialize_buttons(parent_widget):
                 toggle_opacity(parent_widget, "hlt")
             ),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
     }
 

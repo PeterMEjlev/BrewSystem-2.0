@@ -16,4 +16,9 @@ SLIDER_PAGESTEP = 1
 THERMOMETER_READ_WAIT_TIME = 1000  # Time in milliseconds
 TEMP_REACHED_THRESHOLD = 1  # Temperature threshold for reaching target
 
+# Button visibility
+BTN_INVISIBILITY = True
+
+GRAPH_LINE_WIDTH = 4
+
 

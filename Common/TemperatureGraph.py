@@ -1,9 +1,11 @@
 # TemperatureGraph.py
 from pyqtgraph import PlotWidget, mkPen, AxisItem, LegendItem
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QFont
 from datetime import datetime
 import numpy as np
+from Common.constants import GRAPH_LINE_WIDTH
 
 
 class TemperatureGraph(QWidget):
@@ -57,10 +59,15 @@ class TemperatureGraph(QWidget):
         self.plot_widget.setLabel("left", "Temperature (°C)", **label_style)  # Use unified font for y-axis label
         self.plot_widget.setLabel("bottom", "Time (s)", **label_style)  # Use unified font for x-axis label
 
-        # Set up the plot lines for temperatures
-        self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=2), name="BK Temperature", connect="finite")
-        self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=2), name="MLT Temperature", connect="finite")
-        self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=2), name="HLT Temperature", connect="finite")
+        # Set up the plot lines with click interaction enabled
+        self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=GRAPH_LINE_WIDTH), name="BK Temperature", connect="finite", clickable=True)
+        self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=GRAPH_LINE_WIDTH), name="MLT Temperature", connect="finite", clickable=True)
+        self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=GRAPH_LINE_WIDTH), name="HLT Temperature", connect="finite", clickable=True)
+
+        # Connect signals for clicks
+        self.bk_line.sigClicked.connect(lambda item, points: self.show_point_info(item, points, "BK"))
+        self.mlt_line.sigClicked.connect(lambda item, points: self.show_point_info(item, points, "MLT"))
+        self.hlt_line.sigClicked.connect(lambda item, points: self.show_point_info(item, points, "HLT"))
 
 
 
@@ -164,5 +171,44 @@ class TemperatureGraph(QWidget):
             self.hlt_line.setVisible(not current_visibility)
         else:
             raise ValueError(f"Invalid line_name: {line_name}. Must be 'bk', 'mlt', or 'hlt'.")
+
+    def show_point_info(self, item, event, line_name):
+        """
+        Show information about the clicked point in the graph for 4 seconds.
+
+        Parameters:
+        - item: The PlotDataItem that was clicked.
+        - event: The MouseClickEvent object containing click information.
+        - line_name: The name of the line ("BK", "MLT", or "HLT").
+        """
+        # Get the position of the mouse click in plot coordinates
+        mouse_point = self.plot_widget.plotItem.vb.mapSceneToView(event.scenePos())
+        x_clicked, y_clicked = mouse_point.x(), mouse_point.y()
+
+        # Get the data points from the clicked line
+        x_data, y_data = item.getData()
+
+        # Find the closest data point to the clicked position
+        closest_index = (np.abs(np.array(x_data) - x_clicked)).argmin()
+        x_closest, y_closest = x_data[closest_index], y_data[closest_index]
+
+        # Create the temporary QLabel to display the information
+        if not hasattr(self, 'info_label'):  # Check if the label already exists
+            self.info_label = QLabel(self.plot_widget)
+            self.info_label.setStyleSheet(
+                "background-color: rgba(0, 0, 0, 0.1); color: white; padding: 10px; border-radius: 5px; font-size: 30px;"
+            )
+            self.info_label.setAlignment(Qt.AlignCenter)
+
+        # Set the label text and position
+        self.info_label.setText(f"{line_name}: {y_clicked:.2f} °C")
+        self.info_label.adjustSize()
+        self.info_label.move(int(event.scenePos().x()), int(event.scenePos().y()) - 40)  # Position above the click
+
+        # Show the label
+        self.info_label.show()
+
+        # Set a QTimer to hide the label after 4 seconds
+        QTimer.singleShot(3000, self.info_label.hide)
 
 

@@ -1,6 +1,7 @@
 # gui_initialization.py
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
+import Common.constants
 from Common.utils import create_slider, create_label, create_button, toggle_variable
 from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
@@ -96,7 +97,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 handle_bk_on_toggle(dynamic_elements, static_elements),
                 create_or_stop_pwm_for_bk()
             ),
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_HLT': create_button(
             parent_widget=central_widget,
@@ -112,7 +113,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 handle_hlt_on_toggle(dynamic_elements, static_elements),
                 create_or_stop_pwm_for_hlt()
             ),
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_P1': create_button(
             parent_widget=central_widget,
@@ -127,7 +128,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 toggle_variable('P1_ON', STATE),
                 create_or_stop_pwm_for_p1()
             ),
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_P2': create_button(
             parent_widget=central_widget,
@@ -142,7 +143,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 toggle_variable('P2_ON', STATE),
                 create_or_stop_pwm_for_p2()               
             ),
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGBK': create_button(
             parent_widget=central_widget,
@@ -153,7 +154,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGHLT': create_button(
             parent_widget=central_widget,
@@ -164,7 +165,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
             ),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_sidebar_graphs': create_button(
             parent_widget=central_widget,
@@ -172,7 +173,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             size=constants_gui.BTN_SIDEBAR_MENU,
             on_normal_click=show_graph_screen_callback,
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_sidebar_settings': create_button(
             parent_widget=central_widget,
@@ -180,7 +181,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             size=constants_gui.BTN_SIDEBAR_MENU,
             on_normal_click=show_settings_screen_callback,
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_set_slider_0': create_button(
             parent_widget=central_widget,
@@ -188,7 +189,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             size=constants_gui.BTN_SLIDER_SET_MINMAX,
             on_normal_click=lambda: central_widget.parent().set_slider_value(0),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_set_slider_100': create_button(
             parent_widget=central_widget,
@@ -196,7 +197,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             size=constants_gui.BTN_SLIDER_SET_MINMAX,
             on_normal_click=lambda: central_widget.parent().set_slider_value(100),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_quit': create_button(
             parent_widget=central_widget,
@@ -204,7 +205,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             size=constants_gui.BTN_QUIT,
             on_normal_click=lambda: perform_shutdown(),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         )
     }
     return buttons

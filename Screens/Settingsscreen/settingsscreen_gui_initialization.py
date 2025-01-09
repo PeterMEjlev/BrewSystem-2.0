@@ -1,4 +1,5 @@
 # settingsscreen_gui_initialization.py
+import Common.constants
 from Screens.Settingsscreen.settingsscreen_static_gui import initialize_static_elements
 import PyQt5.QtWidgets as QtWidgets
 from Common.utils import create_button
@@ -45,7 +46,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
             on_normal_click=parent_widget.close,  # Close the parent widget
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_open_graphs_window': create_button(
             parent_widget=parent_widget,
@@ -56,7 +57,7 @@ def initialize_buttons(parent_widget):
                 QTimer.singleShot(100, parent_widget.close)
             ),         
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_quit': create_button(
             parent_widget=parent_widget,
@@ -64,7 +65,7 @@ def initialize_buttons(parent_widget):
             size=constants_gui.BTN_QUIT,
             on_normal_click=lambda: perform_shutdown(),
             on_long_click=None,
-            invisible=constants_gui.BTN_INVISIBILITY
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
     }
 
