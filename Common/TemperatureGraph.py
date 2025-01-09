@@ -27,7 +27,7 @@ class TemperatureGraph(QWidget):
         font.setPointSize(18)  # Set font size for axis ticks
         font.setBold(True)  # Set font weight to bold
         font.setWeight(75)  # Set font weight to 75
-     
+
         # Apply the font to axis ticks
         left_axis.setStyle(tickFont=font, tickTextOffset=10)
         bottom_axis.setStyle(tickFont=font, tickTextOffset=10)
@@ -37,12 +37,13 @@ class TemperatureGraph(QWidget):
         self.setFixedSize(self.width + self.x_pos, self.height + self.y_pos)  # Set widget size to include graph space
         self.plot_widget = PlotWidget(self, axisItems={'left': left_axis, 'bottom': bottom_axis})
         self.plot_widget.setBackground("#3E3E3F")  # Grey background
-        #self.plot_widget.addLegend()
-        
 
         # Adjust the size and position of the graph
         self.plot_widget.setFixedSize(self.width, self.height)  # Set graph size
         self.plot_widget.move(self.x_pos, self.y_pos)  # Adjust position (x, y)
+
+        # Enable grid lines
+        self.plot_widget.showGrid(x=False, y=True, alpha=0.08)  # Enable grid lines with subtle alpha transparency
 
         # Convert QFont to a dictionary for axis labels
         label_style = {
@@ -60,6 +61,7 @@ class TemperatureGraph(QWidget):
         self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=2), name="BK Temperature", connect="finite")
         self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=2), name="MLT Temperature", connect="finite")
         self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=2), name="HLT Temperature", connect="finite")
+
 
 
     def update_graph(self, temp_bk, temp_mlt, temp_hlt):
