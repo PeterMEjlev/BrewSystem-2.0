@@ -71,7 +71,7 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_GRAPH_ZOOM_IN_COORDINATES,
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
-            on_normal_click=parent_widget.temperature_graph.zoom_in,  # Updated
+            on_normal_click=lambda: parent_widget.temperature_graph.zoom_in(axis="y"),  # Updated
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -79,7 +79,7 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_GRAPH_ZOOM_OUT_COORDINATES,
             size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
-            on_normal_click=parent_widget.temperature_graph.zoom_out,  # Updated
+            on_normal_click=lambda: parent_widget.temperature_graph.zoom_out(axis="y"),  # Updated
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),

@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class TemperatureGraph(QWidget):
-    def __init__(self, parent=None, width=1420, height=1050, x_pos=420, y_pos=0):
+    def __init__(self, parent=None, width=1420, height=950, x_pos=400, y_pos=0):
         super().__init__(parent)
         self.width = width  # Graph width
         self.height = height  # Graph height
@@ -37,6 +37,7 @@ class TemperatureGraph(QWidget):
         self.plot_widget = PlotWidget(self, axisItems={'left': left_axis, 'bottom': bottom_axis})
         self.plot_widget.setBackground("#3E3E3F")  # Grey background
         self.plot_widget.addLegend()
+        self.legend = self.plot_widget.addLegend(offset=(500, 10))  # Adjust offset for exact positioning
 
         # Adjust the size and position of the graph
         self.plot_widget.setFixedSize(self.width, self.height)  # Set graph size
@@ -90,16 +91,36 @@ class TemperatureGraph(QWidget):
         self.mlt_line.setData(times, mlt_temps)
         self.hlt_line.setData(times, hlt_temps)
 
-    def zoom_in(self):
-        """Zoom in on the graph by adjusting the y-axis range."""
-        current_range = self.plot_widget.getViewBox().viewRange()[1]  # Get the current y-axis range
-        center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
-        new_range = [(center - (center - current_range[0]) * 0.8), (center + (current_range[1] - center) * 0.8)]  # Zoom in
-        self.plot_widget.setYRange(*new_range)
+    def zoom_in(self, axis="y"):
+        """
+        Zoom in on the graph by adjusting the specified axis range.
 
-    def zoom_out(self):
-        """Zoom out on the graph by adjusting the y-axis range."""
-        current_range = self.plot_widget.getViewBox().viewRange()[1]  # Get the current y-axis range
+        Parameters:
+        - axis (str): The axis to zoom in on ("x" or "y").
+        """
+        view_range = self.plot_widget.getViewBox().viewRange()
+        current_range = view_range[0] if axis == "x" else view_range[1]  # Select x-axis or y-axis range
         center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
-        new_range = [(center - (center - current_range[0]) * 1.25), (center + (current_range[1] - center) * 1.25)]  # Zoom out
-        self.plot_widget.setYRange(*new_range)
+        new_range = [(center - (center - current_range[0]) * 0.8), 
+                    (center + (current_range[1] - center) * 0.8)]  # Zoom in
+        if axis == "x":
+            self.plot_widget.setXRange(*new_range)
+        elif axis == "y":
+            self.plot_widget.setYRange(*new_range)
+
+    def zoom_out(self, axis="y"):
+        """
+        Zoom out on the graph by adjusting the specified axis range.
+
+        Parameters:
+        - axis (str): The axis to zoom out on ("x" or "y").
+        """
+        view_range = self.plot_widget.getViewBox().viewRange()
+        current_range = view_range[0] if axis == "x" else view_range[1]  # Select x-axis or y-axis range
+        center = (current_range[0] + current_range[1]) / 2  # Calculate the center of the range
+        new_range = [(center - (center - current_range[0]) * 1.25), 
+                    (center + (current_range[1] - center) * 1.25)]  # Zoom out
+        if axis == "x":
+            self.plot_widget.setXRange(*new_range)
+        elif axis == "y":
+            self.plot_widget.setYRange(*new_range)
