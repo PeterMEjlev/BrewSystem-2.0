@@ -3,6 +3,7 @@ from pyqtgraph import PlotWidget, mkPen, AxisItem, LegendItem
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtGui import QFont
 from datetime import datetime
+import numpy as np
 
 
 class TemperatureGraph(QWidget):
@@ -73,12 +74,12 @@ class TemperatureGraph(QWidget):
         # Calculate elapsed time in seconds since the start
         elapsed_time = (current_time - self.start_time).total_seconds()
 
-        # Prepare temperature data, replacing negative values with None
+        # Prepare temperature data, replacing negative values with NaN
         entry = {
             "time": elapsed_time,  # Store elapsed time as x-axis value
-            "bk": temp_bk if temp_bk >= 0 else None,  # Include only non-negative values
-            "mlt": temp_mlt if temp_mlt >= 0 else None,
-            "hlt": temp_hlt if temp_hlt >= 0 else None,
+            "bk": temp_bk if temp_bk >= 0 else np.nan,  # Replace negative values with NaN
+            "mlt": temp_mlt if temp_mlt >= 0 else np.nan,
+            "hlt": temp_hlt if temp_hlt >= 0 else np.nan,
         }
 
         # Append the entry to history
