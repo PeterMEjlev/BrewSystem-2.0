@@ -38,26 +38,7 @@ class GraphScreen(QWidget):
         self.temperature_graph = TemperatureGraph(self)
         self.layout.addWidget(self.temperature_graph)  # Add graph to layout
 
-        # Create a horizontal layout to control the size and placement of the slider
-        self.slider_container = QWidget(self)
-        self.slider_layout = QHBoxLayout(self.slider_container)
-        self.slider_layout.setContentsMargins(490, 0, 200, 20)  # Adjust slider placement (left, top, right, bottom)
 
-        # Add a slider for zoom control
-        self.zoom_slider = QSlider(Qt.Horizontal, self)
-        self.zoom_slider.setRange(1, 100)  # Adjust the range as needed
-        self.zoom_slider.setValue(50)  # Set the initial value
-        self.zoom_slider.setTickInterval(10)
-        self.zoom_slider.setTickPosition(QSlider.TicksBelow)
-        self.zoom_slider.setFixedHeight(100)  # Set the height of the slider
-        self.zoom_slider.setFixedWidth(1300)
-        self.slider_layout.addWidget(self.zoom_slider)  # Add slider to the slider layout
-
-        # Add the slider container to the main layout
-        self.layout.addWidget(self.slider_container)
-
-        # Optional: Connect the slider to zoom functionality
-        # self.zoom_slider.valueChanged.connect(self.update_zoom_level)
 
     def initialize_gui_elements(self):
         # Delegate GUI initialization to the external file

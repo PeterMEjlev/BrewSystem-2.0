@@ -32,6 +32,8 @@ def initialize_static_images(parent_widget, assets_path):
 
         'IMG_Zoom_Auto': create_image(parent_widget, os.path.join(assets_path, "Zoom_Auto.png"), center=(constants_gui.BTN_GRAPH_ZOOM_AUTO_COORDINATES[0]+16,constants_gui.BTN_GRAPH_ZOOM_AUTO_COORDINATES[1]+16)),
 
+        'IMG_Legend': create_image(parent_widget, os.path.join(assets_path, "Legend.png"), center=constants_gui.IMG_LEGEND_COORDINATES),
+
     }
 
 def initialize_static_text(parent_widget):
