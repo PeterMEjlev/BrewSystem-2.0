@@ -23,16 +23,16 @@ class ThermometerWorker(QObject):
         """Worker's main loop to read temperatures."""
         while self._running:
             # Read and update temperature values
-            variables.temp_BK = self.read_thermometer_bk()
-            variables.temp_MLT = self.read_thermometer_hlt()
+            #variables.temp_BK = self.read_thermometer_bk()
+            #variables.temp_MLT = self.read_thermometer_hlt()
             variables.temp_HLT = self.read_thermometer_hlt()
 
-        if variables.temp_BK >= 0:
-            self.temperature_updated_bk.emit(variables.temp_BK)
-        if variables.temp_MLT >= 0:
-            self.temperature_updated_mlt.emit(variables.temp_MLT)
-        if variables.temp_HLT >= 0:
-            self.temperature_updated_hlt.emit(variables.temp_HLT)
+            if variables.temp_BK >= 0:
+                self.temperature_updated_bk.emit(variables.temp_BK)
+            if variables.temp_MLT >= 0:
+                self.temperature_updated_mlt.emit(variables.temp_MLT)
+            if variables.temp_HLT >= 0:
+                self.temperature_updated_hlt.emit(variables.temp_HLT)
 
             # Calculate temperature progress for BK and HLT
             temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100)) if variables.temp_REG_BK > 0 else 0
