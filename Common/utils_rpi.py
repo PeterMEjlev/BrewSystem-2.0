@@ -100,13 +100,46 @@ def change_pwm_duty_cycle(pwm, duty_cycle):
         print(f"{pwm} duty cycle changed to {duty_cycle}% (simulated).")
 
 def read_ds18b20(serial_code):
+    """
+    Reads the temperature from a DS18B20 sensor.
+
+    Args:
+        serial_code (str): The serial code of the DS18B20 sensor.
+
+    Returns:
+        float: The temperature in Celsius, or None if an error occurs.
+    """
     if IS_RPI:
         try:
-            return random.uniform(35.0, 102.0)  # Replace with actual code to read the DS18B20 sensor
+            # Construct the path to the sensor's data file
+            sensor_file_path = f"/sys/bus/w1/devices/{serial_code}/w1_slave"
+            
+            # Read the file content
+            with open(sensor_file_path, 'r') as f:
+                lines = f.readlines()
+
+            # Ensure the data is valid
+            if lines[0].strip()[-3:] != "YES":
+                raise ValueError("CRC check failed for DS18B20 data.")
+
+            # Parse the temperature value from the second line
+            temp_output = lines[1].split("t=")
+            if len(temp_output) < 2:
+                raise ValueError("Temperature data not found.")
+
+            # Convert the temperature to Celsius
+            temp_c = float(temp_output[1]) / 1000.0
+            return temp_c
+        except FileNotFoundError:
+            print(f"DS18B20 sensor with serial code {serial_code} not found.")
+            return None
         except Exception as e:
-            print(e)
+            print(f"An error occurred while reading the DS18B20 sensor: {e}")
+            return None
     else:
-        return random.uniform(35.0, 102.0)  # Simulated temperature
+        # Simulated temperature for non-RPi environments
+        return random.uniform(35.0, 102.0)
+
 
 def initialize_gpio():
     """
