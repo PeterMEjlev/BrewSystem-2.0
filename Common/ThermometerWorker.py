@@ -23,8 +23,8 @@ class ThermometerWorker(QObject):
         """Worker's main loop to read temperatures."""
         while self._running:
             # Read and update temperature values
-            #variables.temp_BK = self.read_thermometer_bk()
-            #variables.temp_MLT = self.read_thermometer_hlt()
+            variables.temp_BK = self.read_thermometer_bk()
+            variables.temp_MLT = self.read_thermometer_hlt()
             variables.temp_HLT = self.read_thermometer_hlt()
 
             if variables.temp_BK >= 0:

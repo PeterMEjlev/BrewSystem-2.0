@@ -65,6 +65,7 @@ class FullScreenWindow(QMainWindow):
         self.thermometer_worker.moveToThread(self.worker_thread)
         self.worker_thread.started.connect(self.thermometer_worker.run)
         self.thermometer_worker.temperature_updated_bk.connect(self.update_temperature_label_bk)
+        self.thermometer_worker.temperature_updated_mlt.connect(self.update_temperature_label_mlt)
         self.thermometer_worker.temperature_updated_hlt.connect(self.update_temperature_label_hlt)
         self.thermometer_worker.finished.connect(self.worker_thread.quit)
         self.thermometer_worker.finished.connect(self.thermometer_worker.deleteLater)
@@ -84,6 +85,16 @@ class FullScreenWindow(QMainWindow):
         """Update the GUI with the new temperature."""
         # Update the temperature label dynamically
         label_key = 'TXT_TEMP_BK' 
+        if label_key in self.dynamic_elements:
+            if temperature >= 100:
+                self.dynamic_elements[label_key].setText("100°")
+            else:
+                self.dynamic_elements[label_key].setText(f"{temperature:.1f}°")
+
+    def update_temperature_label_mlt(self, temperature):
+        """Update the GUI with the new temperature."""
+        # Update the temperature label dynamically
+        label_key = 'TXT_TEMP_MLT' 
         if label_key in self.dynamic_elements:
             if temperature >= 100:
                 self.dynamic_elements[label_key].setText("100°")

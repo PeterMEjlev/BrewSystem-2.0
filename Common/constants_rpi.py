@@ -19,8 +19,8 @@ RPI_GPIO_PWM_P2 = 6   # GPIO 6 (Pin 31)
 
 
 # DS18B20 sensor serial codes
-DS18B20_BK = '28-00000notreal'
-DS18B20_MLT = '28-00000notreal'
+DS18B20_BK = '28-00000b80089a'
+DS18B20_MLT = '28-00000b81425c'
 DS18B20_HLT = '28-00000b80bee4'
 
 # DS18B20 sensor pin
