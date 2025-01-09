@@ -1,7 +1,8 @@
 # utils_rpi.py
 from Common.config import IS_RPI
-import random
+import random, time
 import Common.constants_rpi as constants_rpi
+
 
 if IS_RPI:
     import RPi.GPIO as GPIO
@@ -110,6 +111,7 @@ def read_ds18b20(serial_code):
         float: The temperature in Celsius, or a default value (e.g., -1.0) if an error occurs.
     """
     if IS_RPI:
+        start_time = time.time()  # Record the start time
         try:
             # Construct the path to the sensor's data file
             sensor_file_path = f"/sys/bus/w1/devices/{serial_code}/w1_slave"
@@ -129,6 +131,10 @@ def read_ds18b20(serial_code):
 
             # Convert the temperature to Celsius
             temp_c = float(temp_output[1]) / 1000.0
+
+            end_time = time.time()  # Record the end time
+            print(f"read_ds18b20 execution time: {end_time - start_time:.3f} seconds")
+
             return temp_c
         except FileNotFoundError:
             print(f"DS18B20 sensor with serial code {serial_code} not found.")
@@ -136,6 +142,7 @@ def read_ds18b20(serial_code):
         except Exception as e:
             print(f"An error occurred while reading the DS18B20 sensor: {e}")
             return -1.0  # Return a default error value
+        
     else:
         # Simulated temperature for non-RPi environments
         return random.uniform(35.0, 102.0)
