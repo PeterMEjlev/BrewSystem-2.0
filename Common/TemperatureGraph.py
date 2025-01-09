@@ -1,5 +1,5 @@
 # TemperatureGraph.py
-from pyqtgraph import PlotWidget, mkPen, AxisItem
+from pyqtgraph import PlotWidget, mkPen, AxisItem, LegendItem
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtGui import QFont
 from datetime import datetime
@@ -36,8 +36,8 @@ class TemperatureGraph(QWidget):
         self.setFixedSize(self.width + self.x_pos, self.height + self.y_pos)  # Set widget size to include graph space
         self.plot_widget = PlotWidget(self, axisItems={'left': left_axis, 'bottom': bottom_axis})
         self.plot_widget.setBackground("#3E3E3F")  # Grey background
-        self.plot_widget.addLegend()
-        self.legend = self.plot_widget.addLegend(offset=(500, 10))  # Adjust offset for exact positioning
+        #self.plot_widget.addLegend()
+        
 
         # Adjust the size and position of the graph
         self.plot_widget.setFixedSize(self.width, self.height)  # Set graph size
@@ -59,6 +59,16 @@ class TemperatureGraph(QWidget):
         self.bk_line = self.plot_widget.plot(pen=mkPen(color="r", width=2), name="BK Temperature")
         self.mlt_line = self.plot_widget.plot(pen=mkPen(color="g", width=2), name="MLT Temperature")
         self.hlt_line = self.plot_widget.plot(pen=mkPen(color="b", width=2), name="HLT Temperature")
+
+        # Add legend and position it manually
+        self.legend = LegendItem(offset=(0, 0))  # Create a legend item
+        self.legend.setParentItem(self.plot_widget.getPlotItem())  # Attach legend to the plot
+        self.legend.setOffset((self.width - 150, 10))  # Position at top-right corner
+
+        # Add plot items to legend
+        self.legend.addItem(self.bk_line, "BK Temperature")
+        self.legend.addItem(self.mlt_line, "MLT Temperature")
+        self.legend.addItem(self.hlt_line, "HLT Temperature")
 
     def update_graph(self, temp_bk, temp_mlt, temp_hlt):
         """Update the graph with new temperature data."""
