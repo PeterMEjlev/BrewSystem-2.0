@@ -73,13 +73,16 @@ class TemperatureGraph(QWidget):
         # Calculate elapsed time in seconds since the start
         elapsed_time = (current_time - self.start_time).total_seconds()
 
-        # Append new temperature data to history with the elapsed time
-        self.temperature_history.append({
+        # Prepare temperature data, replacing negative values with None
+        entry = {
             "time": elapsed_time,  # Store elapsed time as x-axis value
-            "bk": temp_bk,
-            "mlt": temp_mlt,
-            "hlt": temp_hlt
-        })
+            "bk": temp_bk if temp_bk >= 0 else None,  # Include only non-negative values
+            "mlt": temp_mlt if temp_mlt >= 0 else None,
+            "hlt": temp_hlt if temp_hlt >= 0 else None,
+        }
+
+        # Append the entry to history
+        self.temperature_history.append(entry)
 
         # Extract data for plotting
         times = [entry["time"] for entry in self.temperature_history]
