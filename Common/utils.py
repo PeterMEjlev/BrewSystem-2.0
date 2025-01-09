@@ -1,10 +1,9 @@
 # utils.py
-from PyQt5.QtWidgets import QLabel, QSlider, QPushButton
+from PyQt5.QtWidgets import QLabel, QSlider, QPushButton, QGraphicsOpacityEffect
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon, QLinearGradient, QBrush, QPainter, QPen, QColor
 from Common.utils_rpi import set_gpio_high, set_gpio_low
 import Common.constants_rpi as constants_rpi
-
 from PyQt5 import QtWidgets, QtCore
 import os
 
@@ -432,3 +431,15 @@ def update_gpio_state(variable_name, new_value):
 
     else:
         print(f"No GPIO action defined for {variable_name}.")
+
+def set_opacity(widget, opacity):
+    """
+    Set the opacity of a widget.
+
+    Parameters:
+    - widget: The widget to which the opacity effect will be applied.
+    - opacity: The desired opacity level (0.0 to 1.0).
+    """
+    effect = QGraphicsOpacityEffect()
+    effect.setOpacity(opacity)
+    widget.setGraphicsEffect(effect)

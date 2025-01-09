@@ -1,6 +1,5 @@
 from Screens.Graphscreen.graphscreen_static_gui import initialize_static_elements
-import PyQt5.QtWidgets as QtWidgets
-from Common.utils import create_button
+from Common.utils import create_button, set_opacity
 import Common.constants_gui as constants_gui
 from PyQt5.QtCore import QTimer
 from Common.shutdown import perform_shutdown
@@ -111,7 +110,10 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_GRAPH_TOGGLE_BK_VISIBILITY_COORDINATES,
             size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
-            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("bk"),  # Updated
+            on_normal_click=lambda: (
+                    parent_widget.temperature_graph.toggle_line_visibility("bk"),
+                    toggle_opacity(parent_widget, "bk")
+            ),
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -119,7 +121,10 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_GRAPH_TOGGLE_MLT_VISIBILITY_COORDINATES,
             size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
-            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("mlt"),  # Updated
+            on_normal_click=lambda: (
+                parent_widget.temperature_graph.toggle_line_visibility("mlt"),
+                toggle_opacity(parent_widget, "mlt")
+            ),  
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -127,7 +132,10 @@ def initialize_buttons(parent_widget):
             parent_widget=parent_widget,
             position=constants_gui.BTN_GRAPH_TOGGLE_HLT_VISIBILITY_COORDINATES,
             size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
-            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("hlt"),  # Updated
+            on_normal_click=lambda: (
+                parent_widget.temperature_graph.toggle_line_visibility("hlt"),  
+                toggle_opacity(parent_widget, "hlt")
+            ),
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
@@ -138,3 +146,40 @@ def initialize_buttons(parent_widget):
         button.show()
 
     return buttons
+
+def toggle_opacity(parent_widget, line_name):
+    """
+    Toggle the opacity of the legend image associated with the specified line name.
+
+    Parameters:
+    - parent_widget: The parent widget containing the static elements.
+    - line_name (str): The line name ("bk", "mlt", "hlt") whose opacity to toggle.
+    """
+    # Map line names to their corresponding legend image keys
+    legend_mapping = {
+        "bk": "IMG_Legend_BK",
+        "mlt": "IMG_Legend_MLT",
+        "hlt": "IMG_Legend_HLT"
+    }
+
+    # Ensure the line name is valid
+    if line_name not in legend_mapping:
+        raise ValueError(f"Invalid line name: {line_name}. Must be one of {list(legend_mapping.keys())}.")
+
+    # Get the legend image key
+    legend_key = legend_mapping[line_name]
+
+    # Check if a toggle state already exists for this line, if not, initialize it
+    toggle_attr = f"{line_name}_opacity_toggled"
+    if not hasattr(parent_widget, toggle_attr):
+        setattr(parent_widget, toggle_attr, False)  # Initialize toggle state
+
+    # Toggle the state
+    current_state = getattr(parent_widget, toggle_attr)
+    new_state = not current_state
+    setattr(parent_widget, toggle_attr, new_state)
+
+    # Set the opacity based on the toggle state
+    new_opacity = 0.2 if new_state else 1.0
+    set_opacity(parent_widget.static_elements[legend_key], new_opacity)
+
