@@ -134,3 +134,18 @@ class TemperatureGraph(QWidget):
             self.plot_widget.setXRange(*new_range)
         elif axis == "y":
             self.plot_widget.setYRange(*new_range)
+
+    def enable_auto_range(self, axis="both"):
+        """
+        Enables auto-range for the specified axis or both axes.
+
+        Parameters:
+        - axis (str): The axis to enable auto-range on ("x", "y", or "both").
+        """
+        if axis == "x":
+            self.plot_widget.getViewBox().enableAutoRange(axis=ViewBox.XAxis)
+        elif axis == "y":
+            self.plot_widget.getViewBox().enableAutoRange(axis=ViewBox.YAxis)
+        elif axis == "both":
+            self.plot_widget.getViewBox().enableAutoRange()
+

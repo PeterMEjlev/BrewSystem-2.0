@@ -29,6 +29,9 @@ def initialize_static_images(parent_widget, assets_path):
 
         'IMG_X_Zoom_In': create_image(parent_widget, os.path.join(assets_path, "Zoom_In.png"), center=(constants_gui.BTN_GRAPH_X_ZOOM_IN_COORDINATES[0]+16,constants_gui.BTN_GRAPH_X_ZOOM_IN_COORDINATES[1]+16)),
         'IMG_X_Zoom_Out': create_image(parent_widget, os.path.join(assets_path, "Zoom_Out.png"), center=(constants_gui.BTN_GRAPH_X_ZOOM_OUT_COORDINATES[0]+16,constants_gui.BTN_GRAPH_X_ZOOM_OUT_COORDINATES[1]+16)),
+
+        'IMG_Zoom_Auto': create_image(parent_widget, os.path.join(assets_path, "Zoom_Auto.png"), center=(constants_gui.BTN_GRAPH_ZOOM_AUTO_COORDINATES[0]+16,constants_gui.BTN_GRAPH_ZOOM_AUTO_COORDINATES[1]+16)),
+
     }
 
 def initialize_static_text(parent_widget):

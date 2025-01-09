@@ -99,6 +99,14 @@ def initialize_buttons(parent_widget):
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
+        'BTN_graph_zoom_auto': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_ZOOM_AUTO_COORDINATES,
+            size=constants_gui.BTN_GRAPH_ZOOM_SIZE,
+            on_normal_click=lambda: parent_widget.temperature_graph.enable_auto_range(),  # Updated
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
     }
 
     # Show the button explicitly
