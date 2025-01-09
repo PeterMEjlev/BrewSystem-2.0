@@ -144,3 +144,23 @@ class TemperatureGraph(QWidget):
         elif axis == "both":
             self.plot_widget.getViewBox().enableAutoRange()
 
+    def toggle_line_visibility(self, line_name):
+        """
+        Toggles the visibility of a specific line on the graph.
+
+        Parameters:
+        - line_name (str): The name of the line to toggle visibility ("bk", "mlt", "hlt").
+        """
+        if line_name == "bk":
+            current_visibility = self.bk_line.isVisible()
+            self.bk_line.setVisible(not current_visibility)
+        elif line_name == "mlt":
+            current_visibility = self.mlt_line.isVisible()
+            self.mlt_line.setVisible(not current_visibility)
+        elif line_name == "hlt":
+            current_visibility = self.hlt_line.isVisible()
+            self.hlt_line.setVisible(not current_visibility)
+        else:
+            raise ValueError(f"Invalid line_name: {line_name}. Must be 'bk', 'mlt', or 'hlt'.")
+
+

@@ -107,6 +107,30 @@ def initialize_buttons(parent_widget):
             on_long_click=None,
             invisible=constants_gui.BTN_INVISIBILITY
         ),
+        'BTN_graph_toggle_bk_visibility': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_TOGGLE_BK_VISIBILITY_COORDINATES,
+            size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
+            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("bk"),  # Updated
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_graph_toggle_mlt_visibility': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_TOGGLE_MLT_VISIBILITY_COORDINATES,
+            size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
+            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("mlt"),  # Updated
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
+        'BTN_graph_toggle_hlt_visibility': create_button(
+            parent_widget=parent_widget,
+            position=constants_gui.BTN_GRAPH_TOGGLE_HLT_VISIBILITY_COORDINATES,
+            size=constants_gui.BTN_GRAPH_TOGGLE_VISIBILITY_SIZE,
+            on_normal_click=lambda: parent_widget.temperature_graph.toggle_line_visibility("hlt"),  # Updated
+            on_long_click=None,
+            invisible=constants_gui.BTN_INVISIBILITY
+        ),
     }
 
     # Show the button explicitly
