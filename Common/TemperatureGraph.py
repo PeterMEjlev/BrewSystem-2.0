@@ -69,8 +69,6 @@ class TemperatureGraph(QWidget):
         self.mlt_line.sigClicked.connect(lambda item, points: self.show_point_info(item, points, "MLT"))
         self.hlt_line.sigClicked.connect(lambda item, points: self.show_point_info(item, points, "HLT"))
 
-
-
     def update_graph(self, temp_bk, temp_mlt, temp_hlt):
         """Update the graph with new temperature data."""
         # Capture the current timestamp
