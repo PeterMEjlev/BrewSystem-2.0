@@ -159,12 +159,15 @@ class FullScreenWindow(QMainWindow):
         else:
             self.select_new_button(selected_key, name_key)
 
+        
+
     def deselect_button(self, selected_key, name_key):
         self.hide_element(selected_key)
         self.show_element(name_key)
         self.current_selection = None
         self.hide_slider_elements()
         self.reset_all_gradients_and_colour()
+        self.reset_active_variable()
 
         if selected_key == 'IMG_BK_Selected':
             if not variables.STATE['BK_ON']:
@@ -181,6 +184,7 @@ class FullScreenWindow(QMainWindow):
         elif selected_key == 'IMG_P2_Selected':
             set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "white")
 
+        
 
     def select_new_button(self, selected_key, name_key):
         # If the same label is already active, deselect it and reset colors
@@ -190,11 +194,15 @@ class FullScreenWindow(QMainWindow):
             self.hide_slider_elements()
             return
 
-        print(selected_key)
         # Reset gradients for all labels
         self.reset_all_gradients_and_colour()
 
-        # Apply gradient only to the selected label
+        # Update the active variable
+        self.update_active_variable_for_selection(selected_key)
+        print(f"active variable = {self.active_variable}")
+
+
+        # Apply gradient or set text color only to the selected label
         if selected_key == 'IMG_BK_Selected':
             if variables.STATE['BK_ON']:
                 set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "black")
@@ -205,18 +213,16 @@ class FullScreenWindow(QMainWindow):
                 set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
             else:
                 apply_gradient_to_label(self, selected_key)
-
         elif selected_key == 'IMG_P1_Selected':
             if variables.STATE['P1_ON']:
                 set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
             else:
-                apply_gradient_to_label(self, selected_key)       
+                apply_gradient_to_label(self, selected_key)
         elif selected_key == 'IMG_P2_Selected':
             if variables.STATE['P2_ON']:
                 set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "black")
             else:
-                apply_gradient_to_label(self, selected_key)     
-        
+                apply_gradient_to_label(self, selected_key)
         else:
             apply_gradient_to_label(self, selected_key)
 
@@ -224,19 +230,19 @@ class FullScreenWindow(QMainWindow):
         self.current_selection = selected_key
         self.show_slider_elements()
 
+        # Update visibility of efficiency labels based on selection
         if selected_key == 'IMG_BK_Selected':
             self.dynamic_elements['TXT_EFFICIENCY_BK'].show()
             if not variables.STATE['HLT_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
-
         elif selected_key == 'IMG_HLT_Selected':
             self.dynamic_elements['TXT_EFFICIENCY_HLT'].show()
             if not variables.STATE['BK_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-        
         else:
             self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()    
+            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+        
    
     def reset_all_gradients_and_colour(self):
         """
@@ -314,7 +320,6 @@ class FullScreenWindow(QMainWindow):
 
     def update_active_variable(self, value):
         if self.active_variable:
-            print(f"Updating {self.active_variable} to {value}")
             setattr(variables, self.active_variable, value)
             label_key = f'TXT_{self.active_variable.upper()}'
 
@@ -342,7 +347,6 @@ class FullScreenWindow(QMainWindow):
                 change_pwm_duty_cycle(variables.HLT_PWM, value)
 
     def update_slider_value(self, variable_name):
-        variables.active_variable = variable_name  # Store the active variable globally
         self.active_variable = variable_name  # Update the local reference
 
         value = getattr(variables, variable_name, None)
@@ -378,6 +382,8 @@ class FullScreenWindow(QMainWindow):
             if not variables.STATE['HLT_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
 
+        self.reset_active_variable()
+
         # Call the base class method to ensure other events are handled
         super().mousePressEvent(event)
 
@@ -390,3 +396,33 @@ class FullScreenWindow(QMainWindow):
         if not self.settings_screen:
             self.settings_screen = SettingsScreen()
         self.settings_screen.show()
+
+    def update_active_variable_for_selection(self, selected_key):
+        """
+        Update the active variable based on the selected button key.
+
+        Parameters:
+        - selected_key (str): The key of the selected button.
+
+        Returns:
+        None
+        """
+        # Map of selected keys to corresponding active variables
+        key_to_variable_map = {
+            'IMG_BK_Selected': 'efficiency_BK',
+            'IMG_HLT_Selected': 'efficiency_HLT',
+            'IMG_P1_Selected': 'pump_speed_P1',
+            'IMG_P2_Selected': 'pump_speed_P2',
+            'IMG_REGBK_Selected': 'temp_REG_BK',
+            'IMG_REGHLT_Selected': 'temp_REG_HLT'
+        }
+
+        # Update active_variable based on the map, default to None if key is not found
+        self.active_variable = key_to_variable_map.get(selected_key)
+        variables.active_variable = self.active_variable  # Update global active_variable
+
+    def reset_active_variable(self):
+        print(f"Before reset: self.active_variable = {self.active_variable}, variables.active_variable = {variables.active_variable}")
+        self.active_variable = None
+        variables.active_variable = None
+        print(f"After reset: self.active_variable = {self.active_variable}, variables.active_variable = {variables.active_variable}")

@@ -97,7 +97,7 @@ def apply_gradient_to_label(self, selected_key):
         }
 
         label_key = label_mapping.get(selected_key)
-        print(f"Applying gradient to {label_key}")
+
         if label_key and label_key in self.dynamic_elements:
             self.dynamic_elements[label_key].gradient_colors = ('#D04158', '#F58360')
             self.dynamic_elements[label_key].update()  # Force the label to redraw
@@ -452,7 +452,6 @@ def set_label_text_color(label, color):
     - label (QLabel): The QLabel whose text color will be changed.
     - color (str): The desired color for the text (e.g., "red", "#FF5733").
     """
-    print(f"Setting {label} to {color}")
     if not isinstance(label, QLabel):
         raise ValueError("The provided widget is not a QLabel.")
     

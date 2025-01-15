@@ -1,4 +1,4 @@
-# gui_initialization.py
+# brewscreen_gui_initialization.py
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
@@ -10,9 +10,6 @@ import Common.constants_rpi as constants_rpi
 import Common.constants_gui as constants_gui
 import Common.variables as variables
 from Common.shutdown import perform_shutdown
-
-
-
 
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
     """
@@ -213,10 +210,13 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
     return buttons
 
 def handle_bk_on_toggle(dynamic_elements, static_elements):
+    print(f"In handle_bk_on_toggle: active_variable = {variables.active_variable}")
     if STATE['BK_ON']:
         dynamic_elements['TXT_EFFICIENCY_BK'].show()
-        if dynamic_elements['TXT_EFFICIENCY_BK'].isVisible():
+        if variables.active_variable == 'efficiency_BK':
             set_label_text_color(dynamic_elements['TXT_EFFICIENCY_BK'], "black")
+        else:
+            set_label_text_color(dynamic_elements['TXT_EFFICIENCY_BK'], "white")
     else:
         dynamic_elements['TXT_EFFICIENCY_BK'].hide()
         if 'IMG_Pot_BK_On_Temp_Reached' in static_elements:
@@ -233,12 +233,19 @@ def handle_hlt_on_toggle(dynamic_elements, static_elements):
             static_elements['IMG_Pot_HLT_On_Temp_Reached'].hide()
 
 def handle_p1_toggle(dynamic_elements):
-    if STATE['P1_ON'] and dynamic_elements['TXT_PUMP_SPEED_P1'].isVisible():
+    from Common.variables import active_variable
+    if STATE['P1_ON'] and active_variable == 'pump_speed_P1':
         set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
+    else:
+        set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P1'], "white")
+
 
 def handle_p2_toggle(dynamic_elements):
-    if STATE['P2_ON'] and dynamic_elements['TXT_PUMP_SPEED_P2'].isVisible():
+    from Common.variables import active_variable
+    if STATE['P2_ON'] and active_variable == 'pump_speed_P2':
         set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P2'], "black")
+    else:
+        set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P2'], "white")
 
 def create_or_stop_pwm_for_bk():
     """
