@@ -126,7 +126,8 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
                 toggle_variable('P1_ON', STATE),
-                create_or_stop_pwm_for_p1()
+                create_or_stop_pwm_for_p1(),
+                handle_p1_toggle(dynamic_elements)
             ),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
@@ -141,7 +142,8 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             on_long_click=lambda: (
                 toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
                 toggle_variable('P2_ON', STATE),
-                create_or_stop_pwm_for_p2()               
+                create_or_stop_pwm_for_p2(),
+                handle_p2_toggle(dynamic_elements)          
             ),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
@@ -229,6 +231,14 @@ def handle_hlt_on_toggle(dynamic_elements, static_elements):
         dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
         if 'IMG_Pot_HLT_On_Temp_Reached' in static_elements:
             static_elements['IMG_Pot_HLT_On_Temp_Reached'].hide()
+
+def handle_p1_toggle(dynamic_elements):
+    if STATE['P1_ON'] and dynamic_elements['TXT_PUMP_SPEED_P1'].isVisible():
+        set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
+
+def handle_p2_toggle(dynamic_elements):
+    if STATE['P2_ON'] and dynamic_elements['TXT_PUMP_SPEED_P2'].isVisible():
+        set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P2'], "black")
 
 def create_or_stop_pwm_for_bk():
     """

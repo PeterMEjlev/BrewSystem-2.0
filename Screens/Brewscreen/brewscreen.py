@@ -164,31 +164,35 @@ class FullScreenWindow(QMainWindow):
         self.show_element(name_key)
         self.current_selection = None
         self.hide_slider_elements()
-        self.reset_all_gradients()
+        self.reset_all_gradients_and_colour()
 
         if selected_key == 'IMG_BK_Selected':
             if not variables.STATE['BK_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
             else:
                 set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "white")
-        if selected_key == 'IMG_HLT_Selected':
+        elif selected_key == 'IMG_HLT_Selected':
             if not variables.STATE['HLT_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
             else:
                 set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "white")
-        elif selected_key == 'IMG_HLT_Selected' and not variables.STATE['HLT_ON']:
-            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+        elif selected_key == 'IMG_P1_Selected':
+            set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P1'], "white")
+        elif selected_key == 'IMG_P2_Selected':
+            set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "white")
+
 
     def select_new_button(self, selected_key, name_key):
         # If the same label is already active, deselect it and reset colors
         if self.current_selection == selected_key:
             self.current_selection = None
-            self.reset_all_gradients()
+            self.reset_all_gradients_and_colour()
             self.hide_slider_elements()
             return
 
+        print(selected_key)
         # Reset gradients for all labels
-        self.reset_all_gradients()
+        self.reset_all_gradients_and_colour()
 
         # Apply gradient only to the selected label
         if selected_key == 'IMG_BK_Selected':
@@ -201,6 +205,18 @@ class FullScreenWindow(QMainWindow):
                 set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
             else:
                 apply_gradient_to_label(self, selected_key)
+
+        elif selected_key == 'IMG_P1_Selected':
+            if variables.STATE['P1_ON']:
+                set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
+            else:
+                apply_gradient_to_label(self, selected_key)       
+        elif selected_key == 'IMG_P2_Selected':
+            if variables.STATE['P2_ON']:
+                set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "black")
+            else:
+                apply_gradient_to_label(self, selected_key)     
+        
         else:
             apply_gradient_to_label(self, selected_key)
 
@@ -222,7 +238,7 @@ class FullScreenWindow(QMainWindow):
             self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
             self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()    
    
-    def reset_all_gradients(self):
+    def reset_all_gradients_and_colour(self):
         """
         Reset gradients for all labels to their default state (white).
         """
@@ -236,6 +252,7 @@ class FullScreenWindow(QMainWindow):
         ]
         for label_key in labels_to_reset:
             self.dynamic_elements[label_key].gradient_colors = None
+            set_label_text_color(self.dynamic_elements[label_key], "white")
             self.dynamic_elements[label_key].update()
 
     def hide_element(self, key):
@@ -352,7 +369,7 @@ class FullScreenWindow(QMainWindow):
 
         if not clicked_on_button and self.current_selection is not None:
             # If click is outside buttons and a button is currently selected, reset colors and deselect
-            self.reset_all_gradients()
+            self.reset_all_gradients_and_colour()
             self.current_selection = None
             self.hide_slider_elements()
 
