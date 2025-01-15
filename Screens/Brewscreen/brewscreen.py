@@ -2,7 +2,7 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
-from Common.utils import toggle_images_visibility, apply_gradient_to_label
+from Common.utils import toggle_images_visibility, apply_gradient_to_label, set_label_text_color
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants_gui as constants_gui
@@ -166,8 +166,16 @@ class FullScreenWindow(QMainWindow):
         self.hide_slider_elements()
         self.reset_all_gradients()
 
-        if selected_key == 'IMG_BK_Selected' and not variables.STATE['BK_ON']:
-            self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+        if selected_key == 'IMG_BK_Selected':
+            if not variables.STATE['BK_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+            else:
+                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "white")
+        if selected_key == 'IMG_HLT_Selected':
+            if not variables.STATE['HLT_ON']:
+                self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+            else:
+                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "white")
         elif selected_key == 'IMG_HLT_Selected' and not variables.STATE['HLT_ON']:
             self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
 
@@ -183,7 +191,18 @@ class FullScreenWindow(QMainWindow):
         self.reset_all_gradients()
 
         # Apply gradient only to the selected label
-        apply_gradient_to_label(self, selected_key)
+        if selected_key == 'IMG_BK_Selected':
+            if variables.STATE['BK_ON']:
+                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "black")
+            else:
+                apply_gradient_to_label(self, selected_key)
+        elif selected_key == 'IMG_HLT_Selected':
+            if variables.STATE['HLT_ON']:
+                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
+            else:
+                apply_gradient_to_label(self, selected_key)
+        else:
+            apply_gradient_to_label(self, selected_key)
 
         # Update the current selection
         self.current_selection = selected_key

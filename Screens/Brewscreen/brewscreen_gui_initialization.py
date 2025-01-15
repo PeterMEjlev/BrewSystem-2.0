@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
-from Common.utils import create_slider, create_label, create_button, toggle_variable
+from Common.utils import create_slider, create_button, toggle_variable, set_label_text_color
 from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
@@ -213,6 +213,8 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
 def handle_bk_on_toggle(dynamic_elements, static_elements):
     if STATE['BK_ON']:
         dynamic_elements['TXT_EFFICIENCY_BK'].show()
+        if dynamic_elements['TXT_EFFICIENCY_BK'].isVisible():
+            set_label_text_color(dynamic_elements['TXT_EFFICIENCY_BK'], "black")
     else:
         dynamic_elements['TXT_EFFICIENCY_BK'].hide()
         if 'IMG_Pot_BK_On_Temp_Reached' in static_elements:
@@ -221,6 +223,8 @@ def handle_bk_on_toggle(dynamic_elements, static_elements):
 def handle_hlt_on_toggle(dynamic_elements, static_elements):
     if STATE['HLT_ON']:
         dynamic_elements['TXT_EFFICIENCY_HLT'].show()
+        if dynamic_elements['TXT_EFFICIENCY_HLT'].isVisible():
+            set_label_text_color(dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
     else:
         dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
         if 'IMG_Pot_HLT_On_Temp_Reached' in static_elements:

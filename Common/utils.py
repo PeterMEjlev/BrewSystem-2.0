@@ -97,6 +97,7 @@ def apply_gradient_to_label(self, selected_key):
         }
 
         label_key = label_mapping.get(selected_key)
+        print(f"Applying gradient to {label_key}")
         if label_key and label_key in self.dynamic_elements:
             self.dynamic_elements[label_key].gradient_colors = ('#D04158', '#F58360')
             self.dynamic_elements[label_key].update()  # Force the label to redraw
@@ -360,7 +361,6 @@ def toggle_variable(variable_name, globals_dict):
     else:
         print(f"{variable_name} does not exist in the provided scope.")
 
-
 def adjust_image_height(image_label, percentage, original_height):
     """
     Adjust the height of an image based on a percentage of a given original height without maintaining the aspect ratio,
@@ -443,3 +443,21 @@ def set_opacity(widget, opacity):
     effect = QGraphicsOpacityEffect()
     effect.setOpacity(opacity)
     widget.setGraphicsEffect(effect)
+
+def set_label_text_color(label, color):
+    """
+    Changes the text color of a given QLabel.
+
+    Parameters:
+    - label (QLabel): The QLabel whose text color will be changed.
+    - color (str): The desired color for the text (e.g., "red", "#FF5733").
+    """
+    print(f"Setting {label} to {color}")
+    if not isinstance(label, QLabel):
+        raise ValueError("The provided widget is not a QLabel.")
+    
+    # Update the label's stylesheet to change the text color
+    current_style = label.styleSheet()
+    new_style = f"color: {color};"
+    label.gradient_colors = None
+    label.setStyleSheet(f"{current_style} {new_style}")
