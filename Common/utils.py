@@ -387,8 +387,7 @@ def adjust_image_height(image_label, percentage, original_height):
     # Calculate the new height based on the percentage and given original height
     new_height = int(original_height * (percentage / 100.0))
     if new_height <= 0:
-        print("Invalid percentage: height cannot be zero or negative.")
-        return
+        new_height = original_height
 
     # Resize the pixmap to the original width and the new height
     resized_pixmap = pixmap.scaled(original_width, new_height, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
