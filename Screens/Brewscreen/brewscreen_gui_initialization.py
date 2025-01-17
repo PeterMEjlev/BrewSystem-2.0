@@ -52,11 +52,27 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         int(constants_gui.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
         constants_gui.SLIDER_SIZE[1] + 10  # Same height as the real slider
     )
-    fake_slider.setStyleSheet("""
-        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                    stop:0 #F04C65, stop:1 #F58361); /* Gradient for the fake slider */
-        border-radius: 20px;
-    """)
+
+    # Dynamically update the border-radius based on slider width
+    def update_border_radius(value):
+        max_width = constants_gui.SLIDER_SIZE[0]
+        new_width = int((value / slider.maximum()) * max_width)
+        border_radius = min(new_width // 2, 20)  # Border-radius should never exceed half the width
+        fake_slider.setStyleSheet(f"""
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                        stop:0 #F04C65, stop:1 #F58361); /* Gradient for the fake slider */
+            border-radius: {border_radius}px;
+        """)
+        fake_slider.setGeometry(
+            fake_slider.geometry().x(),
+            fake_slider.geometry().y(),
+            new_width,
+            fake_slider.geometry().height()
+        )
+
+    # Connect the valueChanged signal to update the border-radius
+    slider.valueChanged.connect(update_border_radius)
+
     fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider.hide()
 
@@ -64,6 +80,8 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     value_label = dynamic_elements.get('TXT_SLIDER_VALUE', None)
 
     return slider, value_label, fake_slider, fake_slider_background
+
+
 
 def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback, instance):
     """

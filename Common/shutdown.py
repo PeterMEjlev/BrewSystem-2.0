@@ -4,6 +4,7 @@ import Common.constants_rpi as constants_rpi
 from Common.config import IS_RPI
 import Common.variables as variables
 
+
 if (IS_RPI):
     import RPi.GPIO as GPIO
 

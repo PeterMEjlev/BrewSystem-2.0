@@ -62,3 +62,5 @@ def select_new_button(instance, selected_key: str, name_key: str) -> None:
 
     # Update current selection
     instance.current_selection = selected_key
+
+    

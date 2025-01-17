@@ -22,6 +22,10 @@ def initialize_static_images(parent_widget, assets_path):
         'IMG_Sidebar_Icon_Graph': create_image(parent_widget, os.path.join(assets_path, "Icon_Graph.png"), center=constants_gui.IMG_SIDEBAR_ICON_GRAPHS),
         'IMG_Sidebar_Icon_Settings': create_image(parent_widget, "Icon_Settings.png", center=constants_gui.IMG_SIDEBAR_ICON_SETTINGS),
         'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, os.path.join(assets_path, "Konfus_Logo.png"), center=constants_gui.IMG_KONFUS_LOGO),
+
+        # Text
+        'IMG_Settings_screen_static_text': create_image(parent_widget, os.path.join(assets_path, "Settings_screen_static.png"), center=constants_gui.IMG_SETTINGS_SCREEN_STATIC_TEXT_COORDINATES),
+
     }
 
 def initialize_static_text(parent_widget):
@@ -36,8 +40,7 @@ def initialize_static_text(parent_widget):
         'TXT_SIDEBAR_SETTINGS': create_label(parent_widget, "Settings", color='white', size=constants_gui.TXT_SIDEBAR_TEXT_SIZE, center=constants_gui.TXT_SIDEBAR_TEXT_SETTINGS,  alignment=Qt.AlignLeft),
 
         # Settings
-        'TXT_Settings_1': create_label(parent_widget, "REG starting \n temperature BK", color='white', size=constants_gui.TXT_SETTINGS_SIZE, center=constants_gui.TXT_SETTINGS_1_COORDINATES, width = 300, height = 200),
-        'TXT_Settings_2': create_label(parent_widget, "REG starting \n temperature HLT", color='white', size=constants_gui.TXT_SETTINGS_SIZE, center=constants_gui.TXT_SETTINGS_2_COORDINATES, width = 300, height = 200),
+        
 
 
 

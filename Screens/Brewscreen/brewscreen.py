@@ -323,7 +323,5 @@ class FullScreenWindow(QMainWindow):
         variables.active_variable = self.active_variable  # Update global active_variable
 
     def reset_active_variable(self):
-        print(f"Before reset: self.active_variable = {self.active_variable}, variables.active_variable = {variables.active_variable}")
         self.active_variable = None
         variables.active_variable = None
-        print(f"After reset: self.active_variable = {self.active_variable}, variables.active_variable = {variables.active_variable}")
