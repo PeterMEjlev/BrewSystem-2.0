@@ -6,6 +6,7 @@ from Common.utils_rpi import set_gpio_high, set_gpio_low
 import Common.constants_rpi as constants_rpi
 from PyQt5 import QtWidgets, QtCore
 import os
+from Common.config import IS_WRONG_RESOLUTION
 
 def create_label(parent_widget, text, color='white', gradient_colors=None, size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
     """
@@ -39,6 +40,9 @@ def create_label(parent_widget, text, color='white', gradient_colors=None, size=
 
     # Create the label
     label = GradientLabel(text, gradient_colors, parent_widget)
+
+    if IS_WRONG_RESOLUTION:
+        size = size * 0.5
 
     # Set the font size and custom font
     if custom_font:

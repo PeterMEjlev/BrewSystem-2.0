@@ -8,7 +8,6 @@ def select_button(instance, selected_key, name_key):
     else:
         select_new_button(instance, selected_key, name_key)
 
-
 def deselect_button(instance, selected_key, name_key):
     instance.hide_element(selected_key)
     instance.show_element(name_key)
@@ -32,7 +31,6 @@ def deselect_button(instance, selected_key, name_key):
     elif selected_key == 'IMG_P2_Selected':
         set_label_text_color(instance.dynamic_elements['TXT_PUMP_SPEED_P2'], "white")
  
-
 def select_new_button(instance, selected_key: str, name_key: str) -> None:
     """
     Handles the logic when a new button is selected.

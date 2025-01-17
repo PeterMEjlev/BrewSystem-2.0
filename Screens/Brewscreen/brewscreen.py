@@ -154,9 +154,7 @@ class FullScreenWindow(QMainWindow):
 
         
         for label in self.slider_plus_minus_labels.values():
-            label.hide()
-
-    
+            label.hide() 
 
     def reset_current_selection(self) -> None:
         """Reset the current selection and hide slider elements."""
