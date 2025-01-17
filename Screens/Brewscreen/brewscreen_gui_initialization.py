@@ -210,7 +210,6 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
     return buttons
 
 def handle_bk_on_toggle(dynamic_elements, static_elements):
-    print(f"In handle_bk_on_toggle: active_variable = {variables.active_variable}")
     if STATE['BK_ON']:
         dynamic_elements['TXT_EFFICIENCY_BK'].show()
         if variables.active_variable == 'efficiency_BK':
@@ -225,8 +224,10 @@ def handle_bk_on_toggle(dynamic_elements, static_elements):
 def handle_hlt_on_toggle(dynamic_elements, static_elements):
     if STATE['HLT_ON']:
         dynamic_elements['TXT_EFFICIENCY_HLT'].show()
-        if dynamic_elements['TXT_EFFICIENCY_HLT'].isVisible():
+        if variables.active_variable == 'efficiency_HLT':
             set_label_text_color(dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
+        else:
+            set_label_text_color(dynamic_elements['TXT_EFFICIENCY_HLT'], "white")
     else:
         dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
         if 'IMG_Pot_HLT_On_Temp_Reached' in static_elements:
