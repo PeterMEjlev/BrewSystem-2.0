@@ -15,6 +15,7 @@ from Screens.Graphscreen.graphscreen import GraphScreen
 from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle, initialize_gpio
 import Screens.Brewscreen.brewscreen_helpers as brewscreen_helpers
+import Screens.Brewscreen.brewscreen_events as brewscreen_events
 
 
 class FullScreenWindow(QMainWindow):
@@ -123,9 +124,10 @@ class FullScreenWindow(QMainWindow):
         static_elements=self.static_elements,
         dynamic_elements=self.dynamic_elements,
         toggle_images_visibility_callback=toggle_images_visibility,
-        select_button_callback=self.select_button,
+        select_button_callback=brewscreen_events.select_button,
         show_graph_screen_callback=self.show_graph_screen,
-        show_settings_screen_callback=self.show_settings_screen
+        show_settings_screen_callback=self.show_settings_screen,
+        instance=self
         )
 
         hide_GUI_elements(self.static_elements, self.dynamic_elements, self.buttons)
@@ -154,85 +156,13 @@ class FullScreenWindow(QMainWindow):
         for label in self.slider_plus_minus_labels.values():
             label.hide()
 
-    def select_button(self, selected_key, name_key):
-        if self.current_selection == selected_key:
-            self.deselect_button(selected_key, name_key)
-        else:
-            self.select_new_button(selected_key, name_key)
-
-        
-
-    def deselect_button(self, selected_key, name_key):
-        self.hide_element(selected_key)
-        self.show_element(name_key)
-        self.current_selection = None
-        self.hide_slider_elements()
-        brewscreen_helpers.reset_all_gradients_and_colour(self)
-        self.reset_active_variable()
-
-        if selected_key == 'IMG_BK_Selected':
-            if not variables.STATE['BK_ON']:
-                self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-            else:
-                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "white")
-        elif selected_key == 'IMG_HLT_Selected':
-            if not variables.STATE['HLT_ON']:
-                self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
-            else:
-                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "white")
-        elif selected_key == 'IMG_P1_Selected':
-            set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P1'], "white")
-        elif selected_key == 'IMG_P2_Selected':
-            set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "white")
-
-        
-
-    def select_new_button(self, selected_key: str, name_key: str) -> None:
-        """
-        Handles the logic when a new button is selected.
-
-        Parameters:
-        - selected_key: The key of the selected button (e.g., 'IMG_BK_Selected').
-        - name_key: The associated name key for the selected button.
-
-        Returns:
-        None
-        """
-        if self.current_selection == selected_key:
-            # If already selected, reset state and return
-            self.reset_current_selection()
-            return
-
-        # Reset gradients and prepare for new selection
-        brewscreen_helpers.reset_all_gradients_and_colour(self)
-
-        # Update active variable based on the selected button
-        self.update_active_variable_for_selection(selected_key)
-        print(f"Active variable updated to: {self.active_variable}")
-
-        # Apply styles or gradients to the selected button
-        brewscreen_helpers.apply_selection_styles(self, selected_key)
-
-        # Update slider elements and visibility
-        brewscreen_helpers.update_slider_elements(self, selected_key)
-
-        # Update current selection
-        self.current_selection = selected_key
+    
 
     def reset_current_selection(self) -> None:
         """Reset the current selection and hide slider elements."""
         self.current_selection = None
         self.reset_all_gradients_and_colour()
         self.hide_slider_elements()
-
-    
-
-    
-
-
-        
-   
-    
 
     def hide_element(self, key):
         if key in self.static_elements:

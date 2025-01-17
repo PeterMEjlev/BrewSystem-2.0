@@ -65,7 +65,7 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback):
+def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback, instance):
     """
     Initializes the buttons used in the GUI.
 
@@ -85,7 +85,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.IMG_POT_BK_COORDINATES,
             size=constants_gui.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_BK_Selected', 'TXT_EFFICIENCY_BK'),
+                select_button_callback(instance, 'IMG_BK_Selected', 'TXT_EFFICIENCY_BK'),  # Pass self explicitly
                 central_widget.parent().update_slider_value('efficiency_BK')  # Update slider for BK
             ),
             on_long_click=lambda: (
@@ -101,7 +101,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.IMG_POT_HLT_COORDINATES,
             size=constants_gui.BTN_POT_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_HLT_Selected', 'TXT_EFFICIENCY_HLT'),
+                select_button_callback(instance, 'IMG_HLT_Selected', 'TXT_EFFICIENCY_HLT'),
                 central_widget.parent().update_slider_value('efficiency_HLT')  # Update slider for HLT
             ),
             on_long_click=lambda: (
@@ -117,7 +117,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.IMG_PUMP_BOX_P1_COORDINATES,
             size=constants_gui.BTN_PUMP_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_P1_Selected', 'TXT_P1'),
+                select_button_callback(instance, 'IMG_P1_Selected', 'TXT_P1'),
                 central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
             ),
             on_long_click=lambda: (
@@ -133,7 +133,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.IMG_PUMP_BOX_P2_COORDINATES,
             size=constants_gui.BTN_PUMP_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_P2_Selected', 'TXT_P2'),
+                select_button_callback(instance, 'IMG_P2_Selected', 'TXT_P2'),
                 central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
             ),
             on_long_click=lambda: (
@@ -149,7 +149,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.BTN_REG_ON_OFF_BK_COORDINATES,
             size=constants_gui.BTN_REG_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_REGBK_Selected', 'TXT_REG_BK'),
+                select_button_callback(instance, 'IMG_REGBK_Selected', 'TXT_REG_BK'),
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
             on_long_click=None,
@@ -160,7 +160,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.BTN_REG_ON_OFF_HLT_COORDINATES,
             size=constants_gui.BTN_REG_ON_OFF,
             on_normal_click=lambda: (
-                select_button_callback('IMG_REGHLT_Selected', 'TXT_REG_HLT'),
+                select_button_callback(instance, 'IMG_REGHLT_Selected', 'TXT_REG_HLT'),
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
             ),
             on_long_click=None,
