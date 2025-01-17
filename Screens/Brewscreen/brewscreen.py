@@ -14,6 +14,7 @@ from Common.TemperatureGraph import TemperatureGraph
 from Screens.Graphscreen.graphscreen import GraphScreen
 from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle, initialize_gpio
+import Screens.Brewscreen.brewscreen_helpers as brewscreen_helpers
 
 
 class FullScreenWindow(QMainWindow):
@@ -166,7 +167,7 @@ class FullScreenWindow(QMainWindow):
         self.show_element(name_key)
         self.current_selection = None
         self.hide_slider_elements()
-        self.reset_all_gradients_and_colour()
+        brewscreen_helpers.reset_all_gradients_and_colour(self)
         self.reset_active_variable()
 
         if selected_key == 'IMG_BK_Selected':
@@ -203,17 +204,17 @@ class FullScreenWindow(QMainWindow):
             return
 
         # Reset gradients and prepare for new selection
-        self.reset_all_gradients_and_colour()
+        brewscreen_helpers.reset_all_gradients_and_colour(self)
 
         # Update active variable based on the selected button
         self.update_active_variable_for_selection(selected_key)
         print(f"Active variable updated to: {self.active_variable}")
 
         # Apply styles or gradients to the selected button
-        self.apply_selection_styles(selected_key)
+        brewscreen_helpers.apply_selection_styles(self, selected_key)
 
         # Update slider elements and visibility
-        self.update_slider_elements(selected_key)
+        brewscreen_helpers.update_slider_elements(self, selected_key)
 
         # Update current selection
         self.current_selection = selected_key
@@ -224,89 +225,14 @@ class FullScreenWindow(QMainWindow):
         self.reset_all_gradients_and_colour()
         self.hide_slider_elements()
 
-    def apply_selection_styles(self, selected_key: str) -> None:
-        """
-        Apply the appropriate styles or gradients based on the selected button.
+    
 
-        Parameters:
-        - selected_key: The key of the selected button.
-
-        Returns:
-        None
-        """
-        if selected_key == 'IMG_BK_Selected':
-            if variables.STATE['BK_ON']:
-                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_BK'], "black")
-            else:
-                apply_gradient_to_label(self, selected_key)
-
-        elif selected_key == 'IMG_HLT_Selected':
-            if variables.STATE['HLT_ON']:
-                set_label_text_color(self.dynamic_elements['TXT_EFFICIENCY_HLT'], "black")
-            else:
-                apply_gradient_to_label(self, selected_key)
-
-        elif selected_key == 'IMG_P1_Selected':
-            if variables.STATE['P1_ON']:
-                set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
-            else:
-                apply_gradient_to_label(self, selected_key)
-
-        elif selected_key == 'IMG_P2_Selected':
-            if variables.STATE['P2_ON']:
-                set_label_text_color(self.dynamic_elements['TXT_PUMP_SPEED_P2'], "black")
-            else:
-                apply_gradient_to_label(self, selected_key)
-
-        else:
-            apply_gradient_to_label(self, selected_key)
-
-    def update_slider_elements(self, selected_key: str) -> None:
-        """
-        Update the slider elements based on the selected button.
-
-        Parameters:
-        - selected_key: The key of the selected button.
-
-        Returns:
-        None
-        """
-        self.show_slider_elements()
-
-        # Update visibility of efficiency labels based on selection
-        if selected_key == 'IMG_BK_Selected':
-            self.dynamic_elements['TXT_EFFICIENCY_BK'].show()
-            if not variables.STATE['HLT_ON']:
-                self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
-
-        elif selected_key == 'IMG_HLT_Selected':
-            self.dynamic_elements['TXT_EFFICIENCY_HLT'].show()
-            if not variables.STATE['BK_ON']:
-                self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-
-        else:
-            self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+    
 
 
         
    
-    def reset_all_gradients_and_colour(self):
-        """
-        Reset gradients for all labels to their default state (white).
-        """
-        labels_to_reset = [
-            'TXT_EFFICIENCY_BK',
-            'TXT_EFFICIENCY_HLT',
-            'TXT_TEMP_REG_BK',
-            'TXT_TEMP_REG_HLT',
-            'TXT_PUMP_SPEED_P1',
-            'TXT_PUMP_SPEED_P2'
-        ]
-        for label_key in labels_to_reset:
-            self.dynamic_elements[label_key].gradient_colors = None
-            set_label_text_color(self.dynamic_elements[label_key], "white")
-            self.dynamic_elements[label_key].update()
+    
 
     def hide_element(self, key):
         if key in self.static_elements:
@@ -420,7 +346,7 @@ class FullScreenWindow(QMainWindow):
 
         if not clicked_on_button and self.current_selection is not None:
             # If click is outside buttons and a button is currently selected, reset colors and deselect
-            self.reset_all_gradients_and_colour()
+            brewscreen_helpers.reset_all_gradients_and_colour(self)
             self.current_selection = None
             self.hide_slider_elements()
 
