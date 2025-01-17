@@ -19,7 +19,7 @@ def is_laptop():
 
 if is_laptop():
     print("Running on a laptop.")
-    IS_WRONG_RESOLUTION = True
+    RUNNING_ON_LAPTOP = True
 else:
     print("Not running on a laptop.")
-    IS_WRONG_RESOLUTION = False
+    RUNNING_ON_LAPTOP = False
