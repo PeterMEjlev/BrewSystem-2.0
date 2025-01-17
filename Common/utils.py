@@ -42,7 +42,7 @@ def create_label(parent_widget, text, color='white', gradient_colors=None, size=
     label = GradientLabel(text, gradient_colors, parent_widget)
 
     if IS_WRONG_RESOLUTION:
-        size = size * 0.5
+        size = int(size * 0.5)
 
     # Set the font size and custom font
     if custom_font:
