@@ -1,11 +1,9 @@
-import json
-import time
+import json, time, pygame, wave, sys, os
 from openai import OpenAI
 from pathlib import Path
-import pygame
 import sounddevice as sd
-import wave
-import sys, os
+import numpy as np
+
 try:
     import Common.variables as variables
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
