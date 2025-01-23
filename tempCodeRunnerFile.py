@@ -1,1 +1,1 @@
-FullScreenWindow
+["brew system", "bruce system", "brew", "system", "bruce"]
