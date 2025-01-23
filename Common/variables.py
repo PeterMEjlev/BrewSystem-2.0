@@ -39,6 +39,9 @@ STATE = {
 
 active_variable = None
 
+#ChatGPT API
+talking_with_chat = False
+
 
 def initialize_variables_from_settings():
     """Load settings from the JSON file and update variables."""

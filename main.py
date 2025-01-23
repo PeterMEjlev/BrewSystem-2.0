@@ -5,12 +5,8 @@ from Screens.Brewscreen.brewscreen import FullScreenWindow
 from ChatGPT_API.Vosk_STT import KeywordDetector
 from Common.get_setting import get_setting
 
-def handle_keyword(keyword, thread_id):
-    """
-    Callback function to handle detected keywords.
-    """
-    print(f"Thread {thread_id}: Detected keyword: {keyword}")
-    # Perform actions here, like updating the GUI or triggering events.
+
+
 
 def main():
     # Absolute path to the Vosk model
@@ -25,7 +21,7 @@ def main():
     )
 
     # Start two detection threads directly
-    detector.start_detection(callback=handle_keyword, threads=2, delays=[0, 0.5])
+    detector.start_detection(threads=2, delays=[0, 0.5])
 
     # Start the PyQt application
     app = QApplication(sys.argv)

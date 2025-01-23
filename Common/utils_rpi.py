@@ -147,8 +147,6 @@ def read_ds18b20(serial_code):
         # Simulated temperature for non-RPi environments
         return random.uniform(35.0, 102.0)
 
-
-
 def initialize_gpio():
     """
     Initializes the GPIO pins for the Raspberry Pi.
