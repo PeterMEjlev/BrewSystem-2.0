@@ -12,20 +12,72 @@ except:
     pass
 
 
-def record_audio(filename, duration=6, sample_rate=44100):
+def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_duration=4):
     """
-    Records audio and saves it as a .wav file.
+    Records audio until silence is detected and saves it as a .wav file.
+    
+    Parameters:
+    - filename: The output .wav file name.
+    - sample_rate: The sample rate of the audio.
+    - silence_threshold: The RMS threshold below which audio is considered silent.
+    - silence_duration: The number of consecutive seconds of silence to stop recording.
     """
     print("Recording (GPT)...")
-    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=2, dtype='int16')
-    sd.wait()
-    print("Recording complete (GPT).")
+    duration_per_chunk = 0.5  # Record in small chunks (0.5 seconds each)
+    chunk_samples = int(sample_rate * duration_per_chunk)
+    silence_chunks = int(silence_duration / duration_per_chunk)
+    silence_counter = 0
 
-    with wave.open(filename, "wb") as wf:
-        wf.setnchannels(2)
-        wf.setsampwidth(2)
-        wf.setframerate(sample_rate)
-        wf.writeframes(audio_data.tobytes())
+    audio_buffer = []  # To store audio data
+
+    try:
+        while True:
+            # Record a small chunk of audio
+            audio_chunk = sd.rec(chunk_samples, samplerate=sample_rate, channels=1, dtype='int16')
+            sd.wait()
+
+            # Check for invalid values
+            if np.isnan(audio_chunk).any():
+                print("NaN values detected in audio_chunk. Skipping this chunk.")
+                continue
+
+            # Append the chunk to the buffer
+            audio_buffer.append(audio_chunk)
+
+            # Calculate RMS (volume) of the chunk
+            try:
+                rms = np.sqrt(np.mean(audio_chunk**2))
+            except Exception as e:
+                print(f"Error calculating RMS: {e}")
+                rms = 0.0  # Treat as silence for safety
+
+            # Debugging information
+            print(f"Chunk RMS: {rms}, min: {np.min(audio_chunk)}, max: {np.max(audio_chunk)}")
+
+            if rms < silence_threshold:
+                silence_counter += 1
+            else:
+                silence_counter = 0  # Reset the counter if we detect speech
+
+            # Stop recording if enough silence is detected
+            if silence_counter >= silence_chunks:
+                print("Silence detected. Stopping recording.")
+                break
+
+        # Combine all chunks into a single array
+        audio_data = np.concatenate(audio_buffer, axis=0)
+
+        # Save the recorded audio to a .wav file
+        with wave.open(filename, "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(sample_rate)
+            wf.writeframes(audio_data.tobytes())
+
+        print("Recording complete (GPT).")
+    except Exception as e:
+        print(f"Error during recording: {e}")
+
 
 def speech_to_text(audio_file_path):
     """
