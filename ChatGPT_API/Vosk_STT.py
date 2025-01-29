@@ -93,10 +93,8 @@ class KeywordDetector:
 
                                     # Call AI Assistant in the same thread
                                     print(f"Thread {id}: Calling AI Assistant...")
-                                    if variables.talking_with_chat == False:
-                                        call_ai_assistant("Hey Brewsystem")  # Perform AI assistant logic here
-                                    if variables.talking_with_chat == True:
-                                        break
+                                    call_ai_assistant("Hey Brewsystem")  # Perform AI assistant logic here
+                                    self.stop_detection()
 
                     # Add a delay to respect the audio duration
                     time.sleep(self.audio_duration)

@@ -7,6 +7,7 @@ def select_button(instance, selected_key, name_key):
         deselect_button(instance, selected_key, name_key)
     else:
         select_new_button(instance, selected_key, name_key)
+        
 
 def deselect_button(instance, selected_key, name_key):
     instance.hide_element(selected_key)

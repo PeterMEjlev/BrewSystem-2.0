@@ -5,19 +5,14 @@ from Screens.Brewscreen.brewscreen import FullScreenWindow
 from ChatGPT_API.Vosk_STT import KeywordDetector
 from Common.get_setting import get_setting
 
-
-
-
 def main():
     # Absolute path to the Vosk model
     model_path = os.path.join(os.path.dirname(__file__), "ChatGPT_API", "vosk-model-small-en-us-0.15")
 
-    keywords = get_setting("chatGPT_assistant_keywords")
-
     # Initialize the KeywordDetector
     detector = KeywordDetector(
         model_path=model_path,  # Provide the absolute path
-        keywords=keywords,
+        keywords=get_setting("chatGPT_assistant_keywords"),
     )
 
     # Start two detection threads directly

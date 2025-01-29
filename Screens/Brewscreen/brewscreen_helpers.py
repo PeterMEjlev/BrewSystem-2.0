@@ -78,7 +78,8 @@ def update_slider_elements(self, selected_key: str) -> None:
             self.dynamic_elements['TXT_EFFICIENCY_HLT'].show()
             if not variables.STATE['BK_ON']:
                 self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-
+                
         else:
-            self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
-            self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+            #self.dynamic_elements['TXT_EFFICIENCY_BK'].hide()
+            #self.dynamic_elements['TXT_EFFICIENCY_HLT'].hide()
+            pass

@@ -12,7 +12,7 @@ except:
     pass
 
 
-def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_duration=4):
+def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_duration=3):
     """
     Records audio until silence is detected and saves it as a .wav file.
     
@@ -77,7 +77,6 @@ def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_dur
         print("Recording complete (GPT).")
     except Exception as e:
         print(f"Error during recording: {e}")
-
 
 def speech_to_text(audio_file_path):
     """
@@ -245,7 +244,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
 
             # Interactive conversation loop
             while True:
-                print("Please speak your query (6 seconds max):")
+                print("Please speak your query:")
                 audio_path = "user_input.wav"
 
                 # Record the user's query
@@ -259,8 +258,8 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
 
                 print(f"You: {user_input}")
 
-                # Break the loop if the user says "exit" or "quit"
-                if user_input.lower() in ["exit", "quit"]:
+                # Break the loop if the user says a sentence containing "exit" or "quit"
+                if "end" in str(user_input):
                     print("Goodbye!")
                     text_to_speech("Goodbye!")
                     variables.talking_with_chat = False
@@ -281,7 +280,6 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
 
         except Exception as e:
             print(f"Error in call_ai_assistant: {e}")
-
 
 def main():
     while True:

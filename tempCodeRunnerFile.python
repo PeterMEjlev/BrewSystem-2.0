@@ -1,0 +1,6 @@
+
+
+
+
+if "end" in str("can you end this conversation?"):
+                    print("Goodbye!")
