@@ -256,13 +256,10 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
                     text_to_speech("No input detected. Please try again.")
                     continue
 
+                print(f"DEBUG: user_input type = {type(user_input)}, value = {user_input}")
                 print(f"You: {user_input}")
-
-                # Break the loop if the user says a sentence containing "exit" or "quit"
-                if "end" in str(user_input):
+                if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
                     print("Goodbye!")
-                    text_to_speech("Goodbye!")
-                    variables.talking_with_chat = False
                     break
 
                 # Add user input to the conversation
@@ -281,36 +278,3 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
         except Exception as e:
             print(f"Error in call_ai_assistant: {e}")
 
-def main():
-    while True:
-        print("Please speak your query (5 seconds max):")
-        audio_path = "user_input.wav"
-
-        # Record the user's query
-        record_audio(audio_path)
-        user_input = speech_to_text(audio_path)
-
-        if not user_input:
-            print("No input detected. Please try again.")
-            continue
-
-        print(f"You: {user_input}")
-        if user_input.lower() in ["exit", "quit"]:
-            print("Goodbye!")
-            break
-
-        # Send the user input to the assistant and get the response
-        conversation = [
-            {"role": "user", "content": user_input}
-        ]
-        response = assistant_ai(conversation)
-        print(f"Assistant: {response}")
-
-        # Play the assistant's response aloud
-        text_to_speech(response)
-
-        # Ensure playback is complete before proceeding
-        print("Playback complete. Ready for the next query.")
-
-if __name__ == "__main__":
-    main()
