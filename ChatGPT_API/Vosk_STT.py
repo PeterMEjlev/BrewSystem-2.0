@@ -94,15 +94,20 @@ class KeywordDetector:
                                     # Call AI Assistant in the same thread
                                     print(f"Thread {id}: Calling AI Assistant...")
                                     call_ai_assistant("Hey Brewsystem")  # Perform AI assistant logic here
-                                    self.stop_detection()
+                                    break
+                                break
+                                    
 
                     # Add a delay to respect the audio duration
                     time.sleep(self.audio_duration)
 
                 except Exception as e:
                     print(f"Thread {id}: Error in detection loop: {e}")
-
-        print(f"Thread {id}: Exiting detection loop.")
+            else:
+                print("Already talking with Bruce - Waiting...")
+                time.sleep(1)
+                
+        
 
     def start_detection(self, callback=None, threads=1, delays=None):
         if callback:
@@ -120,9 +125,3 @@ class KeywordDetector:
             print(f"Starting detection thread {thread_id} with a delay of {delay} seconds...")
             thread.start()
 
-    def stop_detection(self):
-        self.running.clear()
-        for thread in self.threads:
-            if thread.is_alive():
-                thread.join()
-        print("All keyword detection threads stopped.")

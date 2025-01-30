@@ -52,7 +52,7 @@ def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_dur
                 rms = 0.0  # Treat as silence for safety
 
             # Debugging information
-            print(f"Chunk RMS: {rms}, min: {np.min(audio_chunk)}, max: {np.max(audio_chunk)}")
+            #print(f"Chunk RMS: {rms}, min: {np.min(audio_chunk)}, max: {np.max(audio_chunk)}")
 
             if rms < silence_threshold:
                 silence_counter += 1
@@ -177,7 +177,7 @@ def text_to_speech(input_text):
 
 def assistant_ai(conversation):
     try:
-        assistant_id = "asst_fUBNWZV1aaTJWZH8yKCf1lnv"
+        assistant_id = "asst_4muUvIs9HZUDKycp8Yg5AkHs"
         key = "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"
         openai_client = OpenAI(api_key=key)
 
@@ -228,53 +228,55 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
     Starts the AI Assistant with a starter text and enables interactive conversation using speech-to-text.
     """
     print(f"Call AI Assistant: {starter_text}")
-    if variables.talking_with_chat == False:
-        try:
-            variables.talking_with_chat = True
-            # Initialize conversation with the starter text
-            conversation = [{"role": "user", "content": starter_text}]
-            print(f"You: {starter_text}")
+    try:
+        variables.talking_with_chat = True
+        print(f"talking_with_chat = {variables.talking_with_chat}")
+        # Initialize conversation with the starter text
+        conversation = [{"role": "user", "content": starter_text}]
+        print(f"You: {starter_text}")
 
-            # Send the starter text to the assistant
+        # Send the starter text to the assistant
+        response = assistant_ai(conversation)
+        print(f"Assistant: {response}")
+
+        # Respond to the starter text with TTS
+        text_to_speech(response)
+
+        # Interactive conversation loop
+        while True:
+            print("Please speak your query:")
+            audio_path = "user_input.wav"
+
+            # Record the user's query
+            record_audio(audio_path)
+            user_input = speech_to_text(audio_path)
+
+            if not user_input:
+                print("No input detected. Please try again.")
+                text_to_speech("No input detected. Please try again.")
+                continue
+
+            print(f"DEBUG: user_input type = {type(user_input)}, value = {user_input}")
+            print(f"You: {user_input}")
+            if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
+                print(f"Goodbye!")
+                variables.talking_with_chat = False
+                print(f"talking_with_chat = {variables.talking_with_chat}")
+                break
+
+            # Add user input to the conversation
+            conversation.append({"role": "user", "content": user_input})
+
+            # Send the conversation to the assistant
             response = assistant_ai(conversation)
             print(f"Assistant: {response}")
 
-            # Respond to the starter text with TTS
+            # Play the assistant's response aloud
             text_to_speech(response)
 
-            # Interactive conversation loop
-            while True:
-                print("Please speak your query:")
-                audio_path = "user_input.wav"
+            # Ensure playback is complete before proceeding
+            print("Playback complete. Ready for the next query.")
 
-                # Record the user's query
-                record_audio(audio_path)
-                user_input = speech_to_text(audio_path)
-
-                if not user_input:
-                    print("No input detected. Please try again.")
-                    text_to_speech("No input detected. Please try again.")
-                    continue
-
-                print(f"DEBUG: user_input type = {type(user_input)}, value = {user_input}")
-                print(f"You: {user_input}")
-                if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
-                    print("Goodbye!")
-                    break
-
-                # Add user input to the conversation
-                conversation.append({"role": "user", "content": user_input})
-
-                # Send the conversation to the assistant
-                response = assistant_ai(conversation)
-                print(f"Assistant: {response}")
-
-                # Play the assistant's response aloud
-                text_to_speech(response)
-
-                # Ensure playback is complete before proceeding
-                print("Playback complete. Ready for the next query.")
-
-        except Exception as e:
-            print(f"Error in call_ai_assistant: {e}")
+    except Exception as e:
+        print(f"Error in call_ai_assistant: {e}")
 
