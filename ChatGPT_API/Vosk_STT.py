@@ -7,7 +7,6 @@ import wave
 import time
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant
 
-
 # Import the `variables` module to access `talking_with_chat`
 try:
     import Common.variables as variables
@@ -44,17 +43,16 @@ class KeywordDetector:
         while self.running.is_set():
             if variables.talking_with_chat == False:
                 try:
-                    # Check if the user is currently talking with ChatGPT
                     if variables and variables.talking_with_chat:
                         print(f"Thread {id}: Paused detection (talking with ChatGPT)...")
                         time.sleep(1)  # Wait and recheck periodically
                         continue
-
-                    # Record audio
+                    else: 
+                        print(f"Thread {id}: Listening for keywords...")
+                    
                     audio_data = sd.rec(int(self.audio_duration * self.sample_rate), samplerate=self.sample_rate, channels=1, dtype='int16')
                     sd.wait()
 
-                    # Create in-memory audio stream
                     audio_stream = BytesIO()
                     with wave.open(audio_stream, "wb") as wf:
                         wf.setnchannels(1)
@@ -62,43 +60,42 @@ class KeywordDetector:
                         wf.setframerate(self.sample_rate)
                         wf.writeframes(audio_data.tobytes())
 
-                    # Reset stream position for processing
                     audio_stream.seek(0)
                     wf = wave.open(audio_stream, "rb")
 
-                    # Track detected keywords for this iteration
                     detected_keywords = set()
 
-                    # Process audio with recognizer
                     while True:
                         data = wf.readframes(4000)
                         if len(data) == 0:
                             break
                         if recognizer.AcceptWaveform(data):
                             result = recognizer.Result()
-
-                            # Parse the result for keywords (final transcription)
                             result_dict = eval(result)
                             result_text = result_dict.get("text", "").lower()
 
-                            # Check for keywords in the final transcription
+                            print(f"all keywords: {self.keywords}")
+                            print(f"result text = {result_text}")
                             for keyword in self.keywords:
-                                if keyword.lower() in result_text and keyword.lower() not in detected_keywords:
-                                    print(f"Thread {id}: Keyword '{keyword}' detected!")
-                                    detected_keywords.add(keyword.lower())  # Add to the set
+                                print(f"keyword = {keyword.lower()}")
+                                if keyword.lower() in result_text:
+                                    print(f"{keyword.lower()} is in {result_text}")
+                                    if keyword.lower() not in detected_keywords:
+                                        print(f"Thread {id}: Keyword '{keyword}' detected!")
+                                        detected_keywords.add(keyword.lower())
 
-                                    # Handle the keyword in the same thread
-                                    if self.callback:
-                                        self.callback(keyword, id)
+                                        if self.callback:
+                                            self.callback(keyword, id)
 
-                                    # Call AI Assistant in the same thread
-                                    print(f"Thread {id}: Calling AI Assistant...")
-                                    call_ai_assistant("Hey Brewsystem")  # Perform AI assistant logic here
-                                    break
-                                break
-                                    
+                                        print(f"Thread {id}: Calling AI Assistant...")
+                                        call_ai_assistant("Hey Brewsystem")
+                                        
+                                    break  # ✅ Only break after processing the detected keyword
+                                else:
+                                    print(f"{keyword.lower()} is not in {result_text}")
 
-                    # Add a delay to respect the audio duration
+
+                    
                     time.sleep(self.audio_duration)
 
                 except Exception as e:
@@ -107,15 +104,13 @@ class KeywordDetector:
                 print("Already talking with Bruce - Waiting...")
                 time.sleep(1)
                 
-        
-
     def start_detection(self, callback=None, threads=1, delays=None):
         if callback:
             self.callback = callback
         self.running.set()
 
         if delays is None:
-            delays = [0] * threads  # Default: no delay for all threads
+            delays = [0] * threads
 
         for i in range(threads):
             thread_id = i + 1
@@ -124,4 +119,3 @@ class KeywordDetector:
             self.threads.append(thread)
             print(f"Starting detection thread {thread_id} with a delay of {delay} seconds...")
             thread.start()
-

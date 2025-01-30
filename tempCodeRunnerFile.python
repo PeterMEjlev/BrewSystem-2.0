@@ -1,6 +1,27 @@
+#!/usr/bin/env python3
 
+from openai import OpenAI
 
+def main():
+    # Create your OpenAI client with the provided API key
+    client = OpenAI(api_key="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")
 
+    # Set up your streaming chat completion request
+    stream = client.chat.completions.create(
+        model="gpt-4o-mini",  # Replace with the correct model you want to use
+        messages=[{"role": "user", "content": "Say this is a test"}],
+        stream=True,
+    )
 
-if "end" in str("can you end this conversation?"):
-                    print("Goodbye!")
+    print("ChatGPT response:\n")
+    
+    # Print the response in real-time as it arrives
+    for chunk in stream:
+        delta = chunk.choices[0].delta
+        if delta and delta.content:
+            print(delta.content, end="", flush=True)
+
+    print("\n")  # For a final newline once the stream is complete
+
+if __name__ == "__main__":
+    main()
