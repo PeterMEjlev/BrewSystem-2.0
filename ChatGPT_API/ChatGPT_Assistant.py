@@ -12,7 +12,7 @@ except:
     pass
 
 
-def record_audio(filename, sample_rate=44100, silence_threshold=70, silence_duration=4):
+def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_duration=4):
     """
     Records audio until silence is detected and saves it as a .wav file.
     
@@ -52,7 +52,7 @@ def record_audio(filename, sample_rate=44100, silence_threshold=70, silence_dura
                 rms = 0.0  # Treat as silence for safety
 
             # Debugging information
-            #print(f"Chunk RMS: {rms}, min: {np.min(audio_chunk)}, max: {np.max(audio_chunk)}")
+            print(f"Chunk RMS: {rms} - Silence Threshold: {silence_threshold}")
 
             if rms < silence_threshold:
                 silence_counter += 1
@@ -80,13 +80,13 @@ def record_audio(filename, sample_rate=44100, silence_threshold=70, silence_dura
     except Exception as e:
         print(f"Error during recording: {e}")
 
-def speech_to_text(audio_file_path):
+def speech_to_text(audio_file_path , thread_id = None):
     """
     Transcribes audio to text using OpenAI's Whisper API.
     Returns None if no valid speech is detected.
     """
     try:
-        key = "your_openai_api_key"
+        key = "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"
         openai_client = OpenAI(api_key=key)
 
         # Open the audio file in binary mode
@@ -97,7 +97,7 @@ def speech_to_text(audio_file_path):
             )
 
         # Debugging: Check what the response contains
-        print(f"Transcription response: {response}")
+        print(f"Thread {thread_id}: Transcription response: {response}")
 
         # Access the transcription text
         if hasattr(response, "text") and response.text.strip():
@@ -109,7 +109,6 @@ def speech_to_text(audio_file_path):
     except Exception as e:
         print(f"Error in speech_to_text: {e}")
         return None
-
 
 def set_reg_temperature(pot, temperature):
     print(f"Setting {pot} to {temperature}°C.")
@@ -231,7 +230,7 @@ def assistant_ai(conversation):
         print(f"Error: {e}")
         return "Error occurred during processing."
 
-def call_ai_assistant(starter_text="Hey Brewsystem"):
+def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
     """
     Starts the AI Assistant with a starter text and enables interactive conversation using speech-to-text.
     Stops if no valid speech is detected.
@@ -259,7 +258,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
 
             # Record the user's query
             record_audio(audio_path)
-            user_input = speech_to_text(audio_path)
+            user_input = speech_to_text(audio_path, thread_id)
 
             # Handle silence or no valid input
             if not user_input:
@@ -269,12 +268,12 @@ def call_ai_assistant(starter_text="Hey Brewsystem"):
                 print(f"talking_with_chat = {variables.talking_with_chat}")
                 break  # Exit loop
 
-            print(f"DEBUG: user_input type = {type(user_input)}, value = {user_input}")
             print(f"You: {user_input}")
 
             # Check for exit commands
             if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
                 print(f"Goodbye!")
+                text_to_speech("Goodbye!")
                 variables.talking_with_chat = False
                 print(f"talking_with_chat = {variables.talking_with_chat}")
                 break

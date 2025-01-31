@@ -74,34 +74,25 @@ class KeywordDetector:
                             result_dict = eval(result)
                             result_text = result_dict.get("text", "").lower()
 
-                            print(f"all keywords: {self.keywords}")
-                            print(f"result text = {result_text}")
                             for keyword in self.keywords:
-                                print(f"keyword = {keyword.lower()}")
                                 if keyword.lower() in result_text:
-                                    print(f"{keyword.lower()} is in {result_text}")
                                     if keyword.lower() not in detected_keywords:
-                                        print(f"Thread {id}: Keyword '{keyword}' detected!")
                                         detected_keywords.add(keyword.lower())
 
                                         if self.callback:
                                             self.callback(keyword, id)
 
                                         print(f"Thread {id}: Calling AI Assistant...")
-                                        call_ai_assistant("Hey Brewsystem")
+                                        call_ai_assistant("Hey Brewsystem", id)
                                         
-                                    break  # ✅ Only break after processing the detected keyword
-                                else:
-                                    print(f"{keyword.lower()} is not in {result_text}")
+                                    break  # Only break after processing the detected keyword
 
-
-                    
                     time.sleep(self.audio_duration)
 
                 except Exception as e:
                     print(f"Thread {id}: Error in detection loop: {e}")
             else:
-                print("Already talking with Bruce - Waiting...")
+                #print("Already talking with Bruce - Waiting...")
                 time.sleep(1)
                 
     def start_detection(self, callback=None, threads=1, delays=None):
