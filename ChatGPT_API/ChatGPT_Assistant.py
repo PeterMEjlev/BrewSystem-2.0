@@ -12,64 +12,64 @@ except:
     pass
 
 
-def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_duration=4):
+def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1.5):
     """
-    Records audio until silence is detected and saves it as a .wav file.
-    
-    Parameters:
-    - filename: The output .wav file name.
-    - sample_rate: The sample rate of the audio.
-    - silence_threshold: The RMS threshold below which audio is considered silent.
-    - silence_duration: The number of consecutive seconds of silence to stop recording.
+    Records audio until it hears some speech, then continues until `silence_duration`
+    seconds of trailing silence occur. Saves the .wav file and returns whether we ever
+    actually heard speech at all.
     """
     print("Recording (GPT)...")
-    duration_per_chunk = 0.5  # Record in small chunks (0.5 seconds each)
+    duration_per_chunk = 0.5  # seconds per chunk
     chunk_samples = int(sample_rate * duration_per_chunk)
-    silence_chunks = int(silence_duration / duration_per_chunk)
-    silence_counter = 0
 
-    audio_buffer = []  # To store audio data
+    # The number of "silent" chunks needed to conclude "we're done speaking"
+    silence_chunks = int(silence_duration / duration_per_chunk)
+
+    # The number of chunks we allow before deciding "the user isn't speaking at all"
+    max_wait_seconds = 5.0  # <-- you can change this
+    max_chunks_no_speech = int(max_wait_seconds / duration_per_chunk)
+
+    silence_counter = 0
+    audio_buffer = []
+    speech_detected = False
+    chunks_without_speech = 0
 
     try:
         while True:
-            # Record a small chunk of audio
-            audio_chunk = sd.rec(chunk_samples, samplerate=sample_rate, channels=1, dtype='int16')
+            audio_chunk = sd.rec(chunk_samples, samplerate=sample_rate, 
+                                 channels=1, dtype='int16')
             sd.wait()
 
-            # Check for invalid values
-            if np.isnan(audio_chunk).any():
-                print("NaN values detected in audio_chunk. Skipping this chunk.")
-                continue
+            chunk_float = audio_chunk.astype(np.float32)
+            rms = np.sqrt(np.mean(chunk_float**2))
 
-            # Append the chunk to the buffer
+            print(f"Chunk RMS: {rms} - Silence Threshold: {silence_threshold}")
             audio_buffer.append(audio_chunk)
 
-            # Calculate RMS (volume) of the chunk
-            try:
-                rms = np.sqrt(np.mean(audio_chunk**2))
-            except Exception as e:
-                print(f"Error calculating RMS: {e}")
-                rms = 0.0  # Treat as silence for safety
-
-            # Debugging information
-            print(f"Chunk RMS: {rms} - Silence Threshold: {silence_threshold}")
-
-            if rms < silence_threshold:
-                silence_counter += 1
+            if rms >= silence_threshold:
+                # We have speech
+                speech_detected = True
+                chunks_without_speech = 0      # reset
+                silence_counter = 0
             else:
-                silence_counter = 0  # Reset the counter if we detect speech
+                if not speech_detected:
+                    # We haven't heard anything yet, increment no-speech counter
+                    chunks_without_speech += 1
+                    # If we've been silent too long at the start, stop
+                    if chunks_without_speech >= max_chunks_no_speech:
+                        print("No speech detected at all. Stopping.")
+                        break
+                else:
+                    # We already heard speech, now checking trailing silence
+                    silence_counter += 1
 
-            # Stop recording if enough silence is detected
-            if silence_counter >= silence_chunks:
-                print("Silence detected. Stopping recording.")
-                variables.talking_with_chat = False
-                print(f"talking_with_chat = {variables.talking_with_chat}")
+            # If we've started speaking, and now there's enough trailing silence
+            if speech_detected and silence_counter >= silence_chunks:
+                print("Silence detected after speech. Stopping recording.")
                 break
 
-        # Combine all chunks into a single array
+        # Combine chunks and save
         audio_data = np.concatenate(audio_buffer, axis=0)
-
-        # Save the recorded audio to a .wav file
         with wave.open(filename, "wb") as wf:
             wf.setnchannels(1)
             wf.setsampwidth(2)
@@ -77,8 +77,11 @@ def record_audio(filename, sample_rate=44100, silence_threshold=100, silence_dur
             wf.writeframes(audio_data.tobytes())
 
         print("Recording complete (GPT).")
+        return speech_detected
+
     except Exception as e:
         print(f"Error during recording: {e}")
+        return False
 
 def speech_to_text(audio_file_path , thread_id = None):
     """
@@ -256,13 +259,19 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
             print("Please speak your query:")
             audio_path = "user_input.wav"
 
-            # Record the user's query
-            record_audio(audio_path)
-
-            # If record_audio set talking_with_chat to False, break immediately
-            if not variables.talking_with_chat:
+            # Record user’s query and check if they actually spoke
+            speech_found = record_audio(audio_path)
+            if not speech_found:
                 print("No input detected. Ending conversation.")
                 text_to_speech("No input detected - Goodbye.")
+                variables.talking_with_chat = False
+                break
+
+            user_input = speech_to_text(audio_path, thread_id)
+            if not user_input:
+                print("No valid speech detected. Ending conversation.")
+                text_to_speech("No valid speech detected - Goodbye.")
+                variables.talking_with_chat = False
                 break
 
             user_input = speech_to_text(audio_path, thread_id)
