@@ -258,12 +258,19 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
 
             # Record the user's query
             record_audio(audio_path)
+
+            # If record_audio set talking_with_chat to False, break immediately
+            if not variables.talking_with_chat:
+                print("No input detected. Ending conversation.")
+                text_to_speech("No input detected - Goodbye.")
+                break
+
             user_input = speech_to_text(audio_path, thread_id)
 
             # Handle silence or no valid input
             if not user_input:
                 print("No input detected. Ending conversation.")
-                text_to_speech("No input detected. Goodbye!")
+                text_to_speech("No input detected - Goodbye.")
                 variables.talking_with_chat = False
                 print(f"talking_with_chat = {variables.talking_with_chat}")
                 break  # Exit loop
