@@ -7,6 +7,7 @@ import wave
 import time
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
 
+
 # Import the `variables` module to access `talking_with_chat`
 try:
     import Common.variables as variables
@@ -83,7 +84,7 @@ class KeywordDetector:
                                             self.callback(keyword, id)
 
                                         print(f"Thread {id}: Calling AI Assistant...")
-                                        text_to_speech("Calling Bruce´, the AI assistant")
+                                        text_to_speech("Calling Bruce, the AI assistant.")
                                         call_ai_assistant("Hey Brewsystem", id)
                                         
                                     break  # Only break after processing the detected keyword

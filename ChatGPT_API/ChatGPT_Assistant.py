@@ -12,7 +12,7 @@ except:
     pass
 
 
-def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1.5):
+def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1):
     """
     Records audio until it hears some speech, then continues until `silence_duration`
     seconds of trailing silence occur. Saves the .wav file and returns whether we ever
@@ -136,6 +136,10 @@ def handle_tool_call(function_name, parameters):
             pot = parameters.get("pot", "unknown pot")
             temperature = parameters.get("temperature", "unknown temperature")
             return set_reg_temperature(pot, temperature)
+        elif function_name == "end_conversation":
+            variables.talking_with_chat = False
+            print("Ending the conversation.")
+            return "Conversation ended successfully."
         else:
             return f"Function '{function_name}' not implemented."
     except Exception as e:
@@ -287,12 +291,8 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
             print(f"You: {user_input}")
 
             # Check for exit commands
-            if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
-                print(f"Goodbye!")
-                text_to_speech("Goodbye!")
-                variables.talking_with_chat = False
-                print(f"talking_with_chat = {variables.talking_with_chat}")
-                break
+            #if check_for_exit_commands() == True:
+            #    break
 
             # Add user input to the conversation
             conversation.append({"role": "user", "content": user_input})
@@ -309,3 +309,12 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
 
     except Exception as e:
         print(f"Error in call_ai_assistant: {e}")
+
+def check_for_exit_commands(user_input):
+    if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
+                print(f"Goodbye!")
+                text_to_speech("Goodbye!")
+                variables.talking_with_chat = False
+                print(f"talking_with_chat = {variables.talking_with_chat}")
+                return True
+                
