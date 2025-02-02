@@ -3,7 +3,7 @@ from openai import OpenAI
 from pathlib import Path
 import sounddevice as sd
 import numpy as np
-from dotenv import load_dotenv, dotenv_values
+from dotenv import dotenv_values
 from ChatGPT_API import assistant_functions
 
 config = dotenv_values("api_info.env")
@@ -20,7 +20,6 @@ try:
     from Common import variables
 except:
     pass
-
 
 def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1.5):
     """

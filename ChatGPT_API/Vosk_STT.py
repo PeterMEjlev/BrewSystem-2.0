@@ -6,6 +6,8 @@ from io import BytesIO
 import wave
 import time
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
+from Common.utils import play_audio
+
 
 # Import the `variables` module to access `talking_with_chat`
 try:
@@ -22,16 +24,12 @@ class KeywordDetector:
         self.audio_duration = audio_duration
         self.model = self.load_model()
         
-        # Event to control the run state of the threads
         self.running = threading.Event()
         
-        # Keep track of detection threads
         self.threads = []
         
-        # Optional callback for external handling of recognized keywords
         self.callback = None
         
-        # Lock to ensure only one thread calls the AI at a time
         self.ai_call_lock = threading.Lock()
 
     def load_model(self):
@@ -52,10 +50,8 @@ class KeywordDetector:
 
         while self.running.is_set():
             try:
-                # If we are already "talking_with_chat", skip recording
                 if variables and variables.talking_with_chat:
                     # Another thread is already interacting with AI; just wait a bit
-                    #print(f"Thread {thread_id}: Paused detection (talking with ChatGPT)...")
                     time.sleep(1)
                     continue
                 
@@ -96,21 +92,13 @@ class KeywordDetector:
                                     if self.callback:
                                         self.callback(keyword, thread_id)
 
-                                    # -------------------------------
-                                    # Acquire the AI call lock here
-                                    # -------------------------------
                                     with self.ai_call_lock:
-                                        # Double-check if we're still not talking,
-                                        # in case another thread beat us to it.
                                         if not variables.talking_with_chat:
                                             variables.talking_with_chat = True
                                             print(f"Thread {thread_id}: Calling AI Assistant...")
-
-                                            text_to_speech("Calling Bruce, the AI assistant.")
+                                            play_audio("calling_Bruce - Male.mp3")
                                             call_ai_assistant("Hey Brewsystem", thread_id)
 
-                                            # Optionally set talking_with_chat back to False once done
-                                            # Or keep it True if you want to maintain a longer conversation
                                             variables.talking_with_chat = False
                                     
                                 # Break after we handle the first recognized keyword 

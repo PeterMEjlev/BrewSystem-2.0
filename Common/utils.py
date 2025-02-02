@@ -5,8 +5,9 @@ from PyQt5.QtGui import QPixmap, QFontMetrics, QFontDatabase, QFont, QIcon, QLin
 from Common.utils_rpi import set_gpio_high, set_gpio_low
 import Common.constants_rpi as constants_rpi
 from PyQt5 import QtWidgets, QtCore
-import os
+import os, pygame
 from Common.config import RUNNING_ON_LAPTOP
+from Common.constants import SOUNDFILES_DIR
 
 def create_label(parent_widget, text, color='white', gradient_colors=None, size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
     """
@@ -507,3 +508,29 @@ def set_label_text_color(label, color):
     new_style = f"color: {color};"
     label.gradient_colors = None
     label.setStyleSheet(f"{current_style} {new_style}")
+
+def play_audio(filename):
+    """
+    Plays an audio file from the Soundfiles directory using pygame.mixer.
+    
+    Args:
+        filename (str): The name of the audio file (e.g., "calling_Bruce - Male.mp3").
+    """
+    file_path = os.path.join(SOUNDFILES_DIR, filename)  # Construct full path
+    
+    if not os.path.exists(file_path):
+        print(f"Error: File '{filename}' not found in {SOUNDFILES_DIR}")
+        return
+
+    try:
+        pygame.mixer.init()
+        pygame.mixer.music.load(file_path)
+        pygame.mixer.music.play()
+
+        # Wait until the audio finishes playing
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+
+        pygame.mixer.quit()  # Clean up the mixer
+    except Exception as e:
+        print(f"Error playing audio: {e}")

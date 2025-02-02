@@ -1,4 +1,5 @@
 # constants.py
+import os
 
 # Screen dimensions
 WINDOW_WIDTH = 1920
@@ -20,5 +21,8 @@ TEMP_REACHED_THRESHOLD = 1  # Temperature threshold for reaching target
 BTN_INVISIBILITY = True
 
 GRAPH_LINE_WIDTH = 4
+
+#Soundfiles folder
+SOUNDFILES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "Assets", "Soundfiles"))
 
 
