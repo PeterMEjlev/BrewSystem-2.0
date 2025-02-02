@@ -3,6 +3,13 @@ from openai import OpenAI
 from pathlib import Path
 import sounddevice as sd
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv("openai_keys.env")
+api_key = os.getenv("OPENAI_API_KEY")
+assistant_id = os.getenv("OPENAI_ASSISTANT_ID")
+print(f"api key: {api_key}")        # Should show your key
+print(f"assistant id: {assistant_id}")       # Should NOT be None
 
 try:
     import Common.variables as variables
@@ -12,7 +19,7 @@ except:
     pass
 
 
-def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1):
+def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1.5):
     """
     Records audio until it hears some speech, then continues until `silence_duration`
     seconds of trailing silence occur. Saves the .wav file and returns whether we ever
@@ -26,7 +33,7 @@ def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_dur
     silence_chunks = int(silence_duration / duration_per_chunk)
 
     # The number of chunks we allow before deciding "the user isn't speaking at all"
-    max_wait_seconds = 5.0  # <-- you can change this
+    max_wait_seconds = 1.5 
     max_chunks_no_speech = int(max_wait_seconds / duration_per_chunk)
 
     silence_counter = 0
@@ -89,8 +96,7 @@ def speech_to_text(audio_file_path , thread_id = None):
     Returns None if no valid speech is detected.
     """
     try:
-        key = "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"
-        openai_client = OpenAI(api_key=key)
+        openai_client = OpenAI(api_key=api_key)
 
         # Open the audio file in binary mode
         with open(audio_file_path, "rb") as audio_file:
@@ -151,8 +157,7 @@ def text_to_speech(input_text):
     """
     start_time = time.time()  # Start timing
     try:
-        key = "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"
-        openai_client = OpenAI(api_key=key)
+        openai_client = OpenAI(api_key=api_key)
 
         speech_file_path = Path(__file__).parent / "speech.mp3"
 
@@ -191,9 +196,7 @@ def text_to_speech(input_text):
 
 def assistant_ai(conversation):
     try:
-        assistant_id = "asst_4muUvIs9HZUDKycp8Yg5AkHs"
-        key = "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"
-        openai_client = OpenAI(api_key=key)
+        openai_client = OpenAI(api_key=api_key)
 
         thread = openai_client.beta.threads.create(messages=conversation)
         run = openai_client.beta.threads.runs.create(

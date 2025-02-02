@@ -15,7 +15,7 @@ except ImportError:
     variables = None  # Handle the case where the import fails
 
 class KeywordDetector:
-    def __init__(self, model_path, keywords, sample_rate=16000, audio_duration=1.7):
+    def __init__(self, model_path, keywords, sample_rate=16000, audio_duration=1):
         self.model_path = model_path
         self.keywords = keywords
         self.sample_rate = sample_rate
