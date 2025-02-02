@@ -511,7 +511,7 @@ def set_label_text_color(label, color):
 
 def play_audio(filename):
     """
-    Plays an audio file from the Soundfiles directory using pygame.mixer.
+    Plays an audio file from the Soundfiles directory using pygame.mixer asynchronously.
     
     Args:
         filename (str): The name of the audio file (e.g., "calling_Bruce - Male.mp3").
@@ -527,10 +527,8 @@ def play_audio(filename):
         pygame.mixer.music.load(file_path)
         pygame.mixer.music.play()
 
-        # Wait until the audio finishes playing
-        while pygame.mixer.music.get_busy():
-            pygame.time.Clock().tick(10)
-
-        pygame.mixer.quit()  # Clean up the mixer
+        # The function returns immediately without waiting for playback to finish
+        print(f"Playing: {filename}")
+    
     except Exception as e:
         print(f"Error playing audio: {e}")

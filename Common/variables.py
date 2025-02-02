@@ -22,6 +22,8 @@ HLT_PWM = None
 # REG values
 temp_REG_BK = 85
 temp_REG_HLT = 70
+set_temp_reached_BK = False
+set_temp_reached_HLT = False
 
 # Pump speeds
 pump_speed_P1 = 100
@@ -42,7 +44,6 @@ active_variable = None
 #ChatGPT API
 talking_with_chat = False
 
-
 def initialize_variables_from_settings():
     """Load settings from the JSON file and update variables."""
     global temp_BK, temp_HLT, temp_REG_BK, temp_REG_HLT
@@ -61,7 +62,6 @@ def initialize_variables_from_settings():
     efficiency_HLT = settings.get("starting efficiency HLT", efficiency_HLT)
     pump_speed_P1 = settings.get("starting efficiency P1", pump_speed_P1)
     pump_speed_P2 = settings.get("starting efficiency P2", pump_speed_P2)
-
 
 # Initialize variables at the time of import
 initialize_variables_from_settings()

@@ -21,6 +21,7 @@
     "starting efficiency P2": 100,
 
     "near_target_heating_efficiency": 50,
+    "target_temp_margin": 0.5,
 
     "chatGPT_assistant_keywords": ["brew system", "bruce system", "brew", "system", "bruce", "brews"]
 }

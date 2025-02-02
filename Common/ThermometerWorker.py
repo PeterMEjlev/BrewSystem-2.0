@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import Common.constants as constants
-from Common.utils import adjust_image_height
+from Common.utils import adjust_image_height, play_audio
 from Common.constants_gui import POT_ON_FOREGROUND_HEIGHT
 import Common.variables as variables
 import Common.constants_rpi as constants_rpi
@@ -26,6 +26,9 @@ class ThermometerWorker(QObject):
             variables.temp_BK = self.read_thermometer_bk()
             variables.temp_MLT = self.read_thermometer_mlt()
             variables.temp_HLT = self.read_thermometer_hlt()
+
+            self.check_if_reg_temp_reached_BK()
+            self.check_if_reg_temp_reached_HLT()
 
             if variables.temp_BK >= 0:
                 self.temperature_updated_bk.emit(variables.temp_BK)
@@ -86,7 +89,7 @@ class ThermometerWorker(QObject):
                 variables.temp_REG_BK,
                 variables.STATE['BK_ON'],
                 self.static_elements['IMG_Pot_BK_On_Temp_Reached'],
-                constants.TEMP_REACHED_THRESHOLD
+                constants.TEMP_REACHED_MARGIN
             )
 
         if 'IMG_Pot_HLT_On_Temp_Reached' in self.static_elements:
@@ -95,5 +98,25 @@ class ThermometerWorker(QObject):
                 variables.temp_REG_HLT,
                 variables.STATE['HLT_ON'],
                 self.static_elements['IMG_Pot_HLT_On_Temp_Reached'],
-                constants.TEMP_REACHED_THRESHOLD
+                constants.TEMP_REACHED_MARGIN
             )
+
+    def check_if_reg_temp_reached_BK(self):
+        if variables.temp_REG_BK-constants.TEMP_REACHED_MARGIN <= variables.temp_BK <= variables.temp_REG_BK+constants.TEMP_REACHED_MARGIN:
+            if variables.set_temp_reached_BK == False:
+                variables.set_temp_reached_BK = True
+                play_audio("BK_set_temp_reached - Male.mp3")
+        else:
+             if variables.set_temp_reached_BK == True:
+                 variables.set_temp_reached_BK = False
+    
+    def check_if_reg_temp_reached_HLT(self):
+        if variables.temp_REG_HLT-constants.TEMP_REACHED_MARGIN <= variables.temp_HLT <= variables.temp_REG_HLT+constants.TEMP_REACHED_MARGIN:
+            if variables.set_temp_reached_HLT == False:
+                variables.set_temp_reached_HLT = True
+                play_audio("HLT_set_temp_reached - Male.mp3")
+        else:
+             if variables.set_temp_reached_HLT == True:
+                 variables.set_temp_reached_HLT = False
+    
+    
