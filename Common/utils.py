@@ -324,6 +324,24 @@ def toggle_images_visibility(static_elements, image_keys):
             else:
                 element.show()
 
+def set_images_visibility(static_elements, image_keys, visible):
+    """
+    Toggles the visibility of one or more images.
+
+    Parameters:
+    static_elements (dict): Dictionary containing the static elements (e.g., images).
+    image_keys (list): List of keys for the images in the static_elements dictionary.
+    """
+    for key in image_keys:
+        if key in static_elements:
+            element = static_elements[key]
+
+            if visible == True:
+                element.show()
+            else:
+                element.hide()
+
+
 def load_custom_font():
     """
     Loads the Cascadia Code Bold font from a .ttf file and sets it as the default font.

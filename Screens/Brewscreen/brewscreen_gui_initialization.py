@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
-from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color
+from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color, set_images_visibility
 from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
@@ -137,12 +137,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_P1_Selected', 'TXT_P1'),
                 central_widget.parent().update_slider_value('pump_speed_P1')  # Update slider for P1
             ),
-            on_long_click=lambda: (
-                toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P1']),
-                toggle_variable('P1_ON', STATE),
-                create_or_stop_pwm_for_p1(),
-                handle_p1_toggle(dynamic_elements)
-            ),
+            on_long_click=lambda: toggle_pump_handle_all('P1'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_P2': create_button(
@@ -153,12 +148,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_P2_Selected', 'TXT_P2'),
                 central_widget.parent().update_slider_value('pump_speed_P2')  # Update slider for P2
             ),
-            on_long_click=lambda: (
-                toggle_images_visibility_callback(static_elements, ['IMG_Pump_On_P2']),
-                toggle_variable('P2_ON', STATE),
-                create_or_stop_pwm_for_p2(),
-                handle_p2_toggle(dynamic_elements)          
-            ),
+            on_long_click=lambda: toggle_pump_handle_all('P2'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGBK': create_button(
@@ -233,19 +223,15 @@ def toggle_pot_handle_all(pot_name, state = None):
     Parameters:
     - pot_name: A string, either "BK" or "HLT".
     """
-
     # Access the module-level references
     global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
 
-    _gui_toggle_images_visibility_callback(
-        _gui_static_elements, 
-        [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground']
-    )
-
     if state is not None:
+        set_images_visibility(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'], state)
         print(f"toggle_pot_handle_all called with state ({state})")
         set_variable(f'{pot_name}_ON', STATE, state)
     else:
+        _gui_toggle_images_visibility_callback(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'])
         toggle_variable(f'{pot_name}_ON', STATE)
     
     if pot_name == 'BK':
@@ -254,6 +240,32 @@ def toggle_pot_handle_all(pot_name, state = None):
     elif pot_name == 'HLT':
         handle_hlt_on_toggle(_gui_dynamic_elements, _gui_static_elements)
         create_or_stop_pwm_for_hlt()
+
+def toggle_pump_handle_all(pump_name, state=None):
+    """
+    Encapsulates the actions that occur when a long press happens on a pump button (P1 or P2).
+
+    Parameters:
+    - pump_name: A string, either "P1" or "P2".
+    - state: Optional boolean to explicitly set the pump state (True for ON, False for OFF).
+    """
+    # Access the module-level references
+    global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+
+    if state is not None:
+        set_images_visibility(_gui_static_elements,[f'IMG_Pump_On_{pump_name}'],state)
+        print(f"toggle_pump_handle_all called with state ({state})")
+        set_variable(f'{pump_name}_ON', STATE, state)
+    else:
+        _gui_toggle_images_visibility_callback(_gui_static_elements,[f'IMG_Pump_On_{pump_name}'])
+        toggle_variable(f'{pump_name}_ON', STATE)
+
+    if pump_name == 'P1':
+        create_or_stop_pwm_for_p1()
+        handle_p1_toggle(_gui_dynamic_elements)
+    elif pump_name == 'P2':
+        create_or_stop_pwm_for_p2()
+        handle_p2_toggle(_gui_dynamic_elements)
 
 def handle_bk_on_toggle(dynamic_elements, static_elements):
     if STATE['BK_ON']:
