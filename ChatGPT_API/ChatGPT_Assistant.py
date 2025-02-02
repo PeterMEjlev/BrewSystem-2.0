@@ -3,14 +3,16 @@ from openai import OpenAI
 from pathlib import Path
 import sounddevice as sd
 import numpy as np
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 from ChatGPT_API import assistant_functions
 
-load_dotenv("openai_keys.env")
+config = dotenv_values("api_info.env")
+os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
+os.environ["OPENAI_ASSISTANT_ID"] = config["OPENAI_ASSISTANT_ID"]
+
+# Retrieve them again
 api_key = os.getenv("OPENAI_API_KEY")
 assistant_id = os.getenv("OPENAI_ASSISTANT_ID")
-print(f"api key: {api_key}")        # Should show your key
-print(f"assistant id: {assistant_id}")       # Should NOT be None
 
 try:
     import Common.variables as variables

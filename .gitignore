@@ -1,2 +1,4 @@
-#/openai_keys.env
+/api_info.env
+/ChatGPT_API/speech.mp3
+/ChatGPT_API/speech.mp3
 /user_input.wav
