@@ -175,7 +175,7 @@ def text_to_speech(input_text):
         # Generate spoken audio from the input text
         response = openai_client.audio.speech.create(
             model="tts-1",
-            voice="alloy",
+            voice="ash",
             input=input_text,
         )
         response.stream_to_file(speech_file_path)

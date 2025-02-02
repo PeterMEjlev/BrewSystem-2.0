@@ -55,7 +55,7 @@ class KeywordDetector:
                 # If we are already "talking_with_chat", skip recording
                 if variables and variables.talking_with_chat:
                     # Another thread is already interacting with AI; just wait a bit
-                    print(f"Thread {thread_id}: Paused detection (talking with ChatGPT)...")
+                    #print(f"Thread {thread_id}: Paused detection (talking with ChatGPT)...")
                     time.sleep(1)
                     continue
                 
