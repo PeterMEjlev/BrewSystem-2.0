@@ -126,10 +126,24 @@ def handle_tool_call(function_name, parameters):
             pot = parameters.get("pot", "unknown pot")
             state = parameters.get("state", "unknown state")
             return assistant_functions.toggle_pot(pot, state)
+        elif function_name == "set_pot_efficiency":
+            pot = parameters.get("pot", "unknown pot")
+            efficiency = parameters.get("efficiency", "unknown efficiency")
+            return assistant_functions.set_pot_efficiency(pot, efficiency)
         elif function_name == "set_reg_temperature":
             pot = parameters.get("pot", "unknown pot")
             temperature = parameters.get("temperature", "unknown temperature")
             return assistant_functions.set_reg_temperature(pot, temperature)
+        
+        elif function_name == "toggle_pump":
+            pump = parameters.get("pump", "unknown pump")
+            state = parameters.get("state", "unknown state")
+            return assistant_functions.toggle_pump(pump, state)
+        elif function_name == "set_pump_efficiency":
+            pump = parameters.get("pump", "unknown pump")
+            efficiency = parameters.get("efficiency", "unknown efficiency")
+            return assistant_functions.set_pump_efficiency(pump, efficiency)
+        
         elif function_name == "end_conversation":
             variables.talking_with_chat = False
             print("Ending the conversation.")
@@ -228,13 +242,14 @@ def assistant_ai(conversation):
         print(f"Error: {e}")
         return "Error occurred during processing."
 
-def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
+def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
     """
     Starts the AI Assistant with a starter text and enables interactive conversation using speech-to-text.
     Stops if no valid speech is detected.
     """
     print(f"Call AI Assistant: {starter_text}")
     try:
+        # Enable conversation mode
         variables.talking_with_chat = True
         print(f"talking_with_chat = {variables.talking_with_chat}")
         
@@ -262,6 +277,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
                 variables.talking_with_chat = False
                 break
 
+            # Transcribe the user’s query once
             user_input = speech_to_text(audio_path, thread_id)
             if not user_input:
                 print("No valid speech detected. Ending conversation.")
@@ -269,23 +285,13 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
                 variables.talking_with_chat = False
                 break
 
-            user_input = speech_to_text(audio_path, thread_id)
-
-            # Handle silence or no valid input
-            if not user_input:
-                print("No input detected. Ending conversation.")
-                text_to_speech("No input detected - Goodbye.")
-                variables.talking_with_chat = False
-                print(f"talking_with_chat = {variables.talking_with_chat}")
-                break  # Exit loop
-
             print(f"You: {user_input}")
 
-            # Check for exit commands
-            #if check_for_exit_commands() == True:
-            #    break
+            # (Optional) Check for exit commands here if you want:
+            # if check_for_exit_commands(user_input):
+            #     break
 
-            # Add user input to the conversation
+            # Add the user input to the conversation
             conversation.append({"role": "user", "content": user_input})
 
             # Send the conversation to the assistant
@@ -300,6 +306,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id = None):
 
     except Exception as e:
         print(f"Error in call_ai_assistant: {e}")
+
 
 def check_for_exit_commands(user_input):
     if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):

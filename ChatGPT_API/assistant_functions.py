@@ -9,14 +9,26 @@ except:
     pass
 
 def toggle_pot(pot, state):
-    print(f"Toggling {pot} to {state}.")
+    print(f"toggle_pot: Toggling {pot} to {state}.")
     return f"Successfully toggled {pot} to {state}."
 
+def set_pot_efficiency(pot, efficiency):
+    print(f"set_pot_efficiency: Setting {pot} efficiency to {efficiency}.")
+    return f"Successfully set {pot} efficiency to {efficiency}."
+
 def set_reg_temperature(pot, temperature):
-    print(f"Setting {pot} to {temperature}°C.")
+    print(f"set_reg_temperature: Setting {pot} to {temperature}°C.")
     if pot == 'BK':
         variables.temp_REG_BK = temperature
     elif pot == 'HLT':
         variables.temp_REG_HLT = temperature
 
     return f"Regulation temperature for {pot} set to {temperature}°C."
+
+def toggle_pump(pump, state):
+    print(f"toggle_pump: Toggling {pump} to {state}.")
+    return f"Successfully toggled {pump} to {state}."
+
+def set_pump_efficiency(pump, efficiency):
+    print(f"set_pump_efficiency: Setting {pump} efficiency to {efficiency}.")
+    return f"Successfully set {pump} efficiency to {efficiency}."
