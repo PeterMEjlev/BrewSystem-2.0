@@ -11,6 +11,10 @@ import Common.constants_gui as constants_gui
 import Common.variables as variables
 from Common.shutdown import perform_shutdown
 
+_gui_static_elements = None
+_gui_dynamic_elements = None
+_gui_toggle_images_visibility_callback = None
+
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
     """
     Initializes the slider, its value label, and a fake slider to visually represent dynamic width.
@@ -81,8 +85,6 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
 
     return slider, value_label, fake_slider, fake_slider_background
 
-
-
 def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback, instance):
     """
     Initializes the buttons used in the GUI.
@@ -97,6 +99,13 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
     Returns:
     A dictionary of initialized buttons.
     """
+    # Set our global references for pot toggling here, once.
+    set_pot_toggle_references(
+        static_elements, 
+        dynamic_elements, 
+        toggle_images_visibility_callback
+    )
+    
     buttons = {
         'BTN_toggle_BK': create_button(
             parent_widget=central_widget,
@@ -106,12 +115,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_BK_Selected', 'TXT_EFFICIENCY_BK'),  # Pass self explicitly
                 central_widget.parent().update_slider_value('efficiency_BK')  # Update slider for BK
             ),
-            on_long_click=lambda: (
-                toggle_images_visibility_callback(static_elements, ['IMG_Pot_BK_On_Background', 'IMG_Pot_BK_On_Foreground']),
-                toggle_variable('BK_ON', STATE),
-                handle_bk_on_toggle(dynamic_elements, static_elements),
-                create_or_stop_pwm_for_bk()
-            ),
+            on_long_click=lambda: toggle_pot_handle_all('BK'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_HLT': create_button(
@@ -122,12 +126,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_HLT_Selected', 'TXT_EFFICIENCY_HLT'),
                 central_widget.parent().update_slider_value('efficiency_HLT')  # Update slider for HLT
             ),
-            on_long_click=lambda: (
-                toggle_images_visibility_callback(static_elements, ['IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground']),
-                toggle_variable('HLT_ON', STATE),
-                handle_hlt_on_toggle(dynamic_elements, static_elements),
-                create_or_stop_pwm_for_hlt()
-            ),
+            on_long_click=lambda: toggle_pot_handle_all('HLT'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_P1': create_button(
@@ -227,6 +226,31 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
     }
     return buttons
 
+def toggle_pot_handle_all(pot_name):
+    """
+    Encapsulates the actions that occur when a long press happens on a pot button (BK or HLT).
+
+    Parameters:
+    - pot_name: A string, either "BK" or "HLT".
+    """
+
+    # Access the module-level references
+    global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+
+    _gui_toggle_images_visibility_callback(
+        _gui_static_elements, 
+        [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground']
+    )
+
+    toggle_variable(f'{pot_name}_ON', STATE)
+
+    if pot_name == 'BK':
+        handle_bk_on_toggle(_gui_dynamic_elements, _gui_static_elements)
+        create_or_stop_pwm_for_bk()
+    elif pot_name == 'HLT':
+        handle_hlt_on_toggle(_gui_dynamic_elements, _gui_static_elements)
+        create_or_stop_pwm_for_hlt()
+
 def handle_bk_on_toggle(dynamic_elements, static_elements):
     if STATE['BK_ON']:
         dynamic_elements['TXT_EFFICIENCY_BK'].show()
@@ -257,7 +281,6 @@ def handle_p1_toggle(dynamic_elements):
         set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P1'], "black")
     else:
         set_label_text_color(dynamic_elements['TXT_PUMP_SPEED_P1'], "white")
-
 
 def handle_p2_toggle(dynamic_elements):
     from Common.variables import active_variable
@@ -330,7 +353,6 @@ def create_or_stop_pwm_for_p2():
             stop_pwm_signal(variables.P2_PWM)
             variables.P2_PWM = None
 
-
 def hide_GUI_elements(static_elements, dynamic_elements, buttons):
     """
     Hides specific static images initialized in the static GUI.
@@ -365,3 +387,13 @@ def hide_GUI_elements(static_elements, dynamic_elements, buttons):
     for key in keys_to_show:
         if key in static_elements:
             static_elements[key].show()
+
+def set_pot_toggle_references(static_elems, dynamic_elems, toggle_images_visibility_cb):
+    """
+    Store references to the static and dynamic elements, as well as the toggle_images_visibility_callback,
+    so we can use them in toggle_pot_handle_all without passing them as parameters each time.
+    """
+    global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+    _gui_static_elements = static_elems
+    _gui_dynamic_elements = dynamic_elems
+    _gui_toggle_images_visibility_callback = toggle_images_visibility_cb

@@ -1,5 +1,6 @@
 #assistant_functions.py
 import sys, os
+from Screens.Brewscreen.brewscreen_gui_initialization import toggle_pot_handle_all
 
 try:
     import Common.variables as variables
@@ -10,6 +11,7 @@ except:
 
 def toggle_pot(pot, state):
     print(f"toggle_pot: Toggling {pot} to {state}.")
+    toggle_pot_handle_all(pot)
     return f"Successfully toggled {pot} to {state}."
 
 def set_pot_efficiency(pot, efficiency):
