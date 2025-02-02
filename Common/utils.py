@@ -365,6 +365,32 @@ def toggle_variable(variable_name, globals_dict):
     else:
         print(f"{variable_name} does not exist in the provided scope.")
 
+def set_variable(variable_name, globals_dict, desired_value):
+    """
+    Sets the value of a boolean variable to True or False and updates the GPIO state.
+
+    Parameters:
+    - variable_name (str): The name of the variable to set.
+    - globals_dict (dict): The dictionary of global variables to search for the variable.
+    - desired_value (bool): The boolean value (True/False) to assign to the variable.
+
+    Returns:
+    - None
+    """
+    if variable_name in globals_dict:
+        current_value = globals_dict[variable_name]
+        if isinstance(current_value, bool):
+            # Set the variable to the desired value
+            globals_dict[variable_name] = desired_value
+            print(f"{variable_name} set to {desired_value}")
+
+            # Call the separate GPIO state update function
+            update_gpio_state(variable_name, desired_value)
+        else:
+            print(f"{variable_name} is not a boolean. Current value: {current_value}")
+    else:
+        print(f"{variable_name} does not exist in the provided scope.")
+
 def adjust_image_height(image_label, percentage, original_height):
     """
     Adjust the height of an image based on a percentage of a given original height without maintaining the aspect ratio,

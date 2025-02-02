@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
-from Common.utils import create_slider, create_button, toggle_variable, set_label_text_color
+from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color
 from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
@@ -226,7 +226,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
     }
     return buttons
 
-def toggle_pot_handle_all(pot_name):
+def toggle_pot_handle_all(pot_name, state = None):
     """
     Encapsulates the actions that occur when a long press happens on a pot button (BK or HLT).
 
@@ -242,8 +242,12 @@ def toggle_pot_handle_all(pot_name):
         [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground']
     )
 
-    toggle_variable(f'{pot_name}_ON', STATE)
-
+    if state is not None:
+        print(f"toggle_pot_handle_all called with state ({state})")
+        set_variable(f'{pot_name}_ON', STATE, state)
+    else:
+        toggle_variable(f'{pot_name}_ON', STATE)
+    
     if pot_name == 'BK':
         handle_bk_on_toggle(_gui_dynamic_elements, _gui_static_elements)
         create_or_stop_pwm_for_bk()

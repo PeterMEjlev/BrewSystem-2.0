@@ -11,7 +11,7 @@ except:
 
 def toggle_pot(pot, state):
     print(f"toggle_pot: Toggling {pot} to {state}.")
-    toggle_pot_handle_all(pot)
+    toggle_pot_handle_all(pot, state)
     return f"Successfully toggled {pot} to {state}."
 
 def set_pot_efficiency(pot, efficiency):
