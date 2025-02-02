@@ -4,6 +4,7 @@ from pathlib import Path
 import sounddevice as sd
 import numpy as np
 from dotenv import load_dotenv
+from ChatGPT_API import assistant_functions
 
 load_dotenv("openai_keys.env")
 api_key = os.getenv("OPENAI_API_KEY")
@@ -119,29 +120,16 @@ def speech_to_text(audio_file_path , thread_id = None):
         print(f"Error in speech_to_text: {e}")
         return None
 
-def set_reg_temperature(pot, temperature):
-    print(f"Setting {pot} to {temperature}°C.")
-    if pot == 'BK':
-        variables.temp_REG_BK = temperature
-    elif pot == 'HLT':
-        variables.temp_REG_HLT = temperature
-
-    return f"Regulation temperature for {pot} set to {temperature}°C."
-
-def toggle_pot(pot, state):
-    print(f"Toggling {pot} to {state}.")
-    return f"Successfully toggled {pot} to {state}."
-
 def handle_tool_call(function_name, parameters):
     try:
         if function_name == "toggle_pot":
             pot = parameters.get("pot", "unknown pot")
             state = parameters.get("state", "unknown state")
-            return toggle_pot(pot, state)
+            return assistant_functions.toggle_pot(pot, state)
         elif function_name == "set_reg_temperature":
             pot = parameters.get("pot", "unknown pot")
             temperature = parameters.get("temperature", "unknown temperature")
-            return set_reg_temperature(pot, temperature)
+            return assistant_functions.set_reg_temperature(pot, temperature)
         elif function_name == "end_conversation":
             variables.talking_with_chat = False
             print("Ending the conversation.")
