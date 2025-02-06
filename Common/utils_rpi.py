@@ -1,8 +1,7 @@
 # utils_rpi.py
 from Common.config import IS_RPI
-import random, time
+import random, time, os
 import Common.constants_rpi as constants_rpi
-
 
 if IS_RPI:
     import RPi.GPIO as GPIO
@@ -100,52 +99,68 @@ def change_pwm_duty_cycle(pwm, duty_cycle):
     else:
         print(f"{pwm} duty cycle changed to {duty_cycle}% (simulated).")
 
+
+def initialize_ds18b20_resolution(serial_code, resolution="9"):
+    """
+    Sets the resolution of a DS18B20 sensor once at startup.
+    
+    Args:
+        serial_code (str): The sensor's serial code.
+        resolution (str): The resolution value to write (e.g. "9" for 9-bit).
+    """
+    if IS_RPI:
+        sensor_dir = f"/sys/bus/w1/devices/{serial_code}"
+        resolution_file = os.path.join(sensor_dir, "resolution")
+        if os.path.exists(resolution_file):
+            try:
+                with open(resolution_file, "w") as f:
+                    f.write(resolution)
+                print(f"Sensor {serial_code} resolution set to {resolution}-bit.")
+            except Exception as e:
+                print(f"Warning: Unable to set sensor {serial_code} resolution: {e}")
+        else:
+            print(f"Resolution file for sensor {serial_code} not found.")
+
 def read_ds18b20(serial_code):
     """
     Reads the temperature from a DS18B20 sensor.
-
+    
     Args:
         serial_code (str): The serial code of the DS18B20 sensor.
-
+    
     Returns:
-        float: The temperature in Celsius, or a default value (e.g., -1.0) if an error occurs.
+        float: The temperature in Celsius, or -1.0 on error.
     """
     if IS_RPI:
+        sensor_file_path = f"/sys/bus/w1/devices/{serial_code}/w1_slave"
         start_time = time.time()  # Record the start time
         try:
-            # Construct the path to the sensor's data file
-            sensor_file_path = f"/sys/bus/w1/devices/{serial_code}/w1_slave"
-            
-            # Read the file content
             with open(sensor_file_path, 'r') as f:
                 lines = f.readlines()
 
-            # Ensure the data is valid
+            # Check CRC (the first line should end with "YES")
             if lines[0].strip()[-3:] != "YES":
                 raise ValueError("CRC check failed for DS18B20 data.")
 
-            # Parse the temperature value from the second line
+            # Parse the temperature from the second line (after "t=")
             temp_output = lines[1].split("t=")
             if len(temp_output) < 2:
                 raise ValueError("Temperature data not found.")
-
-            # Convert the temperature to Celsius
             temp_c = float(temp_output[1]) / 1000.0
 
             end_time = time.time()  # Record the end time
             print(f"read_ds18b20 execution time: {end_time - start_time:.3f} seconds")
-
             return temp_c
         except FileNotFoundError:
             print(f"DS18B20 sensor with serial code {serial_code} not found.")
-            return -1.0  # Return a default error value
+            return -1.0
         except Exception as e:
             print(f"An error occurred while reading the DS18B20 sensor: {e}")
-            return -1.0  # Return a default error value
-        
+            return -1.0
     else:
         # Simulated temperature for non-RPi environments
         return random.uniform(35.0, 102.0)
+
 
 def initialize_gpio():
     """

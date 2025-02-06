@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import QApplication
 from Screens.Brewscreen.brewscreen import FullScreenWindow
 from ChatGPT_API.Vosk_STT import KeywordDetector
 from Common.get_setting import get_setting
+from Common.utils_rpi import initialize_ds18b20_resolution
+from Common.constants_rpi import DS18B20_BK, DS18B20_MLT, DS18B20_HLT
 
 def main():
     # Absolute path to the Vosk model
@@ -14,6 +16,11 @@ def main():
         model_path=model_path,
         keywords=get_setting("chatGPT_assistant_keywords"),
     )
+    
+    sensor_codes = [DS18B20_BK, DS18B20_MLT, DS18B20_HLT]
+
+    for code in sensor_codes:
+        initialize_ds18b20_resolution(code, resolution="11")
 
     # Start a single detection thread
     detector.start_detection()
