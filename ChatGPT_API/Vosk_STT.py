@@ -1,15 +1,16 @@
 import os
-from vosk import Model, KaldiRecognizer
-import sounddevice as sd
+import json
 import threading
+import time
+import sounddevice as sd
+from vosk import Model, KaldiRecognizer
 from io import BytesIO
 import wave
-import time
+
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
 from Common.utils import play_audio
 
-
-# Import the `variables` module to access `talking_with_chat`
+# Import the variables module to access talking_with_chat
 try:
     import Common.variables as variables
 except ImportError:
@@ -17,19 +18,14 @@ except ImportError:
 
 
 class KeywordDetector:
-    def __init__(self, model_path, keywords, sample_rate=16000, audio_duration=1):
+    def __init__(self, model_path, keywords, sample_rate=16000):
         self.model_path = model_path
         self.keywords = keywords
         self.sample_rate = sample_rate
-        self.audio_duration = audio_duration
         self.model = self.load_model()
-        
         self.running = threading.Event()
-        
         self.threads = []
-        
         self.callback = None
-        
         self.ai_call_lock = threading.Lock()
 
     def load_model(self):
@@ -40,74 +36,54 @@ class KeywordDetector:
         print("Model loaded successfully.")
         return model
 
+    def detection_callback(self, indata, frames, time_info, status, recognizer, thread_id):
+        if status:
+            print(f"Thread {thread_id} status: {status}")
+        # Convert numpy array to bytes before passing it to Vosk
+        audio_bytes = indata.tobytes()
+        if recognizer.AcceptWaveform(audio_bytes):
+            result = recognizer.Result()
+            try:
+                result_dict = json.loads(result)
+            except Exception as e:
+                print(f"Thread {thread_id}: JSON parsing error: {e}")
+                return
+
+            result_text = result_dict.get("text", "").lower()
+            for keyword in self.keywords:
+                if keyword.lower() in result_text:
+                    # Call user-provided callback if available
+                    if self.callback:
+                        self.callback(keyword, thread_id)
+
+                    with self.ai_call_lock:
+                        if variables and not variables.talking_with_chat:
+                            variables.talking_with_chat = True
+                            print(f"Thread {thread_id}: Calling AI Assistant...")
+                            play_audio("calling_Bruce - Male.mp3")
+                            # Call the AI assistant inline instead of in a separate thread
+                            call_ai_assistant("Hey Brewsystem", thread_id)
+                            variables.talking_with_chat = False
+                    # Break after handling the first recognized keyword
+                    break
+
     def keyword_detection_loop(self, thread_id, delay=0):
         if delay > 0:
             print(f"Thread {thread_id}: Delaying start by {delay} seconds...")
             time.sleep(delay)
-
         print(f"Thread {thread_id}: Starting detection loop.")
-        recognizer = KaldiRecognizer(self.model, self.sample_rate)  # Independent recognizer per thread
+        recognizer = KaldiRecognizer(self.model, self.sample_rate)
 
-        while self.running.is_set():
-            try:
-                if variables and variables.talking_with_chat:
-                    # Another thread is already interacting with AI; just wait a bit
-                    time.sleep(1)
-                    continue
-                
-                print(f"Thread {thread_id}: Listening for keywords...")
-                audio_data = sd.rec(int(self.audio_duration * self.sample_rate),
-                                    samplerate=self.sample_rate,
-                                    channels=1, 
-                                    dtype='int16')
-                sd.wait()
-
-                audio_stream = BytesIO()
-                with wave.open(audio_stream, "wb") as wf:
-                    wf.setnchannels(1)
-                    wf.setsampwidth(2)  # 'int16' => 2 bytes
-                    wf.setframerate(self.sample_rate)
-                    wf.writeframes(audio_data.tobytes())
-
-                audio_stream.seek(0)
-                wf = wave.open(audio_stream, "rb")
-
-                detected_keywords = set()
-
-                while True:
-                    data = wf.readframes(4000)
-                    if len(data) == 0:
-                        break
-                    if recognizer.AcceptWaveform(data):
-                        result = recognizer.Result()
-                        result_dict = eval(result)
-                        result_text = result_dict.get("text", "").lower()
-
-                        for keyword in self.keywords:
-                            if keyword.lower() in result_text:
-                                if keyword.lower() not in detected_keywords:
-                                    detected_keywords.add(keyword.lower())
-
-                                    # If user provided a callback, call it
-                                    if self.callback:
-                                        self.callback(keyword, thread_id)
-
-                                    with self.ai_call_lock:
-                                        if not variables.talking_with_chat:
-                                            variables.talking_with_chat = True
-                                            print(f"Thread {thread_id}: Calling AI Assistant...")
-                                            play_audio("calling_Bruce - Male.mp3")
-                                            call_ai_assistant("Hey Brewsystem", thread_id)
-
-                                            variables.talking_with_chat = False
-                                    
-                                # Break after we handle the first recognized keyword 
-                                break
-
-                time.sleep(self.audio_duration)
-
-            except Exception as e:
-                print(f"Thread {thread_id}: Error in detection loop: {e}")
+        # Create an input stream with a callback for real-time processing
+        with sd.InputStream(
+            samplerate=self.sample_rate,
+            channels=1,
+            dtype='int16',
+            callback=lambda indata, frames, time_info, status: self.detection_callback(indata, frames, time_info, status, recognizer, thread_id)
+        ):
+            # Keep the thread alive while detection is running
+            while self.running.is_set():
+                time.sleep(0.1)
 
     def start_detection(self, callback=None, threads=1, delays=None):
         """
@@ -135,3 +111,9 @@ class KeywordDetector:
             )
             self.threads.append(thread)
             thread.start()
+
+    def stop_detection(self):
+        """Stops all detection threads."""
+        self.running.clear()
+        for thread in self.threads:
+            thread.join()
