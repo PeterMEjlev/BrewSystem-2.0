@@ -54,7 +54,7 @@ class ThermometerWorker(QObject):
             self.graph.update_graph(variables.temp_BK, variables.temp_MLT, variables.temp_HLT)
 
             # Wait for the next reading
-            QThread.msleep(constants.THERMOMETER_READ_WAIT_TIME)
+            QThread.msleep(constants.THERMOMETER_READ_FREQUENCY)
 
     def read_thermometer_bk(self):
         return read_ds18b20(constants_rpi.DS18B20_BK)  

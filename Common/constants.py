@@ -17,7 +17,7 @@ SLIDER_MAX = 100
 SLIDER_PAGESTEP = 1
 
 # Thermometer configuration
-THERMOMETER_READ_WAIT_TIME = 1000  # Time in milliseconds
+THERMOMETER_READ_FREQUENCY = 1000  # Time in milliseconds
 TEMP_REACHED_MARGIN = 10  # Temperature threshold for reaching target
 
 # Button visibility
@@ -32,6 +32,7 @@ SOUNDFILES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "
 def initialize_constants_from_settings():
     """Load settings from the JSON file and update variables."""
     global TEMP_REACHED_MARGIN
+    global THERMOMETER_READ_FREQUENCY
 
     if not os.path.exists(SETTINGS_FILE):
         raise FileNotFoundError(f"Settings file not found at {SETTINGS_FILE}")
@@ -41,6 +42,7 @@ def initialize_constants_from_settings():
 
     # Update variables from settings
     TEMP_REACHED_MARGIN = settings.get("target_temp_margin", TEMP_REACHED_MARGIN)
+    THERMOMETER_READ_FREQUENCY = settings.get("thermometor_read_frequency", THERMOMETER_READ_FREQUENCY)
 
 # Initialize variables at the time of import
 initialize_constants_from_settings()
