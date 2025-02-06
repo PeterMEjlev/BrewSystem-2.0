@@ -9,14 +9,14 @@ def main():
     # Absolute path to the Vosk model
     model_path = os.path.join(os.path.dirname(__file__), "ChatGPT_API", "vosk-model-small-en-us-0.15")
 
-    # Initialize the KeywordDetector
+    # Initialize the KeywordDetector with the model path and keywords from settings
     detector = KeywordDetector(
-        model_path=model_path,  # Provide the absolute path
+        model_path=model_path,
         keywords=get_setting("chatGPT_assistant_keywords"),
     )
 
-    # Start two detection threads directly
-    detector.start_detection(threads=2, delays=[0, 0.5])
+    # Start a single detection thread
+    detector.start_detection()
 
     # Start the PyQt application
     app = QApplication(sys.argv)
