@@ -1,1 +1,0 @@
-from Common.get_setting import get_setting

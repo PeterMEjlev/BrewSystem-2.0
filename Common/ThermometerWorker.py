@@ -7,6 +7,7 @@ import Common.constants_rpi as constants_rpi
 from Common.utils_rpi import read_ds18b20
 from Common.TemperatureGraph import TemperatureGraph
 
+
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
     temperature_updated_hlt = pyqtSignal(float)
@@ -105,7 +106,8 @@ class ThermometerWorker(QObject):
         if variables.temp_REG_BK-constants.TEMP_REACHED_MARGIN <= variables.temp_BK <= variables.temp_REG_BK+constants.TEMP_REACHED_MARGIN:
             if variables.set_temp_reached_BK == False:
                 variables.set_temp_reached_BK = True
-                play_audio("BK_set_temp_reached - Male.mp3")
+                if not variables.talking_with_chat:
+                    play_audio("BK_set_temp_reached - Male.mp3")
         else:
              if variables.set_temp_reached_BK == True:
                  variables.set_temp_reached_BK = False
@@ -114,7 +116,8 @@ class ThermometerWorker(QObject):
         if variables.temp_REG_HLT-constants.TEMP_REACHED_MARGIN <= variables.temp_HLT <= variables.temp_REG_HLT+constants.TEMP_REACHED_MARGIN:
             if variables.set_temp_reached_HLT == False:
                 variables.set_temp_reached_HLT = True
-                play_audio("HLT_set_temp_reached - Male.mp3")
+                if not variables.talking_with_chat:
+                    play_audio("HLT_set_temp_reached - Male.mp3")
         else:
              if variables.set_temp_reached_HLT == True:
                  variables.set_temp_reached_HLT = False

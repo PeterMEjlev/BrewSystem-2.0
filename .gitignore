@@ -8,3 +8,7 @@
 /Common/__pycache__/constants_rpi.cpython-312.pyc
 /Common/__pycache__/ThermometerWorker.cpython-312.pyc
 /Common/__pycache__/utils_rpi.cpython-312.pyc
+/Screens/Brewscreen/__pycache__/brewscreen.cpython-312.pyc
+/Common/__pycache__/variables.cpython-312.pyc
+/ChatGPT_API/__pycache__/assistant_functions.cpython-312.pyc
+/ChatGPT_API/speech.mp3
