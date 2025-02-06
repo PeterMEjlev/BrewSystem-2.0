@@ -2,3 +2,6 @@
 /ChatGPT_API/speech.mp3
 /ChatGPT_API/speech.mp3
 /user_input.wav
+/ChatGPT_API/__pycache__/ChatGPT_Assistant.cpython-312.pyc
+/ChatGPT_API/__pycache__/Vosk_STT.cpython-312.pyc
+/Common/__pycache__/ThermometerWorker.cpython-312.pyc
