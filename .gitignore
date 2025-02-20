@@ -12,3 +12,5 @@
 /Common/__pycache__/variables.cpython-312.pyc
 /ChatGPT_API/__pycache__/assistant_functions.cpython-312.pyc
 /ChatGPT_API/speech.mp3
+/Common/__pycache__/constants_gui.cpython-312.pyc
+/Common/__pycache__/detector_signals.cpython-312.pyc

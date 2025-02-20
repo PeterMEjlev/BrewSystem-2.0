@@ -9,25 +9,22 @@ from Common.constants_rpi import DS18B20_BK, DS18B20_MLT, DS18B20_HLT
 
 def main():
     # Absolute path to the Vosk model
-    model_path = os.path.join(os.path.dirname(__file__), "ChatGPT_API", "vosk-model-small-en-us-0.15")
-
-    # Initialize the KeywordDetector with the model path and keywords from settings
-    detector = KeywordDetector(
-        model_path=model_path,
-        keywords=get_setting("chatGPT_assistant_keywords"),
-    )
-    
+    model_path = os.path.join(os.path.dirname(__file__), "ChatGPT_API", "vosk-model-small-en-us-0.15")      
     sensor_codes = [DS18B20_BK, DS18B20_MLT, DS18B20_HLT]
 
     for code in sensor_codes:
         initialize_ds18b20_resolution(code, resolution="11")
 
-    # Start a single detection thread
-    detector.start_detection()
-
     # Start the PyQt application
     app = QApplication(sys.argv)
     window = FullScreenWindow()
+
+    detector = KeywordDetector(
+        model_path=model_path,
+        keywords=get_setting("chatGPT_assistant_keywords"),
+    )
+    detector.start_detection()
+
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

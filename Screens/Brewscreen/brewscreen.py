@@ -16,7 +16,10 @@ from Screens.Settingsscreen.settingsscreen import SettingsScreen
 from Common.utils_rpi import change_pwm_duty_cycle, initialize_gpio
 import Screens.Brewscreen.brewscreen_helpers as brewscreen_helpers
 import Screens.Brewscreen.brewscreen_events as brewscreen_events
+from Common.gif_viewer import GifViewer
+from Common.detector_signals import detector_signals
 
+gif_label = None
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -28,16 +31,19 @@ class FullScreenWindow(QMainWindow):
         self.worker_thread = None  # Thread for thermometer
         self.thermometer_worker = None  # Worker instance
         self.graph = TemperatureGraph(self)
+
+        self.init_ui()  # Call setup functions first to initialize central_widget
         
         # Initialize the graph screen
         self.graph_screen = GraphScreen()
         self.graph_screen.hide()
         self.graph = self.graph_screen.temperature_graph  # Reference the temperature graph from GraphScreen
-       
+
         self.settings_screen = None  # Placeholder for the settings window    
 
-        self.init_ui()  
-        self.start_thermometer_thread()  
+        self.start_thermometer_thread() 
+
+        self.gif_label_thinking = self.initialize_thinking_gif_label(self.central_widget)
 
     def init_ui(self):
         self.setup_window()
@@ -114,6 +120,29 @@ class FullScreenWindow(QMainWindow):
         """Ensure threads are stopped when the application is closed."""
         self.stop_thermometer_thread()
         super().closeEvent(event)
+
+    def initialize_thinking_gif_label(self, parent_widget):
+        gif_label = GifViewer(
+            parent_widget, "bruce_thinking.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
+        gif_label.show()
+        detector_signals.bruce_thinking.connect(self.start_thinking_gif)
+        return gif_label
+
+    
+    def initialize_responding_gif_label(self, parent_widget):
+        gif_label = GifViewer(parent_widget, "bruce_loading.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
+        gif_label.show()
+        detector_signals.bruce_thinking.connect(self.start_thinking_gif)
+        return gif_label
+        
+    
+    def start_thinking_gif(self):
+        """
+        This gets called whenever the Vosk detector finds a keyword.
+        """
+        print("start_thinking_gif called")
+        if self.gif_label_thinking is not None:
+            self.gif_label_thinking.start_gif()
 
     def initialize_gui_elements(self):
         self.static_elements = initialize_static_elements(self.central_widget, self.path)

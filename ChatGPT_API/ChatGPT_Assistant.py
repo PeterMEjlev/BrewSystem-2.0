@@ -5,6 +5,7 @@ import sounddevice as sd
 import numpy as np
 from dotenv import dotenv_values
 from ChatGPT_API import assistant_functions
+from Common.detector_signals import detector_signals
 
 config = dotenv_values("api_info.env")
 os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
@@ -28,6 +29,7 @@ def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_dur
     actually heard speech at all.
     """
     print("Recording (GPT)...")
+    detector_signals.bruce_listening.emit()
     duration_per_chunk = 0.5  # seconds per chunk
     chunk_samples = int(sample_rate * duration_per_chunk)
 
@@ -300,6 +302,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
             print(f"Assistant: {response}")
 
             # Play the assistant's response aloud
+            detector_signals.bruce_responding.emit()
             text_to_speech(response)
 
             # Ensure playback is complete before proceeding

@@ -7,6 +7,8 @@ from vosk import Model, KaldiRecognizer
 
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
 from Common.utils import play_audio
+from Common.detector_signals import detector_signals
+from Screens.Brewscreen.brewscreen import gif_label as gif_label_brewscreen
 
 # Import the variables module to access talking_with_chat
 try:
@@ -62,6 +64,7 @@ class KeywordDetector:
                         if variables and not variables.talking_with_chat:
                             variables.talking_with_chat = True
                             print("Keyword detected. Calling AI Assistant...")
+                            detector_signals.bruce_thinking.emit()
                             play_audio("calling_Bruce - Male.mp3")
                             # Call the AI assistant inline (blocking)
                             call_ai_assistant("Hey Brewsystem", 1)
@@ -100,3 +103,6 @@ class KeywordDetector:
         self.running.clear()
         if self.thread:
             self.thread.join()
+
+    def start_voicelines_gif(self):
+        gif_label_brewscreen.start_gif()

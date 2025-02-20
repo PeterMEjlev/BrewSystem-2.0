@@ -21,6 +21,7 @@ def initialize_static_images(parent_widget, assets_path):
         'IMG_Sidebar_Icon_Home': create_image(parent_widget, os.path.join(assets_path, "Icon_Home.png"), center=constants_gui.IMG_SIDEBAR_ICON_HOME),
         'IMG_Sidebar_Icon_Graph': create_image(parent_widget, os.path.join(assets_path, "Icon_Graph.png"), center=constants_gui.IMG_SIDEBAR_ICON_GRAPHS),
         'IMG_Sidebar_Icon_Settings': create_image(parent_widget, "Icon_Settings.png", center=constants_gui.IMG_SIDEBAR_ICON_SETTINGS),
+        'IMG_Sidebar_Voicelines_Grey': create_image(parent_widget, "Voicelines_Grey.png", center=constants_gui.IMG_VOICELINES),
         'IMG_Sidebar_Konfus_Logo': create_image(parent_widget, os.path.join(assets_path, "Konfus_Logo.png"), center=constants_gui.IMG_KONFUS_LOGO),
 
         # Graph Buttons
