@@ -6,6 +6,7 @@ import numpy as np
 from dotenv import dotenv_values
 from ChatGPT_API import assistant_functions
 from Common.detector_signals import detector_signals
+from Common.config import IS_RPI
 
 config = dotenv_values("api_info.env")
 os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
@@ -24,20 +25,17 @@ except:
 
 def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_duration=1.5):
     """
-    Records audio until it hears some speech, then continues until `silence_duration`
-    seconds of trailing silence occur. Saves the .wav file and returns whether we ever
-    actually heard speech at all.
+    Records audio until speech is detected, then stops after `silence_duration` seconds of trailing silence.
+    Saves the .wav file and returns whether speech was detected.
     """
     print("Recording (GPT)...")
     detector_signals.bruce_listening.emit()
+
     duration_per_chunk = 0.5  # seconds per chunk
     chunk_samples = int(sample_rate * duration_per_chunk)
 
-    # The number of "silent" chunks needed to conclude "we're done speaking"
     silence_chunks = int(silence_duration / duration_per_chunk)
-
-    # The number of chunks we allow before deciding "the user isn't speaking at all"
-    max_wait_seconds = 1.5 
+    max_wait_seconds = 1.5
     max_chunks_no_speech = int(max_wait_seconds / duration_per_chunk)
 
     silence_counter = 0
@@ -45,10 +43,26 @@ def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_dur
     speech_detected = False
     chunks_without_speech = 0
 
+    # Set the correct audio device and sample rate for Raspberry Pi
+    if IS_RPI:
+        device_index = 2  # Use USB mic on RPi
+        try:
+            print(f"Using Raspberry Pi microphone: Device {device_index} with {sample_rate} Hz")
+            test_stream = sd.InputStream(device=device_index, samplerate=sample_rate, channels=1, dtype='int16')
+            test_stream.close()
+        except Exception as e:
+            print(f"44100 Hz not supported, switching to 8000 Hz: {e}")
+            sample_rate = 8000  # Use a lower sample rate if needed
+
+    else:
+        device_index = None  # Use default device on PC
+        print(f"Using default microphone with {sample_rate} Hz")
+
     try:
         while True:
+            # Start recording
             audio_chunk = sd.rec(chunk_samples, samplerate=sample_rate, 
-                                 channels=1, dtype='int16')
+                                 channels=1, dtype='int16', device=device_index)
             sd.wait()
 
             chunk_float = audio_chunk.astype(np.float32)
@@ -58,28 +72,23 @@ def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_dur
             audio_buffer.append(audio_chunk)
 
             if rms >= silence_threshold:
-                # We have speech
                 speech_detected = True
-                chunks_without_speech = 0      # reset
+                chunks_without_speech = 0
                 silence_counter = 0
             else:
                 if not speech_detected:
-                    # We haven't heard anything yet, increment no-speech counter
                     chunks_without_speech += 1
-                    # If we've been silent too long at the start, stop
                     if chunks_without_speech >= max_chunks_no_speech:
                         print("No speech detected at all. Stopping.")
                         break
                 else:
-                    # We already heard speech, now checking trailing silence
                     silence_counter += 1
 
-            # If we've started speaking, and now there's enough trailing silence
             if speech_detected and silence_counter >= silence_chunks:
                 print("Silence detected after speech. Stopping recording.")
                 break
 
-        # Combine chunks and save
+        # Save the recording
         audio_data = np.concatenate(audio_buffer, axis=0)
         with wave.open(filename, "wb") as wf:
             wf.setnchannels(1)
@@ -93,6 +102,7 @@ def record_audio(filename, sample_rate=44100, silence_threshold=500, silence_dur
     except Exception as e:
         print(f"Error during recording: {e}")
         return False
+
 
 def speech_to_text(audio_file_path , thread_id = None):
     """
