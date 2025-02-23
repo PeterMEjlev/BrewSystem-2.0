@@ -9,12 +9,10 @@ from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
 from Common.utils import play_audio
 from Common.detector_signals import detector_signals
 
-
-# Import the variables module to access talking_with_chat
 try:
     import Common.variables as variables
 except ImportError:
-    variables = None  # Handle the case where the import fails
+    variables = None
 
 class KeywordDetector:
     def __init__(self, model_path, keywords, sample_rate=44100):
@@ -23,8 +21,11 @@ class KeywordDetector:
         self.sample_rate = sample_rate
         self.model = self.load_model()
         self.running = threading.Event()
+        self.running.set()
         self.thread = None
         self.callback = None
+        self.keyword_detected = threading.Event()  # flag for keyword detection
+        self.detected_keyword = None  # to store which keyword was detected
         self.ai_call_lock = threading.Lock()
 
     def load_model(self):
@@ -36,13 +37,12 @@ class KeywordDetector:
         return model
 
     def detection_callback(self, indata, frames, time_info, status, recognizer):
-        # If an AI conversation is in progress, skip processing
         if variables and variables.talking_with_chat:
             return
 
         if status:
             print(f"Status: {status}")
-        # Convert the numpy array to bytes for Vosk
+
         audio_bytes = indata.tobytes()
         if recognizer.AcceptWaveform(audio_bytes):
             result = recognizer.Result()
@@ -55,50 +55,53 @@ class KeywordDetector:
             result_text = result_dict.get("text", "").lower()
             for keyword in self.keywords:
                 if keyword.lower() in result_text:
-                    # Optionally call a user callback
+                    # Optionally call a user callback in a thread-safe way
                     if self.callback:
-                        self.callback(keyword, 1)  # thread id is 1 for single-thread mode
-
-                    # Pause further keyword detection until done talking with the assistant
-                    with self.ai_call_lock:
-                        if variables and not variables.talking_with_chat:
-                            variables.talking_with_chat = True
-                            print("Keyword detected. Calling AI Assistant...")
-                            detector_signals.bruce_loading.emit()
-                            play_audio("calling_Bruce - Male.mp3")
-                            # Call the AI assistant inline (blocking)
-                            call_ai_assistant("Hey Brewsystem", 1)
-                            variables.talking_with_chat = False
-                    # Once handled, break to avoid multiple triggers from the same audio block
+                        self.callback(keyword, 1)
+                    self.detected_keyword = keyword
+                    self.keyword_detected.set()
+                    # Break to avoid multiple triggers from the same audio block
                     break
 
     def keyword_detection_loop(self):
-        print("Starting single-thread keyword detection loop.")
-        recognizer = KaldiRecognizer(self.model, self.sample_rate)
-        # Create an input stream with a callback for real-time processing
+        while self.running.is_set():
+            print("Starting detection cycle.")
+            recognizer = KaldiRecognizer(self.model, self.sample_rate)
 
-        if IS_RPI:
-            with sd.InputStream(
-            device = 2,
-            samplerate=self.sample_rate,
-            channels=1,
-            dtype='int16',
-            callback=lambda indata, frames, time_info, status: self.detection_callback(indata, frames, time_info, status, recognizer)
-        ):
-                # Keep the thread alive while detection is running
-                while self.running.is_set():
+            def stream_callback(indata, frames, time_info, status):
+                self.detection_callback(indata, frames, time_info, status, recognizer)
+
+            stream_kwargs = {
+                "samplerate": self.sample_rate,
+                "channels": 1,
+                "dtype": 'int16',
+                "callback": stream_callback
+            }
+            if IS_RPI:
+                stream_kwargs["device"] = 2
+
+            # Open the audio stream for this cycle
+            with sd.InputStream(**stream_kwargs):
+                # Run until a keyword is detected (or detection is stopped)
+                while self.running.is_set() and not self.keyword_detected.is_set():
                     time.sleep(0.1)
 
-        else:
-            with sd.InputStream(
-                samplerate=self.sample_rate,
-                channels=1,
-                dtype='int16',
-                callback=lambda indata, frames, time_info, status: self.detection_callback(indata, frames, time_info, status, recognizer)
-            ):
-                # Keep the thread alive while detection is running
-                while self.running.is_set():
-                    time.sleep(0.1)
+            # At this point, the stream is closed so the microphone is freed.
+            if self.keyword_detected.is_set():
+                with self.ai_call_lock:
+                    if variables and not variables.talking_with_chat:
+                        variables.talking_with_chat = True
+                        print("Keyword detected. Calling AI Assistant...")
+                        detector_signals.bruce_loading.emit()
+                        play_audio("calling_Bruce - Male.mp3")
+                        call_ai_assistant("Hey Brewsystem", 1)
+                        variables.talking_with_chat = False
+
+                # Reset the flag to allow future detection cycles.
+                self.keyword_detected.clear()
+            # Optionally, add a short sleep to avoid a rapid restart
+            time.sleep(0.2)
+
 
     def start_detection(self, callback=None):
         """
@@ -117,4 +120,3 @@ class KeywordDetector:
         self.running.clear()
         if self.thread:
             self.thread.join()
-

@@ -152,7 +152,7 @@ def read_ds18b20(serial_code):
             print(f"read_ds18b20 execution time: {end_time - start_time:.3f} seconds")
             return temp_c
         except FileNotFoundError:
-            #print(f"DS18B20 sensor with serial code {serial_code} not found.")
+            print(f"DS18B20 sensor with serial code {serial_code} not found.")
             return -1.0
         except Exception as e:
             print(f"An error occurred while reading the DS18B20 sensor: {e}")
