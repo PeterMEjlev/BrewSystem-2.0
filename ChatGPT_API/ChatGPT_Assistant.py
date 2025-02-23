@@ -189,6 +189,7 @@ def text_to_speech(input_text):
         # Initialize the mixer before playback
         pygame.mixer.init()
         pygame.mixer.music.load(str(speech_file_path))
+        detector_signals.bruce_responding.emit()
         pygame.mixer.music.play()
 
         while pygame.mixer.music.get_busy():
@@ -202,7 +203,7 @@ def text_to_speech(input_text):
 def assistant_ai(conversation):
     try:
         openai_client = OpenAI(api_key=api_key)
-
+        detector_signals.bruce_loading.emit()
         thread = openai_client.beta.threads.create(messages=conversation)
         run = openai_client.beta.threads.runs.create(
             thread_id=thread.id, assistant_id=assistant_id
@@ -278,6 +279,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
                 print("No input detected. Ending conversation.")
                 text_to_speech("No input detected - Goodbye.")
                 variables.talking_with_chat = False
+                detector_signals.bruce_quitting.emit()
                 break
 
             # Transcribe the user’s query once
@@ -286,13 +288,10 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
                 print("No valid speech detected. Ending conversation.")
                 text_to_speech("No valid speech detected - Goodbye.")
                 variables.talking_with_chat = False
+                detector_signals.bruce_quitting.emit()
                 break
 
             print(f"You: {user_input}")
-
-            # (Optional) Check for exit commands here if you want:
-            # if check_for_exit_commands(user_input):
-            #     break
 
             # Add the user input to the conversation
             conversation.append({"role": "user", "content": user_input})
@@ -302,7 +301,6 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
             print(f"Assistant: {response}")
 
             # Play the assistant's response aloud
-            detector_signals.bruce_responding.emit()
             text_to_speech(response)
 
             # Ensure playback is complete before proceeding
@@ -310,7 +308,6 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
 
     except Exception as e:
         print(f"Error in call_ai_assistant: {e}")
-
 
 def check_for_exit_commands(user_input):
     if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):

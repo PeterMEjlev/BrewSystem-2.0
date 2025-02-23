@@ -18,8 +18,11 @@ import Screens.Brewscreen.brewscreen_helpers as brewscreen_helpers
 import Screens.Brewscreen.brewscreen_events as brewscreen_events
 from Common.gif_viewer import GifViewer
 from Common.detector_signals import detector_signals
+from Common.bruce_gifs import start_gif, stop_gif
 
-gif_label = None
+gif_label_thinking = None
+gif_label_responding = None
+gif_label_listening = None
 
 class FullScreenWindow(QMainWindow):
     def __init__(self):
@@ -43,13 +46,23 @@ class FullScreenWindow(QMainWindow):
 
         self.start_thermometer_thread() 
 
-        self.gif_label_thinking = self.initialize_thinking_gif_label(self.central_widget)
-
     def init_ui(self):
         self.setup_window()
         self.setup_central_widget()
         self.initialize_gui_elements()
         self.initialize_slider_and_buttons()
+
+        self.gif_label_loading = self.initialize_bruce_loading_gif_label(self.central_widget)
+        self.gif_label_responding = self.initialize_bruce_responding_gif_label(self.central_widget)
+        self.gif_label_listening = self.initialize_bruce_listening_gif_label(self.central_widget)
+
+        detector_signals.bruce_quitting.connect(
+            lambda: (
+                stop_gif(self.gif_label_loading),
+                stop_gif(self.gif_label_responding),
+                stop_gif(self.gif_label_listening)
+            )
+        )
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
@@ -121,28 +134,44 @@ class FullScreenWindow(QMainWindow):
         self.stop_thermometer_thread()
         super().closeEvent(event)
 
-    def initialize_thinking_gif_label(self, parent_widget):
-        gif_label = GifViewer(
-            parent_widget, "bruce_thinking.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
-        gif_label.show()
-        detector_signals.bruce_thinking.connect(self.start_thinking_gif)
-        return gif_label
-
-    
-    def initialize_responding_gif_label(self, parent_widget):
+    def initialize_bruce_loading_gif_label(self, parent_widget):
         gif_label = GifViewer(parent_widget, "bruce_loading.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
         gif_label.show()
-        detector_signals.bruce_thinking.connect(self.start_thinking_gif)
+        self.gif_label_loading = gif_label
+        detector_signals.bruce_loading.connect(
+            lambda: (
+                start_gif(self.gif_label_loading),
+                stop_gif(self.gif_label_responding),
+                stop_gif(self.gif_label_listening)
+            )
+        )
         return gif_label
-        
     
-    def start_thinking_gif(self):
-        """
-        This gets called whenever the Vosk detector finds a keyword.
-        """
-        print("start_thinking_gif called")
-        if self.gif_label_thinking is not None:
-            self.gif_label_thinking.start_gif()
+    def initialize_bruce_responding_gif_label(self, parent_widget):
+        gif_label = GifViewer(parent_widget, "bruce_responding.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
+        gif_label.show()
+        self.gif_label_responding = gif_label
+        detector_signals.bruce_responding.connect(
+            lambda: (
+                stop_gif(self.gif_label_loading),
+                start_gif(self.gif_label_responding),
+                stop_gif(self.gif_label_listening)
+            )
+        )
+        return gif_label
+    
+    def initialize_bruce_listening_gif_label(self, parent_widget):
+        gif_label = GifViewer(parent_widget, "bruce_listening.gif", constants_gui.IMG_VOICELINES[0], constants_gui.IMG_VOICELINES[1], 129, 97)
+        gif_label.show()
+        self.gif_label_listening = gif_label
+        detector_signals.bruce_listening.connect(
+            lambda: (
+                stop_gif(self.gif_label_loading),
+                stop_gif(self.gif_label_responding),
+                start_gif(self.gif_label_listening)
+            )
+        )
+        return gif_label     
 
     def initialize_gui_elements(self):
         self.static_elements = initialize_static_elements(self.central_widget, self.path)

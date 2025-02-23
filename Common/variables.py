@@ -15,7 +15,7 @@ temp_progress_HLT = 0
 
 # Efficiency
 efficiency_BK = 100
-efficiency_HLT = 100
+efficiency_HLT = 36
 BK_PWM = None
 HLT_PWM = None
 
