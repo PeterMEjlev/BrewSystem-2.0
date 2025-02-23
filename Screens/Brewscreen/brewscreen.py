@@ -1,5 +1,5 @@
 # brewscreen.py
-import os
+import os, math
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
 from Common.utils import toggle_images_visibility, apply_gradient_to_label, set_label_text_color
@@ -19,7 +19,7 @@ import Screens.Brewscreen.brewscreen_events as brewscreen_events
 from Common.gif_viewer import GifViewer
 from Common.detector_signals import detector_signals
 from Common.bruce_gifs import start_gif, stop_gif
-from Common.max_wattage import calculate_new_total_power_consumption, power_is_within_limit
+from Common.max_wattage import calculate_new_total_power_consumption, power_is_within_limit, calculate_max_new_efficiency
 
 gif_label_thinking = None
 gif_label_responding = None
@@ -324,7 +324,8 @@ class FullScreenWindow(QMainWindow):
         if self.active_variable in ['efficiency_BK', 'efficiency_HLT']:
             # Check if the new value is within the power limit
             if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
-                return  # Stop execution if the power limit is exceeded
+                value = math.floor(calculate_max_new_efficiency(self.active_variable))
+                print(value)
 
         if self.active_variable is not None:
             self.slider.setValue(value)  # Set the slider value

@@ -1,4 +1,4 @@
-# dynamic_gui.py
+# brewscreen_dynamic_gui.py
 from Common.utils import create_label
 import Common.variables as variables
 import Common.constants_gui as constants_gui
