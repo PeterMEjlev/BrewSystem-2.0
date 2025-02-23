@@ -104,5 +104,3 @@ class KeywordDetector:
         if self.thread:
             self.thread.join()
 
-    def start_voicelines_gif(self):
-        gif_label_brewscreen.start_gif()

@@ -263,7 +263,7 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
 
         # Send the starter text to the assistant
         response = assistant_ai(conversation)
-        print(f"Assistant: {response}")
+        print(f"Bruce: {response}")
 
         # Respond to the starter text with TTS
         text_to_speech(response)

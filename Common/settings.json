@@ -16,7 +16,7 @@
     "REG starting temperature HLT": 70,
 
     "starting efficiency BK": 100,
-    "starting efficiency HLT": 100,
+    "starting efficiency HLT": 30,
     "starting efficiency P1": 100,
     "starting efficiency P2": 100,
 

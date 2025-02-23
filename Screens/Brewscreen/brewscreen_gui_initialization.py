@@ -10,15 +10,13 @@ import Common.constants_rpi as constants_rpi
 import Common.constants_gui as constants_gui
 import Common.variables as variables
 from Common.shutdown import perform_shutdown
+from Common.max_wattage import calculate_new_total_power_consumption, power_is_within_limit
 
 _gui_static_elements = None
 _gui_dynamic_elements = None
 _gui_toggle_images_visibility_callback = None
 
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
-    """
-    Initializes the slider, its value label, and a fake slider to visually represent dynamic width.
-    """
     # Create the real slider
     slider = create_slider(
         parent_widget=central_widget,
@@ -29,20 +27,23 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         location=constants_gui.SLIDER_COORDINATES,
         size=constants_gui.SLIDER_SIZE
     )
-    slider.setPageStep(SLIDER_PAGESTEP)  # Set the page step to 1 instead of the default 10
-    slider.hide()  # Start with the slider hidden
+    slider.setPageStep(SLIDER_PAGESTEP)
+    slider.hide()
     slider.valueChanged.connect(on_slider_change_callback)
+
+    # Store the last valid value on the slider
+    slider.last_valid_value = slider.value()
 
     # Create background for the fake slider
     fake_slider_background = QtWidgets.QFrame(central_widget)
     fake_slider_background.setGeometry(
-        constants_gui.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants_gui.SLIDER_COORDINATES[0],
         constants_gui.SLIDER_COORDINATES[1] + 15,
-        int(constants_gui.SLIDER_SIZE[0]),  # Initial width based on 50% value
-        constants_gui.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        int(constants_gui.SLIDER_SIZE[0]),
+        constants_gui.SLIDER_SIZE[1] + 10
     )
     fake_slider_background.setStyleSheet("""
-        background-color: #292728; /* Solid color for the fake slider */
+        background-color: #292728;
         border-radius: 20px;
     """)
     fake_slider_background.setAttribute(Qt.WA_TransparentForMouseEvents, True)
@@ -51,20 +52,32 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     # Create the fake slider
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
-        constants_gui.SLIDER_COORDINATES[0],  # Same X as the real slider
+        constants_gui.SLIDER_COORDINATES[0],
         constants_gui.SLIDER_COORDINATES[1] + 15,
-        int(constants_gui.SLIDER_SIZE[0] * 0.5),  # Initial width based on 50% value
-        constants_gui.SLIDER_SIZE[1] + 10  # Same height as the real slider
+        int(constants_gui.SLIDER_SIZE[0] * 0.5),
+        constants_gui.SLIDER_SIZE[1] + 10
     )
 
-    # Dynamically update the border-radius based on slider width
     def update_border_radius(value):
+        # Check if we're updating an efficiency value and if the new power is allowed
+        if variables.active_variable in ['efficiency_BK', 'efficiency_HLT']:
+            new_total_power = calculate_new_total_power_consumption(variables.active_variable, value)
+            if not power_is_within_limit(new_total_power):
+                # Revert to the last valid value if the limit would be exceeded.
+                slider.blockSignals(True)
+                slider.setValue(slider.last_valid_value)
+                slider.blockSignals(False)
+                return
+        # Otherwise, update last_valid_value to this acceptable value
+        slider.last_valid_value = value
+
+        # Proceed with updating the fake slider
         max_width = constants_gui.SLIDER_SIZE[0]
         new_width = int((value / slider.maximum()) * max_width)
-        border_radius = min(new_width // 2, 20)  # Border-radius should never exceed half the width
+        border_radius = min(new_width // 2, 20)
         fake_slider.setStyleSheet(f"""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                        stop:0 #F04C65, stop:1 #F58361); /* Gradient for the fake slider */
+                                        stop:0 #F04C65, stop:1 #F58361);
             border-radius: {border_radius}px;
         """)
         fake_slider.setGeometry(
@@ -74,13 +87,12 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
             fake_slider.geometry().height()
         )
 
-    # Connect the valueChanged signal to update the border-radius
+    # Connect the valueChanged signal to update the fake slider
     slider.valueChanged.connect(update_border_radius)
 
     fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider.hide()
 
-    # Retrieve the slider value label from dynamic_elements
     value_label = dynamic_elements.get('TXT_SLIDER_VALUE', None)
 
     return slider, value_label, fake_slider, fake_slider_background

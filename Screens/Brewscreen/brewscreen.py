@@ -19,6 +19,7 @@ import Screens.Brewscreen.brewscreen_events as brewscreen_events
 from Common.gif_viewer import GifViewer
 from Common.detector_signals import detector_signals
 from Common.bruce_gifs import start_gif, stop_gif
+from Common.max_wattage import calculate_new_total_power_consumption, power_is_within_limit
 
 gif_label_thinking = None
 gif_label_responding = None
@@ -263,19 +264,17 @@ class FullScreenWindow(QMainWindow):
             self.buttons['BTN_set_slider_100'].show()
         
     def on_slider_change(self, value):
-        self.slider_value_label.setText(str(value))
-        self.adjust_fake_slider_width(value)
-        self.update_active_variable(value)
+        """
+        Handles changes in the slider value and prevents updates if efficiency values exceed the power limit.
+        """
+        if self.active_variable in ['efficiency_BK', 'efficiency_HLT']:
+            # Check power limit before updating slider and variable
+            if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
+                self.slider.setValue(getattr(variables, self.active_variable))  # Revert to the last valid value
+                return
 
-    def adjust_fake_slider_width(self, value):
-        max_width = constants_gui.SLIDER_SIZE[0]
-        new_width = int((value / self.slider.maximum()) * max_width)
-        self.fake_slider.setGeometry(
-            self.fake_slider.geometry().x(),
-            self.fake_slider.geometry().y(),
-            new_width,
-            self.fake_slider.geometry().height()
-        )
+        self.slider_value_label.setText(str(value))
+        self.update_active_variable(value)
 
     def update_active_variable(self, value):
         if self.active_variable:
@@ -298,12 +297,16 @@ class FullScreenWindow(QMainWindow):
                 variables.temp_REG_BK = value
             elif self.active_variable == 'temp_REG_HLT':
                 variables.temp_REG_HLT = value
-
-            # Update the PWM duty cycle if the active variable is a PWM signal
-            if self.active_variable == 'efficiency_BK':
-                change_pwm_duty_cycle(variables.BK_PWM, value)
+            elif self.active_variable == 'efficiency_BK':
+                if power_is_within_limit(calculate_new_total_power_consumption('efficiency_BK',value)):
+                    change_pwm_duty_cycle(variables.BK_PWM, value)
             elif self.active_variable == 'efficiency_HLT':
-                change_pwm_duty_cycle(variables.HLT_PWM, value)
+                if power_is_within_limit(calculate_new_total_power_consumption('efficiency_HLT',value)):
+                    change_pwm_duty_cycle(variables.HLT_PWM, value)
+            elif self.active_variable == 'pump_speed_P1':
+                change_pwm_duty_cycle(variables.P1_PWM, value)
+            elif self.active_variable == 'pump_speed_P2':
+                change_pwm_duty_cycle(variables.P2_PWM, value)
 
     def update_slider_value(self, variable_name):
         self.active_variable = variable_name  # Update the local reference
@@ -315,8 +318,14 @@ class FullScreenWindow(QMainWindow):
 
     def set_slider_value(self, value):
         """
-        Sets the slider to a specified value and updates the active variable.
+        Sets the slider to a specified value and updates the active variable
+        only if the power is within the limit.
         """
+        if self.active_variable in ['efficiency_BK', 'efficiency_HLT']:
+            # Check if the new value is within the power limit
+            if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
+                return  # Stop execution if the power limit is exceeded
+
         if self.active_variable is not None:
             self.slider.setValue(value)  # Set the slider value
             self.update_active_variable(value)  # Update the active variable and UI
