@@ -90,10 +90,10 @@ class KeywordDetector:
             if self.keyword_detected.is_set():
                 with self.ai_call_lock:
                     if variables and not variables.talking_with_chat:
-                        variables.talking_with_chat = True
                         print("Keyword detected. Calling AI Assistant...")
                         detector_signals.bruce_loading.emit()
                         play_audio("calling_Bruce - Male.mp3")
+                        variables.talking_with_chat = True
                         call_ai_assistant("Hey Brewsystem", 1)
                         variables.talking_with_chat = False
 
