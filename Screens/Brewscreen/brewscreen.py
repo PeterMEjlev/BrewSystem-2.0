@@ -2,7 +2,7 @@
 import os, math
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
-from Common.utils import toggle_images_visibility, apply_gradient_to_label, set_label_text_color
+from Common.utils import toggle_images_visibility, play_audio
 from Screens.Brewscreen.brewscreen_static_gui import initialize_static_elements, create_slider_plus_minus_labels
 from Screens.Brewscreen.brewscreen_dynamic_gui import initialize_dynamic_elements, create_slider_value_label
 import Common.constants_gui as constants_gui
@@ -271,6 +271,7 @@ class FullScreenWindow(QMainWindow):
             # Check power limit before updating slider and variable
             if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
                 self.slider.setValue(getattr(variables, self.active_variable))  # Revert to the last valid value
+                play_audio("max_power_consumption - Male.mp3")
                 return
 
         self.slider_value_label.setText(str(value))
@@ -325,7 +326,7 @@ class FullScreenWindow(QMainWindow):
             # Check if the new value is within the power limit
             if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
                 value = math.floor(calculate_max_new_efficiency(self.active_variable))
-                print(value)
+                play_audio("max_power_consumption - Male.mp3")
 
         if self.active_variable is not None:
             self.slider.setValue(value)  # Set the slider value

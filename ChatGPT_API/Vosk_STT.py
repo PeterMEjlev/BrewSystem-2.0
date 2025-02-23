@@ -4,7 +4,7 @@ import threading
 import time
 import sounddevice as sd
 from vosk import Model, KaldiRecognizer
-
+from Common.config import IS_RPI
 from ChatGPT_API.ChatGPT_Assistant import call_ai_assistant, text_to_speech
 from Common.utils import play_audio
 from Common.detector_signals import detector_signals
@@ -17,7 +17,7 @@ except ImportError:
     variables = None  # Handle the case where the import fails
 
 class KeywordDetector:
-    def __init__(self, model_path, keywords, sample_rate=16000):
+    def __init__(self, model_path, keywords, sample_rate=44100):
         self.model_path = model_path
         self.keywords = keywords
         self.sample_rate = sample_rate
@@ -76,15 +76,29 @@ class KeywordDetector:
         print("Starting single-thread keyword detection loop.")
         recognizer = KaldiRecognizer(self.model, self.sample_rate)
         # Create an input stream with a callback for real-time processing
-        with sd.InputStream(
+
+        if IS_RPI:
+            with sd.InputStream(
+            device = 2,
             samplerate=self.sample_rate,
             channels=1,
             dtype='int16',
             callback=lambda indata, frames, time_info, status: self.detection_callback(indata, frames, time_info, status, recognizer)
         ):
-            # Keep the thread alive while detection is running
-            while self.running.is_set():
-                time.sleep(0.1)
+                # Keep the thread alive while detection is running
+                while self.running.is_set():
+                    time.sleep(0.1)
+
+        else:
+            with sd.InputStream(
+                samplerate=self.sample_rate,
+                channels=1,
+                dtype='int16',
+                callback=lambda indata, frames, time_info, status: self.detection_callback(indata, frames, time_info, status, recognizer)
+            ):
+                # Keep the thread alive while detection is running
+                while self.running.is_set():
+                    time.sleep(0.1)
 
     def start_detection(self, callback=None):
         """
