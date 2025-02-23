@@ -8,6 +8,7 @@ from PyQt5 import QtWidgets, QtCore
 import os, pygame
 from Common.config import RUNNING_ON_LAPTOP
 from Common.constants import SOUNDFILES_DIR
+import Common.variables as variables
 
 def create_label(parent_widget, text, color='white', gradient_colors=None, size=40, center=(0, 0), width=None, height=None, alignment=Qt.AlignCenter):
     """
@@ -509,26 +510,32 @@ def set_label_text_color(label, color):
     label.gradient_colors = None
     label.setStyleSheet(f"{current_style} {new_style}")
 
-def play_audio(filename):
+def play_audio(filename, volume=1.0, override_bruce=False):
     """
-    Plays an audio file from the Soundfiles directory using pygame.mixer asynchronously.
-    
+    Plays an audio file with volume adjustment.
+
     Args:
-        filename (str): The name of the audio file (e.g., "calling_Bruce - Male.mp3").
+        filename (str): The name of the audio file.
+        volume (float): Volume multiplier (e.g., 1.5 for 50% louder).
+        override_bruce (bool): Whether to override Bruce's speaking.
     """
-    file_path = os.path.join(SOUNDFILES_DIR, filename)  # Construct full path
+    file_path = os.path.join(SOUNDFILES_DIR, filename)
     
     if not os.path.exists(file_path):
         print(f"Error: File '{filename}' not found in {SOUNDFILES_DIR}")
         return
-
-    try:
-        pygame.mixer.init()
-        pygame.mixer.music.load(file_path)
-        pygame.mixer.music.play()
-
-        # The function returns immediately without waiting for playback to finish
-        print(f"Playing: {filename}")
     
+    try:
+        if variables.talking_with_chat and not override_bruce:
+            return
+        
+        pygame.mixer.init()
+        sound = pygame.mixer.Sound(file_path)
+
+        sound.set_volume(volume)
+        sound.play()
+
+        print(f"Playing: {filename} at volume {volume}")
+
     except Exception as e:
         print(f"Error playing audio: {e}")

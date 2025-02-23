@@ -2,7 +2,7 @@
 from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
-from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color, set_images_visibility
+from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color, set_images_visibility, play_audio
 from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
@@ -237,6 +237,7 @@ def toggle_pot_handle_all(pot_name, state = None):
     """
     # Access the module-level references
     global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+    play_audio("Sound_Toggle.mp3", volume = 1, override_bruce = True)
 
     if state is not None:
         set_images_visibility(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'], state)
@@ -253,6 +254,8 @@ def toggle_pot_handle_all(pot_name, state = None):
         handle_hlt_on_toggle(_gui_dynamic_elements, _gui_static_elements)
         create_or_stop_pwm_for_hlt()
 
+    
+
 def toggle_pump_handle_all(pump_name, state=None):
     """
     Encapsulates the actions that occur when a long press happens on a pump button (P1 or P2).
@@ -263,6 +266,7 @@ def toggle_pump_handle_all(pump_name, state=None):
     """
     # Access the module-level references
     global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+    play_audio("Sound_Toggle.mp3", volume = 1, override_bruce = True)
 
     if state is not None:
         set_images_visibility(_gui_static_elements,[f'IMG_Pump_On_{pump_name}'],state)

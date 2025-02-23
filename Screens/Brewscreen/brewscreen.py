@@ -1,5 +1,5 @@
 # brewscreen.py
-import os, math
+import os, math, time
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
 from Common.utils import toggle_images_visibility, play_audio
@@ -46,6 +46,9 @@ class FullScreenWindow(QMainWindow):
         self.settings_screen = None  # Placeholder for the settings window    
 
         self.start_thermometer_thread() 
+
+        self.last_audio_play_time = 0  # Store last time audio played
+        self.audio_cooldown = 1  # Cooldown in seconds
 
     def init_ui(self):
         self.setup_window()
@@ -271,9 +274,16 @@ class FullScreenWindow(QMainWindow):
             # Check power limit before updating slider and variable
             if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
                 self.slider.setValue(getattr(variables, self.active_variable))  # Revert to the last valid value
-                play_audio("max_power_consumption - Male.mp3")
+                
+                # Cooldown check: Prevent multiple audio triggers
+                current_time = time.time()
+                if current_time - self.last_audio_play_time >= self.audio_cooldown:
+                    play_audio("max_power_consumption - Male.mp3")
+                    self.last_audio_play_time = current_time  # Update last played time
+
                 return
 
+        # Update UI elements
         self.slider_value_label.setText(str(value))
         self.update_active_variable(value)
 

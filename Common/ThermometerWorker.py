@@ -106,8 +106,7 @@ class ThermometerWorker(QObject):
         if variables.temp_REG_BK-constants.TEMP_REACHED_MARGIN <= variables.temp_BK <= variables.temp_REG_BK+constants.TEMP_REACHED_MARGIN:
             if variables.set_temp_reached_BK == False:
                 variables.set_temp_reached_BK = True
-                if not variables.talking_with_chat:
-                    play_audio("BK_set_temp_reached - Male.mp3")
+                play_audio("BK_set_temp_reached - Male.mp3")
         else:
              if variables.set_temp_reached_BK == True:
                  variables.set_temp_reached_BK = False
@@ -116,8 +115,7 @@ class ThermometerWorker(QObject):
         if variables.temp_REG_HLT-constants.TEMP_REACHED_MARGIN <= variables.temp_HLT <= variables.temp_REG_HLT+constants.TEMP_REACHED_MARGIN:
             if variables.set_temp_reached_HLT == False:
                 variables.set_temp_reached_HLT = True
-                if not variables.talking_with_chat:
-                    play_audio("HLT_set_temp_reached - Male.mp3")
+                play_audio("HLT_set_temp_reached - Male.mp3")
         else:
              if variables.set_temp_reached_HLT == True:
                  variables.set_temp_reached_HLT = False
