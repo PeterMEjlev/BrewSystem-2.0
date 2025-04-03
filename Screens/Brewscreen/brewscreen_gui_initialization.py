@@ -358,7 +358,7 @@ def create_or_stop_pwm_for_p1():
     if STATE['P1_ON']:
         if variables.P1_PWM is None:  # Create PWM only if it doesn't exist
             variables.P1_PWM = create_software_pwm(
-                pin_number=constants_rpi.RPI_GPIO_PIN_P1,
+                pin_number=constants_rpi.RPI_GPIO_PWM_P1,
                 frequency=constants_rpi.PWM_FREQUENCY
             )
             if variables.P1_PWM:  # Start PWM with initial duty cycle
@@ -375,7 +375,7 @@ def create_or_stop_pwm_for_p2():
     if STATE['P2_ON']:
         if variables.P2_PWM is None:  # Create PWM only if it doesn't exist
             variables.P2_PWM = create_software_pwm(
-                pin_number=constants_rpi.RPI_GPIO_PIN_P2,
+                pin_number=constants_rpi.RPI_GPIO_PWM_P2,
                 frequency=constants_rpi.PWM_FREQUENCY
             )
             if variables.P2_PWM:  # Start PWM with initial duty cycle
