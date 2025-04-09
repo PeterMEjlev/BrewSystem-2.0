@@ -242,10 +242,10 @@ def toggle_pot_handle_all(pot_name, state = None):
     if state is not None:
         set_images_visibility(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'], state)
         print(f"toggle_pot_handle_all called with state ({state})")
-        set_variable(f'{pot_name}_ON', STATE, state)
+        #set_variable(f'{pot_name}_ON', STATE, state)
     else:
         _gui_toggle_images_visibility_callback(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'])
-        toggle_variable(f'{pot_name}_ON', STATE)
+        #toggle_variable(f'{pot_name}_ON', STATE)
     
     if pot_name == 'BK':
         handle_bk_on_toggle(_gui_dynamic_elements, _gui_static_elements)
