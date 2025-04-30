@@ -1,17 +1,18 @@
 # constants_rpi.py
 
-# GPIO pin numbers for heating element SSRs (3.3V)
+# GPIO pin numbers for pot on (BK & HLT) - Only used internally
 RPI_GPIO_PIN_BK = 17
 RPI_GPIO_PIN_HLT = 18
 
 # GPIO pin numbers for pump control
-RPI_GPIO_PIN_P1 = 21
-RPI_GPIO_PIN_P2 = 27
+RPI_GPIO_PIN_P1 = 27
+RPI_GPIO_PIN_P2 = 21
 
 # GPIO pin numbers for heating element efficiency control (PWM)
 RPI_GPIO_PWN_BK = 12 # Hardware PWM
 RPI_GPIO_PWN_HLT = 13 # Hardware PWM
-PWM_FREQUENCY = 1000
+PWM_FREQUENCY = 200
+SOFTWARE_PWM_FREQUENCY = 200
 
 # GPIO pin numbers for pump efficiency control (PWM)
 RPI_GPIO_PWM_P1 = 5   # Software PWM

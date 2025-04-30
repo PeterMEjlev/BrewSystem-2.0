@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 import PyQt5.QtWidgets as QtWidgets
 import Common.constants
 from Common.utils import create_slider, create_button, toggle_variable, set_variable, set_label_text_color, set_images_visibility, play_audio
-from Common.utils_rpi import set_pwm_signal, stop_pwm_signal, create_software_pwm
+from Common.utils_rpi import set_pwm_signal, stop_pwm_signal
 from Common.variables import STATE
 from Common.constants import SLIDER_PAGESTEP
 import Common.constants_rpi as constants_rpi
@@ -242,10 +242,10 @@ def toggle_pot_handle_all(pot_name, state = None):
     if state is not None:
         set_images_visibility(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'], state)
         print(f"toggle_pot_handle_all called with state ({state})")
-        #set_variable(f'{pot_name}_ON', STATE, state)
+        set_variable(f'{pot_name}_ON', STATE, state)
     else:
         _gui_toggle_images_visibility_callback(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'])
-        #toggle_variable(f'{pot_name}_ON', STATE)
+        toggle_variable(f'{pot_name}_ON', STATE)
     
     if pot_name == 'BK':
         handle_bk_on_toggle(_gui_dynamic_elements, _gui_static_elements)
@@ -325,8 +325,10 @@ def create_or_stop_pwm_for_bk():
     """
     Create or stop the PWM signal for BK based on the state.
     """
+    print(f"State of BK_ON = {STATE['BK_ON']}")
     if STATE['BK_ON']:
         if variables.BK_PWM is None:  # Create PWM only if it doesn't exist
+            print("Creating PWM for BK")
             variables.BK_PWM = set_pwm_signal(
                 pin_number=constants_rpi.RPI_GPIO_PWN_BK,  
                 frequency=constants_rpi.PWM_FREQUENCY,  
@@ -353,37 +355,37 @@ def create_or_stop_pwm_for_hlt():
 
 def create_or_stop_pwm_for_p1():
     """
-    Create or stop the software PWM signal for P1 based on the state.
+    Create or stop the PWM signal for P1 based on the state.
     """
     if STATE['P1_ON']:
         if variables.P1_PWM is None:  # Create PWM only if it doesn't exist
-            variables.P1_PWM = create_software_pwm(
+            variables.P1_PWM = set_pwm_signal(
                 pin_number=constants_rpi.RPI_GPIO_PWM_P1,
-                frequency=constants_rpi.PWM_FREQUENCY
+                frequency=constants_rpi.SOFTWARE_PWM_FREQUENCY,
+                duty_cycle=variables.pump_speed_P1
             )
-            if variables.P1_PWM:  # Start PWM with initial duty cycle
-                variables.P1_PWM.start(variables.pump_speed_P1)
     else:
         if variables.P1_PWM:
-            stop_pwm_signal(variables.P1_PWM)
+            stop_pwm_signal(constants_rpi.RPI_GPIO_PWM_P1)
             variables.P1_PWM = None
+
 
 def create_or_stop_pwm_for_p2():
     """
-    Create or stop the software PWM signal for P2 based on the state.
+    Create or stop the PWM signal for P2 based on the state.
     """
     if STATE['P2_ON']:
         if variables.P2_PWM is None:  # Create PWM only if it doesn't exist
-            variables.P2_PWM = create_software_pwm(
+            variables.P2_PWM = set_pwm_signal(
                 pin_number=constants_rpi.RPI_GPIO_PWM_P2,
-                frequency=constants_rpi.PWM_FREQUENCY
+                frequency=constants_rpi.SOFTWARE_PWM_FREQUENCY,
+                duty_cycle=variables.pump_speed_P2
             )
-            if variables.P2_PWM:  # Start PWM with initial duty cycle
-                variables.P2_PWM.start(variables.pump_speed_P2)
     else:
         if variables.P2_PWM:
-            stop_pwm_signal(variables.P2_PWM)
+            stop_pwm_signal(constants_rpi.RPI_GPIO_PWM_P2)
             variables.P2_PWM = None
+
 
 def hide_GUI_elements(static_elements, dynamic_elements, buttons):
     """
