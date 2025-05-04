@@ -4,7 +4,7 @@ from Common.utils import adjust_image_height, play_audio
 from Common.constants_gui import POT_ON_FOREGROUND_HEIGHT
 import Common.variables as variables
 import Common.constants_rpi as constants_rpi
-from Common.utils_rpi import read_ds18b20
+from Common.utils_rpi import read_ds18b20, change_pwm_duty_cycle
 from Common.TemperatureGraph import TemperatureGraph
 
 
@@ -30,7 +30,9 @@ class ThermometerWorker(QObject):
 
             self.check_if_reg_temp_reached_BK()
             self.check_if_reg_temp_reached_HLT()
-
+            
+            self.control_pwm_output()
+            
             if variables.temp_BK >= 0:
                 self.temperature_updated_bk.emit(variables.temp_BK)
             if variables.temp_MLT >= 0:
@@ -107,6 +109,7 @@ class ThermometerWorker(QObject):
             if variables.set_temp_reached_BK == False:
                 variables.set_temp_reached_BK = True
                 play_audio("BK_set_temp_reached - Male.mp3")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
         else:
              if variables.set_temp_reached_BK == True:
                  variables.set_temp_reached_BK = False
@@ -116,8 +119,48 @@ class ThermometerWorker(QObject):
             if variables.set_temp_reached_HLT == False:
                 variables.set_temp_reached_HLT = True
                 play_audio("HLT_set_temp_reached - Male.mp3")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
         else:
              if variables.set_temp_reached_HLT == True:
                  variables.set_temp_reached_HLT = False
+                 
+    def control_pwm_output(self):
+        """Control the PWM output for BK and HLT using full power unless within margin of REG temp."""
+
+        margin = constants.TEMP_REACHED_MARGIN
+
+        # BK control
+        #if variables.STATE['BK_ON']:
+            #temp_bk = variables.temp_BK
+            #reg_bk = variables.temp_REG_BK
+
+            #if temp_bk >= reg_bk:
+                #print(f"[BK] Temp reached or exceeded: {temp_bk:.2f}°C ≥ REG {reg_bk}°C → Setting PWM to 0%")
+                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
+            #elif temp_bk >= reg_bk - margin:
+                #print(f"[BK] Temp within margin: {temp_bk:.2f}°C ≥ REG {reg_bk - margin}°C → Setting PWM to 35%")
+                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 35)
+            #else:
+                #print(f"[BK] Temp well below REG: {temp_bk:.2f}°C < REG {reg_bk - margin}°C → Setting PWM to 100%")
+                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
+
+        # HLT control
+        if variables.STATE['HLT_ON']:
+            temp_hlt = variables.temp_HLT
+            reg_hlt = variables.temp_REG_HLT
+
+            if temp_hlt >= reg_hlt:
+                print(f"[HLT] Temp reached or exceeded: {temp_hlt:.2f}°C ≥ REG {reg_hlt}°C → Setting PWM to 0%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
+            elif temp_hlt >= reg_hlt - margin:
+                print(f"[HLT] Temp within margin: {temp_hlt:.2f}°C ≥ REG {reg_hlt - margin}°C → Setting PWM to 35%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 35)
+            else:
+                print(f"[HLT] Temp well below REG: {temp_hlt:.2f}°C < REG {reg_hlt - margin}°C → Setting PWM to 100%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 100)
+
+
+
+
     
     

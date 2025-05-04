@@ -54,8 +54,6 @@ def set_pwm_signal(pin_number, frequency, duty_cycle):
         print(f"PWM started on pin {pin_number} (simulated), freq={frequency}, duty={duty_cycle}%.")
         return pin_number
 
-
-
 def stop_pwm_signal(pin_number):
     if IS_RPI and pin_number in _pwm_objects:
         mode, _ = _pwm_objects[pin_number]
@@ -85,7 +83,6 @@ def change_pwm_duty_cycle(pin_number, duty_cycle):
             print(f"Error changing PWM duty cycle on pin {pin_number}: {e}")
     else:
         print(f"PWM duty cycle change simulated on pin {pin_number}.")
-
 
 def initialize_ds18b20_resolution(serial_code, resolution="9"):
     if IS_RPI:
