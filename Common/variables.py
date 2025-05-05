@@ -40,6 +40,9 @@ STATE = {
     "P2_ON": False,
 }
 
+BK_REG_ON = False
+HLT_REG_ON = True
+
 active_variable = None
 
 #ChatGPT API

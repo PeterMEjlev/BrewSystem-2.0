@@ -17,7 +17,10 @@ _gui_dynamic_elements = None
 _gui_toggle_images_visibility_callback = None
 
 def initialize_slider(central_widget, constants, on_slider_change_callback, dynamic_elements):
-    # Create the real slider
+    """
+    Creates an invisible-but-interactive QSlider (so it drives your fake slider
+    visuals) and returns it along with the fake frames and the value label.
+    """
     slider = create_slider(
         parent_widget=central_widget,
         orientation=Qt.Horizontal,
@@ -27,20 +30,57 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
         location=constants_gui.SLIDER_COORDINATES,
         size=constants_gui.SLIDER_SIZE
     )
-    slider.setPageStep(SLIDER_PAGESTEP)
-    slider.hide()
-    slider.valueChanged.connect(on_slider_change_callback)
 
-    # Store the last valid value on the slider
+    handle_width   = 100
+    handle_height  = 150
+    groove_height  = 10
+    fake_offset    = 15  
+
+    slider.setFixedHeight(handle_height)
+    orig_x, orig_y = constants_gui.SLIDER_COORDINATES
+    shift = int((handle_height/2 - groove_height/2) - fake_offset)
+    slider.setGeometry(
+        orig_x,
+        orig_y - shift,
+        constants_gui.SLIDER_SIZE[0],
+        handle_height
+    )
+
+    slider.setStyleSheet(f"""
+        /* ensure the widget reserves vertical space */
+        QSlider {{
+            min-height: {handle_height}px;
+        }}
+
+        /* hide the groove and both pages */
+        QSlider::groove:horizontal,
+        QSlider::sub-page:horizontal,
+        QSlider::add-page:horizontal {{
+            background: transparent;
+            border: none;
+            height: {groove_height}px;
+        }}
+
+        /* make the handle itself invisible */
+        QSlider::handle:horizontal {{
+            width: {handle_width}px;
+            height: {handle_height}px;
+            margin: -{int((handle_height - groove_height)/2)}px 0;
+            background: transparent;
+            border: none;
+        }}
+    """)
+
+    slider.setPageStep(SLIDER_PAGESTEP)
+    slider.valueChanged.connect(on_slider_change_callback)
     slider.last_valid_value = slider.value()
 
-    # Create background for the fake slider
     fake_slider_background = QtWidgets.QFrame(central_widget)
     fake_slider_background.setGeometry(
-        constants_gui.SLIDER_COORDINATES[0],
-        constants_gui.SLIDER_COORDINATES[1] + 15,
+        orig_x,
+        orig_y + fake_offset,
         int(constants_gui.SLIDER_SIZE[0]),
-        constants_gui.SLIDER_SIZE[1] + 10
+        int(constants_gui.SLIDER_SIZE[1] + 10)
     )
     fake_slider_background.setStyleSheet("""
         background-color: #292728;
@@ -49,53 +89,47 @@ def initialize_slider(central_widget, constants, on_slider_change_callback, dyna
     fake_slider_background.setAttribute(Qt.WA_TransparentForMouseEvents, True)
     fake_slider_background.hide()
 
-    # Create the fake slider
     fake_slider = QtWidgets.QFrame(central_widget)
     fake_slider.setGeometry(
-        constants_gui.SLIDER_COORDINATES[0],
-        constants_gui.SLIDER_COORDINATES[1] + 15,
+        orig_x,
+        orig_y + fake_offset,
         int(constants_gui.SLIDER_SIZE[0] * 0.5),
-        constants_gui.SLIDER_SIZE[1] + 10
+        int(constants_gui.SLIDER_SIZE[1] + 10)
     )
+    fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+    fake_slider.hide()
 
     def update_border_radius(value):
-        # Check if we're updating an efficiency value and if the new power is allowed
         if variables.active_variable in ['efficiency_BK', 'efficiency_HLT']:
-            new_total_power = calculate_new_total_power_consumption(variables.active_variable, value)
-            if not power_is_within_limit(new_total_power):
-                # Revert to the last valid value if the limit would be exceeded.
+            new_total = calculate_new_total_power_consumption(variables.active_variable, value)
+            if not power_is_within_limit(new_total):
                 slider.blockSignals(True)
                 slider.setValue(slider.last_valid_value)
                 slider.blockSignals(False)
                 return
-        # Otherwise, update last_valid_value to this acceptable value
         slider.last_valid_value = value
 
-        # Proceed with updating the fake slider
-        max_width = constants_gui.SLIDER_SIZE[0]
-        new_width = int((value / slider.maximum()) * max_width)
-        border_radius = min(new_width // 2, 20)
+        max_w = constants_gui.SLIDER_SIZE[0]
+        new_w = int((value / slider.maximum()) * max_w)
+        br   = min(new_w // 2, 20)
         fake_slider.setStyleSheet(f"""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                                         stop:0 #F04C65, stop:1 #F58361);
-            border-radius: {border_radius}px;
+            border-radius: {br}px;
         """)
         fake_slider.setGeometry(
-            fake_slider.geometry().x(),
-            fake_slider.geometry().y(),
-            new_width,
-            fake_slider.geometry().height()
+            fake_slider.x(),
+            fake_slider.y(),
+            new_w,
+            fake_slider.height()
         )
 
-    # Connect the valueChanged signal to update the fake slider
     slider.valueChanged.connect(update_border_radius)
 
-    fake_slider.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-    fake_slider.hide()
-
     value_label = dynamic_elements.get('TXT_SLIDER_VALUE', None)
-
     return slider, value_label, fake_slider, fake_slider_background
+
+
 
 def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle_images_visibility_callback, select_button_callback, show_graph_screen_callback, show_settings_screen_callback, instance):
     """

@@ -130,22 +130,22 @@ class ThermometerWorker(QObject):
         margin = constants.TEMP_REACHED_MARGIN
 
         # BK control
-        #if variables.STATE['BK_ON']:
-            #temp_bk = variables.temp_BK
-            #reg_bk = variables.temp_REG_BK
+        if variables.STATE['BK_ON'] and variables.BK_REG_ON:
+            temp_bk = variables.temp_BK
+            reg_bk = variables.temp_REG_BK
 
-            #if temp_bk >= reg_bk:
-                #print(f"[BK] Temp reached or exceeded: {temp_bk:.2f}°C ≥ REG {reg_bk}°C → Setting PWM to 0%")
-                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
-            #elif temp_bk >= reg_bk - margin:
-                #print(f"[BK] Temp within margin: {temp_bk:.2f}°C ≥ REG {reg_bk - margin}°C → Setting PWM to 35%")
-                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 35)
-            #else:
-                #print(f"[BK] Temp well below REG: {temp_bk:.2f}°C < REG {reg_bk - margin}°C → Setting PWM to 100%")
-                #change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
+            if temp_bk >= reg_bk:
+                print(f"[BK] Temp reached or exceeded: {temp_bk:.2f}°C ≥ REG {reg_bk}°C → Setting PWM to 0%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
+            elif temp_bk >= reg_bk - margin:
+                print(f"[BK] Temp within margin: {temp_bk:.2f}°C ≥ REG {reg_bk - margin}°C → Setting PWM to 35%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 35)
+            else:
+                print(f"[BK] Temp well below REG: {temp_bk:.2f}°C < REG {reg_bk - margin}°C → Setting PWM to 100%")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
 
         # HLT control
-        if variables.STATE['HLT_ON']:
+        if variables.STATE['HLT_ON'] and variables.HLT_REG_ON:
             temp_hlt = variables.temp_HLT
             reg_hlt = variables.temp_REG_HLT
 
