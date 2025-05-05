@@ -8,7 +8,6 @@ import Common.constants_rpi as constants_rpi
 from Common.utils_rpi import read_ds18b20, change_pwm_duty_cycle
 from Common.TemperatureGraph import TemperatureGraph
 
-
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
     temperature_updated_hlt = pyqtSignal(float)
@@ -107,30 +106,45 @@ class ThermometerWorker(QObject):
             )
 
     def check_if_reg_temp_reached_BK(self):
-        if variables.temp_REG_BK-constants.TEMP_REACHED_MARGIN <= variables.temp_BK <= variables.temp_REG_BK+constants.TEMP_REACHED_MARGIN:
-            if variables.set_temp_reached_BK == False:
+        temp = variables.temp_BK
+        reg  = variables.temp_REG_BK
+        m    = constants.TEMP_REACHED_MARGIN
+        r    = constants.TEMP_RESET_MARGIN
+
+        # 1) if we're inside the ±MARGIN band and haven't alarmed yet → alarm
+        if reg - m <= temp <= reg + m:
+            if not variables.set_temp_reached_BK:
                 variables.set_temp_reached_BK = True
                 play_audio("BK_set_temp_reached - Male.mp3")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
+
+        # 2) if we already alarmed, only reset once we've left the wider ±RESET_MARGIN band
         else:
-             if variables.set_temp_reached_BK == True:
-                 variables.set_temp_reached_BK = False
-    
+            if variables.set_temp_reached_BK and (temp < reg - r or temp > reg + r):
+                variables.set_temp_reached_BK = False
+
     def check_if_reg_temp_reached_HLT(self):
-        if variables.temp_REG_HLT-constants.TEMP_REACHED_MARGIN <= variables.temp_HLT <= variables.temp_REG_HLT+constants.TEMP_REACHED_MARGIN:
-            if variables.set_temp_reached_HLT == False:
+        temp = variables.temp_HLT
+        reg  = variables.temp_REG_HLT
+        m    = constants.TEMP_REACHED_MARGIN
+        r    = constants.TEMP_RESET_MARGIN
+
+        # 1) if we're inside the ±MARGIN band and haven't alarmed yet → alarm
+        if reg - m <= temp <= reg + m:
+            if not variables.set_temp_reached_HLT:
                 variables.set_temp_reached_HLT = True
                 play_audio("HLT_set_temp_reached - Male.mp3")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
+        # 2) if we already alarmed, only reset once we've left the wider ±RESET_MARGIN band
         else:
-             if variables.set_temp_reached_HLT == True:
-                 variables.set_temp_reached_HLT = False
+            if variables.set_temp_reached_HLT and (temp < reg - r or temp > reg + r):
+                variables.set_temp_reached_HLT = False
                  
     def control_pwm_output(self):
         """Control the PWM output for BK and HLT using full power unless within margin of REG temp."""
 
         margin = constants.TEMP_REACHED_MARGIN
-        
+        near_target_heating_efficiency = constants.NEAR_TARGET_HEATING_EFFICIENCY
 
         # BK control
         if variables.STATE['BK_ON'] and variables.BK_REG_ON:
@@ -140,8 +154,8 @@ class ThermometerWorker(QObject):
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
                 self.variable_updated.emit('efficiency_BK', 0)
             elif temp_bk >= reg_bk - margin:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 35)
-                self.variable_updated.emit('efficiency_BK', 35)
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, near_target_heating_efficiency)
+                self.variable_updated.emit('efficiency_BK', near_target_heating_efficiency)
             else:
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
                 self.variable_updated.emit('efficiency_BK', 100)
