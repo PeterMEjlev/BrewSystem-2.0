@@ -188,14 +188,14 @@ class FullScreenWindow(QMainWindow):
         self.dynamic_elements = initialize_dynamic_elements(self.central_widget, self.path)
 
         self.buttons = initialize_buttons(
-        central_widget=self.central_widget,
-        static_elements=self.static_elements,
-        dynamic_elements=self.dynamic_elements,
-        toggle_images_visibility_callback=toggle_images_visibility,
-        select_button_callback=brewscreen_events.select_button,
-        show_graph_screen_callback=self.show_graph_screen,
-        show_settings_screen_callback=self.show_settings_screen,
-        instance=self
+            central_widget=self.central_widget,
+            static_elements=self.static_elements,
+            dynamic_elements=self.dynamic_elements,
+            toggle_images_visibility_callback=toggle_images_visibility,
+            select_button_callback=brewscreen_events.select_button,
+            show_graph_screen_callback=self.show_graph_screen,
+            show_settings_screen_callback=self.show_settings_screen,
+            instance=self
         )
 
         hide_GUI_elements(self.static_elements, self.dynamic_elements, self.buttons)
@@ -347,7 +347,6 @@ class FullScreenWindow(QMainWindow):
             label.setText(f"{value}{suffix}")
         else:
             print(f"[update_specific_variable] no label found for key {label_key}")
-
 
     def update_slider_value(self, variable_name):
         self.active_variable = variable_name  # Update the local reference

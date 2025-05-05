@@ -205,7 +205,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_REGBK_Selected', 'TXT_REG_BK'),
                 central_widget.parent().update_slider_value('temp_REG_BK')  # Update slider for BK
             ),
-            on_long_click=None,
+            on_long_click=lambda: toggle_reg_handle_all('BK'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_REGHLT': create_button(
@@ -216,7 +216,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
                 select_button_callback(instance, 'IMG_REGHLT_Selected', 'TXT_REG_HLT'),
                 central_widget.parent().update_slider_value('temp_REG_HLT')  # Update slider for HLT
             ),
-            on_long_click=None,
+            on_long_click=lambda: toggle_reg_handle_all('HLT'),
             invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_toggle_sidebar_graphs': create_button(
@@ -271,7 +271,7 @@ def toggle_pot_handle_all(pot_name, state = None):
     """
     # Access the module-level references
     global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
-    play_audio("Sound_Toggle.mp3", volume = 1, override_bruce = True)
+    play_audio("Sound_Toggle.mp3", volume = 1, override_bruce = False)
 
     if state is not None:
         set_images_visibility(_gui_static_elements, [f'IMG_Pot_{pot_name}_On_Background', f'IMG_Pot_{pot_name}_On_Foreground'], state)
@@ -287,6 +287,32 @@ def toggle_pot_handle_all(pot_name, state = None):
     elif pot_name == 'HLT':
         handle_hlt_on_toggle(_gui_dynamic_elements, _gui_static_elements)
         create_or_stop_pwm_for_hlt()
+
+def toggle_reg_handle_all(reg_name, state=None):
+    """
+    Long-press toggle for temperature regulation ON/OFF (BK_REG_ON or HLT_REG_ON).
+    """
+    global _gui_static_elements, _gui_dynamic_elements, _gui_toggle_images_visibility_callback
+    play_audio("Sound_Toggle.mp3", volume=1, override_bruce=False)
+
+    on_bg_key = f'IMG_Reg_{reg_name}_On'
+    on_fg_key = f'IMG_Reg_{reg_name}_On'
+    var_key   = f'{reg_name}_REG_ON'
+
+    if state is not None:
+        # explicit set
+        set_variable(var_key, variables.__dict__, state)
+    else:
+        # flip it
+        toggle_variable(var_key, variables.__dict__)
+
+    new_state = variables.__dict__.get(var_key, False)
+
+    set_images_visibility(
+        _gui_static_elements,
+        [on_bg_key, on_fg_key],
+        new_state
+    )
 
     
 
@@ -435,7 +461,8 @@ def hide_GUI_elements(static_elements, dynamic_elements, buttons):
         'IMG_Pot_HLT_On_Background', 'IMG_Pot_HLT_On_Foreground', 'IMG_Pot_HLT_On_Temp_Reached',
         'IMG_BK_Selected', 'IMG_HLT_Selected', 'IMG_P1_Selected', 'IMG_P2_Selected',
         'IMG_REGBK_Selected', 'IMG_REGHLT_Selected',
-        'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2', 'TXT_EFFICIENCY_BK', 'TXT_EFFICIENCY_HLT'
+        'TXT_Slider_0', 'TXT_Slider_100', 'IMG_Pump_On_P1','IMG_Pump_On_P2', 'TXT_EFFICIENCY_BK', 'TXT_EFFICIENCY_HLT',
+        'IMG_Reg_BK_On',
 
     ]
     for key in keys_to_hide:

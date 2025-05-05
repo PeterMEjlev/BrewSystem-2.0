@@ -53,6 +53,18 @@ def apply_selection_styles(self, selected_key: str) -> None:
         else:
             apply_gradient_to_label(self, selected_key)
 
+    elif selected_key == 'IMG_REGBK_Selected':
+        if variables.BK_REG_ON:
+            set_label_text_color(self.dynamic_elements['TXT_TEMP_REG_BK'], "black")
+        else:
+            apply_gradient_to_label(self, selected_key)
+
+    elif selected_key == 'IMG_REGHLT_Selected':
+        if variables.HLT_REG_ON:
+            set_label_text_color(self.dynamic_elements['TXT_TEMP_REG_HLT'], "black")
+        else:
+            apply_gradient_to_label(self, selected_key)
+    
     else:
         apply_gradient_to_label(self, selected_key)
 

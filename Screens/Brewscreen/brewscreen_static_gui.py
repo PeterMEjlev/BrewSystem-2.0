@@ -41,7 +41,9 @@ def initialize_static_images(parent_widget):
 
         # Pipes and Reg Boxes
         'IMG_Pipes': create_image(parent_widget, "Pipes.png", center=constants_gui.IMG_PIPES_COORDINATES),
+        'IMG_Reg_BK_On': create_image(parent_widget, "Reg_On.png", center=constants_gui.IMG_REG_BOX_BK_COORDINATES), 
         'IMG_Reg_BK': create_image(parent_widget, "Reg_Box.png", center=constants_gui.IMG_REG_BOX_BK_COORDINATES),
+        'IMG_Reg_HLT_On': create_image(parent_widget, "Reg_On.png", center=constants_gui.IMG_REG_BOX_HLT_COORDINATES), 
         'IMG_Reg_HLT': create_image(parent_widget, "Reg_Box.png", center=constants_gui.IMG_REG_BOX_HLT_COORDINATES),
 
         # Coil and Heating Elements

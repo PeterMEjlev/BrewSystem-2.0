@@ -328,20 +328,27 @@ def toggle_images_visibility(static_elements, image_keys):
 
 def set_images_visibility(static_elements, image_keys, visible):
     """
-    Toggles the visibility of one or more images.
+    Toggles the visibility of one or more images and prints debug info.
 
     Parameters:
     static_elements (dict): Dictionary containing the static elements (e.g., images).
     image_keys (list): List of keys for the images in the static_elements dictionary.
+    visible (bool): Whether to show or hide the elements.
     """
     for key in image_keys:
         if key in static_elements:
             element = static_elements[key]
-
-            if visible == True:
+            state = "shown" if visible else "hidden"
+            
+            if visible:
                 element.show()
             else:
                 element.hide()
+                
+            print(f"[INFO] Element '{key}' set to be {state}.")
+        else:
+            print(f"[WARNING] Key '{key}' not found in static elements.")
+
 
 
 def load_custom_font():
