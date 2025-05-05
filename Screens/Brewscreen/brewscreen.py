@@ -97,6 +97,8 @@ class FullScreenWindow(QMainWindow):
         self.thermometer_worker.finished.connect(self.thermometer_worker.deleteLater)
         self.worker_thread.finished.connect(self.worker_thread.deleteLater)
 
+        self.thermometer_worker.variable_updated.connect(self.update_specific_variable)
+
         self.worker_thread.start()
 
     def stop_thermometer_thread(self):
@@ -322,6 +324,30 @@ class FullScreenWindow(QMainWindow):
                 change_pwm_duty_cycle(variables.P1_PWM, value)
             elif self.active_variable == 'pump_speed_P2':
                 change_pwm_duty_cycle(variables.P2_PWM, value)
+
+    def update_specific_variable(self, variable_name: str, value: float) -> None:
+        """
+        Update both the internal variable and its corresponding GUI label
+        for an arbitrary named variable.
+
+        Parameters:
+        - variable_name: name of the attribute on Common.variables, e.g. "efficiency_BK"
+        - value: new numeric value to set and display
+        """
+        setattr(variables, variable_name, value)
+
+        if "PUMP_SPEED" in variable_name.upper() or "EFFICIENCY" in variable_name.upper():
+            suffix = "%"
+        else:
+            suffix = "°"
+
+        label_key = f"TXT_{variable_name.upper()}"
+        label = self.dynamic_elements.get(label_key)
+        if label is not None:
+            label.setText(f"{value}{suffix}")
+        else:
+            print(f"[update_specific_variable] no label found for key {label_key}")
+
 
     def update_slider_value(self, variable_name):
         self.active_variable = variable_name  # Update the local reference

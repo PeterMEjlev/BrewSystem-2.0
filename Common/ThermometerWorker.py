@@ -1,3 +1,4 @@
+#ThermometerWorker.py
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import Common.constants as constants
 from Common.utils import adjust_image_height, play_audio
@@ -12,6 +13,7 @@ class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
     temperature_updated_hlt = pyqtSignal(float)
     temperature_updated_mlt = pyqtSignal(float)
+    variable_updated = pyqtSignal(str, int)
     finished = pyqtSignal()  # Signal to indicate the thread is finished
 
     def __init__(self, static_elements, graph):
@@ -128,36 +130,38 @@ class ThermometerWorker(QObject):
         """Control the PWM output for BK and HLT using full power unless within margin of REG temp."""
 
         margin = constants.TEMP_REACHED_MARGIN
+        
 
         # BK control
         if variables.STATE['BK_ON'] and variables.BK_REG_ON:
             temp_bk = variables.temp_BK
             reg_bk = variables.temp_REG_BK
-
             if temp_bk >= reg_bk:
-                print(f"[BK] Temp reached or exceeded: {temp_bk:.2f}°C ≥ REG {reg_bk}°C → Setting PWM to 0%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
+                self.variable_updated.emit('efficiency_BK', 0)
             elif temp_bk >= reg_bk - margin:
-                print(f"[BK] Temp within margin: {temp_bk:.2f}°C ≥ REG {reg_bk - margin}°C → Setting PWM to 35%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 35)
+                self.variable_updated.emit('efficiency_BK', 35)
             else:
-                print(f"[BK] Temp well below REG: {temp_bk:.2f}°C < REG {reg_bk - margin}°C → Setting PWM to 100%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
+                self.variable_updated.emit('efficiency_BK', 100)
 
         # HLT control
         if variables.STATE['HLT_ON'] and variables.HLT_REG_ON:
             temp_hlt = variables.temp_HLT
             reg_hlt = variables.temp_REG_HLT
-
             if temp_hlt >= reg_hlt:
-                print(f"[HLT] Temp reached or exceeded: {temp_hlt:.2f}°C ≥ REG {reg_hlt}°C → Setting PWM to 0%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
+                self.variable_updated.emit('efficiency_HLT', 0)
             elif temp_hlt >= reg_hlt - margin:
-                print(f"[HLT] Temp within margin: {temp_hlt:.2f}°C ≥ REG {reg_hlt - margin}°C → Setting PWM to 35%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 35)
+                self.variable_updated.emit('efficiency_HLT', 35)
             else:
-                print(f"[HLT] Temp well below REG: {temp_hlt:.2f}°C < REG {reg_hlt - margin}°C → Setting PWM to 100%")
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 100)
+                self.variable_updated.emit('efficiency_HLT', 100)
+
+        
+        
 
 
 
