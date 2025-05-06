@@ -7,6 +7,7 @@ import Common.variables as variables
 import Common.constants_rpi as constants_rpi
 from Common.utils_rpi import read_ds18b20, change_pwm_duty_cycle
 from Common.TemperatureGraph import TemperatureGraph
+import Common.max_wattage
 
 class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
@@ -141,8 +142,7 @@ class ThermometerWorker(QObject):
                 variables.set_temp_reached_HLT = False
                  
     def control_pwm_output(self):
-        """Control the PWM output for BK and HLT using full power unless within margin of REG temp."""
-
+        """Control the PWM output for BK and HLT using dynamic max wattage management."""
         margin = constants.TEMP_REACHED_MARGIN
         near_target_heating_efficiency = constants.NEAR_TARGET_HEATING_EFFICIENCY
 
@@ -153,12 +153,17 @@ class ThermometerWorker(QObject):
             if temp_bk >= reg_bk:
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
                 self.variable_updated.emit('efficiency_BK', 0)
+                variables.efficiency_BK = 0
             elif temp_bk >= reg_bk - margin:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, near_target_heating_efficiency)
-                self.variable_updated.emit('efficiency_BK', near_target_heating_efficiency)
+                new_eff = min(near_target_heating_efficiency, Common.max_wattage.calculate_max_new_efficiency("efficiency_BK"))
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, new_eff)
+                self.variable_updated.emit('efficiency_BK', new_eff)
+                variables.efficiency_BK = new_eff
             else:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 100)
-                self.variable_updated.emit('efficiency_BK', 100)
+                new_eff = Common.max_wattage.calculate_max_new_efficiency("efficiency_BK")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, new_eff)
+                self.variable_updated.emit('efficiency_BK', new_eff)
+                variables.efficiency_BK = new_eff
 
         # HLT control
         if variables.STATE['HLT_ON'] and variables.HLT_REG_ON:
@@ -167,18 +172,24 @@ class ThermometerWorker(QObject):
             if temp_hlt >= reg_hlt:
                 change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
                 self.variable_updated.emit('efficiency_HLT', 0)
+                variables.efficiency_HLT = 0
             elif temp_hlt >= reg_hlt - margin:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 35)
-                self.variable_updated.emit('efficiency_HLT', 35)
+                new_eff = min(35, Common.max_wattage.calculate_max_new_efficiency("efficiency_HLT"))
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, new_eff)
+                self.variable_updated.emit('efficiency_HLT', new_eff)
+                variables.efficiency_HLT = new_eff
             else:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 100)
-                self.variable_updated.emit('efficiency_HLT', 100)
+                new_eff = Common.max_wattage.calculate_max_new_efficiency("efficiency_HLT")
+                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, new_eff)
+                self.variable_updated.emit('efficiency_HLT', new_eff)
+                variables.efficiency_HLT = new_eff
+
+
+            
+            
+
+
+
 
         
         
-
-
-
-
-    
-    
