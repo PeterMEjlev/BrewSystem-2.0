@@ -21,6 +21,7 @@ class ThermometerWorker(QObject):
         self._running = True  # Control the thread execution
         self.static_elements = static_elements  # Store static elements for access
         self.graph = graph  # Pass the graph instance to update
+        self._update_toggle = False
 
     def run(self):
         """Worker's main loop to read temperatures."""
@@ -35,12 +36,9 @@ class ThermometerWorker(QObject):
             
             self.control_pwm_output()
             
-            if variables.temp_BK >= 0:
-                self.temperature_updated_bk.emit(variables.temp_BK)
-            if variables.temp_MLT >= 0:
-                self.temperature_updated_mlt.emit(variables.temp_MLT)
-            if variables.temp_HLT >= 0:
-                self.temperature_updated_hlt.emit(variables.temp_HLT)
+            if variables.temp_BK  >= 0: self.temperature_updated_bk.emit(variables.temp_BK)
+            if variables.temp_MLT >= 0: self.temperature_updated_mlt.emit(variables.temp_MLT)
+            if variables.temp_HLT >= 0: self.temperature_updated_hlt.emit(variables.temp_HLT)
 
             # Calculate temperature progress for BK and HLT
             temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100)) if variables.temp_REG_BK > 0 else 0
@@ -55,8 +53,12 @@ class ThermometerWorker(QObject):
             # Update temperature-reached visuals
             self.update_pot_foregrounds_if_temp_reached()
 
-            # Update the graph
-            self.graph.update_graph(variables.temp_BK, variables.temp_MLT, variables.temp_HLT)
+            # only call update_graph every OTHER loop (~ every 1 second)
+            self._update_toggle = not self._update_toggle
+            if self._update_toggle:
+                self.graph.update_graph(variables.temp_BK,
+                                        variables.temp_MLT,
+                                        variables.temp_HLT)
 
             # Wait for the next reading
             QThread.msleep(constants.THERMOMETER_READ_FREQUENCY)
