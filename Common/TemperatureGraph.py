@@ -1,4 +1,4 @@
-from pyqtgraph import PlotWidget, mkPen, AxisItem
+from pyqtgraph import PlotWidget, mkPen, AxisItem, ViewBox
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QFont
@@ -55,8 +55,10 @@ class TemperatureGraph(QWidget):
             'font-weight': 'bold'
         }
 
-        # Fixed y-range
-        self.plot_widget.setYRange(0, 100)
+        # Fixed x- and y-range
+        #self.plot_widget.setYRange(0, 100)
+        vb = self.plot_widget.getViewBox()
+        vb.setLimits(xMin=0)
         self.plot_widget.setLabel("left", "Temperature (°C)", **label_style)
         # Label bottom in minutes now
         self.plot_widget.setLabel("bottom", "Time (min)", **label_style)
