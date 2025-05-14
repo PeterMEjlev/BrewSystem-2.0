@@ -1,4 +1,3 @@
-#ThermometerWorker.py
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import Common.constants as constants
 from Common.utils import adjust_image_height, play_audio
@@ -31,11 +30,13 @@ class ThermometerWorker(QObject):
             variables.temp_MLT = self.read_thermometer_mlt()
             variables.temp_HLT = self.read_thermometer_hlt()
 
-            self.check_if_reg_temp_reached_BK()
-            self.check_if_reg_temp_reached_HLT()
-            
+            # Unified temperature-reached checks
+            self.check_if_reg_temp_reached('BK')
+            self.check_if_reg_temp_reached('HLT')
+
             self.control_pwm_output()
-            
+
+            # Emit updated temperatures
             if variables.temp_BK  >= 0: self.temperature_updated_bk.emit(variables.temp_BK)
             if variables.temp_MLT >= 0: self.temperature_updated_mlt.emit(variables.temp_MLT)
             if variables.temp_HLT >= 0: self.temperature_updated_hlt.emit(variables.temp_HLT)
@@ -76,6 +77,23 @@ class ThermometerWorker(QObject):
         """Stop the worker loop."""
         self._running = False
 
+    def check_if_reg_temp_reached(self, key):
+        """Generic check for BK/HLT reaching target temperature."""
+        temp = getattr(variables, f"temp_{key}")
+        reg = getattr(variables, f"temp_REG_{key}")
+        set_flag = f"set_temp_reached_{key}"
+        m = constants.TEMP_REACHED_MARGIN
+        r = constants.TEMP_RESET_MARGIN
+
+        if reg - m <= temp <= reg + m:
+            if not getattr(variables, set_flag):
+                setattr(variables, set_flag, True)
+                play_audio(f"{key}_set_temp_reached - Male.mp3")
+                change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), 0)
+        else:
+            if getattr(variables, set_flag) and (temp < reg - r or temp > reg + r):
+                setattr(variables, set_flag, False)
+
     def update_temp_reached_element(self, temp, temp_reg, state, element, threshold):
         """Update visibility of temperature-reached elements."""
         if state:
@@ -108,41 +126,6 @@ class ThermometerWorker(QObject):
                 constants.TEMP_REACHED_MARGIN
             )
 
-    def check_if_reg_temp_reached_BK(self):
-        temp = variables.temp_BK
-        reg  = variables.temp_REG_BK
-        m    = constants.TEMP_REACHED_MARGIN
-        r    = constants.TEMP_RESET_MARGIN
-
-        # 1) if we're inside the ±MARGIN band and haven't alarmed yet → alarm
-        if reg - m <= temp <= reg + m:
-            if not variables.set_temp_reached_BK:
-                variables.set_temp_reached_BK = True
-                play_audio("BK_set_temp_reached - Male.mp3")
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
-
-        # 2) if we already alarmed, only reset once we've left the wider ±RESET_MARGIN band
-        else:
-            if variables.set_temp_reached_BK and (temp < reg - r or temp > reg + r):
-                variables.set_temp_reached_BK = False
-
-    def check_if_reg_temp_reached_HLT(self):
-        temp = variables.temp_HLT
-        reg  = variables.temp_REG_HLT
-        m    = constants.TEMP_REACHED_MARGIN
-        r    = constants.TEMP_RESET_MARGIN
-
-        # 1) if we're inside the ±MARGIN band and haven't alarmed yet → alarm
-        if reg - m <= temp <= reg + m:
-            if not variables.set_temp_reached_HLT:
-                variables.set_temp_reached_HLT = True
-                play_audio("HLT_set_temp_reached - Male.mp3")
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
-        # 2) if we already alarmed, only reset once we've left the wider ±RESET_MARGIN band
-        else:
-            if variables.set_temp_reached_HLT and (temp < reg - r or temp > reg + r):
-                variables.set_temp_reached_HLT = False
-                 
     def control_pwm_output(self):
         """Control the PWM output for BK and HLT using dynamic max wattage management."""
         margin = constants.TEMP_REACHED_MARGIN
@@ -150,48 +133,26 @@ class ThermometerWorker(QObject):
 
         # BK control
         if variables.STATE['BK_ON'] and variables.BK_REG_ON:
-            temp_bk = variables.temp_BK
-            reg_bk = variables.temp_REG_BK
-            if temp_bk >= reg_bk:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, 0)
-                self.variable_updated.emit('efficiency_BK', 0)
-                variables.efficiency_BK = 0
-            elif temp_bk >= reg_bk - margin:
-                new_eff = min(near_target_heating_efficiency, Common.max_wattage.calculate_max_new_efficiency("efficiency_BK"))
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, new_eff)
-                self.variable_updated.emit('efficiency_BK', new_eff)
-                variables.efficiency_BK = new_eff
-            else:
-                new_eff = Common.max_wattage.calculate_max_new_efficiency("efficiency_BK")
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_BK, new_eff)
-                self.variable_updated.emit('efficiency_BK', new_eff)
-                variables.efficiency_BK = new_eff
+            self._apply_pwm_control('BK', variables.temp_BK, variables.temp_REG_BK, margin, near_target_heating_efficiency)
 
         # HLT control
         if variables.STATE['HLT_ON'] and variables.HLT_REG_ON:
-            temp_hlt = variables.temp_HLT
-            reg_hlt = variables.temp_REG_HLT
-            if temp_hlt >= reg_hlt:
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, 0)
-                self.variable_updated.emit('efficiency_HLT', 0)
-                variables.efficiency_HLT = 0
-            elif temp_hlt >= reg_hlt - margin:
-                new_eff = min(35, Common.max_wattage.calculate_max_new_efficiency("efficiency_HLT"))
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, new_eff)
-                self.variable_updated.emit('efficiency_HLT', new_eff)
-                variables.efficiency_HLT = new_eff
-            else:
-                new_eff = Common.max_wattage.calculate_max_new_efficiency("efficiency_HLT")
-                change_pwm_duty_cycle(constants_rpi.RPI_GPIO_PWN_HLT, new_eff)
-                self.variable_updated.emit('efficiency_HLT', new_eff)
-                variables.efficiency_HLT = new_eff
+            # limit to 35% near target for HLT
+            self._apply_pwm_control('HLT', variables.temp_HLT, variables.temp_REG_HLT, margin, 35)
 
-
-            
-            
-
-
-
-
-        
-        
+    def _apply_pwm_control(self, key, temp, reg, margin, max_eff_limit):
+        flag = getattr(variables, f"efficiency_{key}")
+        if temp >= reg:
+            change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), 0)
+            self.variable_updated.emit(f"efficiency_{key}", 0)
+            setattr(variables, f"efficiency_{key}", 0)
+        elif temp >= reg - margin:
+            new_eff = min(max_eff_limit, Common.max_wattage.calculate_max_new_efficiency(f"efficiency_{key}"))
+            change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), new_eff)
+            self.variable_updated.emit(f"efficiency_{key}", new_eff)
+            setattr(variables, f"efficiency_{key}", new_eff)
+        else:
+            new_eff = Common.max_wattage.calculate_max_new_efficiency(f"efficiency_{key}" )
+            change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), new_eff)
+            self.variable_updated.emit(f"efficiency_{key}", new_eff)
+            setattr(variables, f"efficiency_{key}", new_eff)
