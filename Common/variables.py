@@ -49,7 +49,7 @@ active_variable = None
 talking_with_chat = False
 
 #Graph 
-average_temp_time_window = 5  # minutes
+average_temp_time_window = 10  # minutes
 
 def initialize_variables_from_settings():
     """Load settings from the JSON file and update variables."""

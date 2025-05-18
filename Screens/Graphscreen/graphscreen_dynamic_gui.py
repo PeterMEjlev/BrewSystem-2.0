@@ -45,7 +45,7 @@ def initialize_dynamic_text(parent_widget):
             parent_widget,
             f"{variables.average_temp_time_window} min: {0.0:.1f}°C",
             color='white',
-            size=constants_gui.TXT_GRAPH_TEMP_SIZE,
+            size=constants_gui.TXT_GRAPH_TEMP_AVG_SIZE,
             center=constants_gui.TXT_AVG_TEMP_BK_GRAPH_COORDINATES,
             width=label_width+50,
             alignment=Qt.AlignCenter
@@ -54,7 +54,7 @@ def initialize_dynamic_text(parent_widget):
             parent_widget,
             f"{variables.average_temp_time_window} min: {0.0:.1f}°C",
             color='white',
-            size=constants_gui.TXT_GRAPH_TEMP_SIZE,
+            size=constants_gui.TXT_GRAPH_TEMP_AVG_SIZE,
             center=constants_gui.TXT_AVG_TEMP_MLT_GRAPH_COORDINATES,
             width=label_width+50,
             alignment=Qt.AlignCenter
@@ -63,7 +63,7 @@ def initialize_dynamic_text(parent_widget):
             parent_widget,
             f"{variables.average_temp_time_window} min: {0.0:.1f}°C",
             color='white',
-            size=constants_gui.TXT_GRAPH_TEMP_SIZE,
+            size=constants_gui.TXT_GRAPH_TEMP_AVG_SIZE,
             center=constants_gui.TXT_AVG_TEMP_HLT_GRAPH_COORDINATES,
             width=label_width+50,
             alignment=Qt.AlignCenter
