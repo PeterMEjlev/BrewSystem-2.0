@@ -1,6 +1,7 @@
 import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSlider, QHBoxLayout
 import Common.constants as constants
+import Common.variables as variables
 from Screens.Graphscreen.graphscreen_gui_initialization import initialize_gui_elements
 from PyQt5.QtCore import Qt
 from Common.TemperatureGraph import TemperatureGraph
@@ -54,21 +55,20 @@ class GraphScreen(QWidget):
         if hasattr(self, 'temperature_graph'):
             self.temperature_graph.update_graph(temp_bk, temp_mlt, temp_hlt)
 
-            # 2) compute averages over the last N points
-            last_n = 10  # adjust this window size as you like
-            bk_avg, mlt_avg, hlt_avg = self.temperature_graph.get_average(last_n)
+            # 2) compute averages over the last N minutes
+            bk_avg, mlt_avg, hlt_avg = self.temperature_graph.get_average_last_minutes(variables.average_temp_time_window)
 
             # 3) update the dynamic AVG labels
             # use .get() in case the labels aren’t present yet
             lbl = self.dynamic_elements.get('TXT_AVG_TEMP_BK')
             if lbl:
-                lbl.setText(f"Avg BK:  {bk_avg:.1f}°C")
+                lbl.setText(f"{variables.average_temp_time_window} min: {bk_avg:.1f}°C")
             lbl = self.dynamic_elements.get('TXT_AVG_TEMP_MLT')
             if lbl:
-                lbl.setText(f"Avg MLT: {mlt_avg:.1f}°C")
+                lbl.setText(f"{variables.average_temp_time_window} min: {mlt_avg:.1f}°C")
             lbl = self.dynamic_elements.get('TXT_AVG_TEMP_HLT')
             if lbl:
-                lbl.setText(f"Avg HLT: {hlt_avg:.1f}°C")
+                lbl.setText(f"{variables.average_temp_time_window} min: {hlt_avg:.1f}°C")
 
 
     def update_zoom_level(self, value):

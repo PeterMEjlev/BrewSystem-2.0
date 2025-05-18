@@ -168,10 +168,30 @@ class TemperatureGraph(QWidget):
         self.info_label.show()
         QTimer.singleShot(3000, self.info_label.hide)
 
-    def get_average(self, last_n):
-        hist = self.temperature_history[-last_n:]
+    def get_average_last_minutes(self, window_minutes: float):
+        """
+        Compute the mean of bk, mlt, hlt over the last `window_minutes`.
+        If there are no samples in that window, returns (nan, nan, nan).
+        """
+        if not self.temperature_history:
+            return (np.nan, np.nan, np.nan)
+
+        # the most recent timestamp in minutes
+        current_min = self.temperature_history[-1]["time"]
+        cutoff     = current_min - window_minutes
+
+        # filter entries whose time >= cutoff
+        window_entries = [e for e in self.temperature_history if e["time"] >= cutoff]
+        if not window_entries:
+            return (np.nan, np.nan, np.nan)
+
+        bk_vals  = [e["bk"]  for e in window_entries]
+        mlt_vals = [e["mlt"] for e in window_entries]
+        hlt_vals = [e["hlt"] for e in window_entries]
+
         return (
-          np.nanmean([e['bk']  for e in hist]),
-          np.nanmean([e['mlt'] for e in hist]),
-          np.nanmean([e['hlt'] for e in hist]),
+            np.nanmean(bk_vals),
+            np.nanmean(mlt_vals),
+            np.nanmean(hlt_vals),
         )
+
