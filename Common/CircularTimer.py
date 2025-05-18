@@ -1,8 +1,9 @@
 # circular_timer.py
 
-from PyQt5.QtWidgets import QWidget, QApplication
+import os
+from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 from PyQt5.QtCore    import Qt, QTimer, QRectF, QSize
-from PyQt5.QtGui     import QPainter, QPen, QColor, QFont
+from PyQt5.QtGui     import QPainter, QPen, QColor, QFont, QPixmap
 import sys
 
 # defaults:
@@ -12,6 +13,8 @@ DEFAULT_FG_COLOR      = "#FFFFFF"
 DEFAULT_STROKE_WIDTH  = 8
 DEFAULT_TEXT_SCALE    = 0.15  # fraction of diameter
 DEFAULT_TEXT_SIZE     = None  # if set, overrides text_scale
+DEFAULT_ICON_SCALE    = 0.5   # fraction of inner circle diameter
+ICON_FILENAME         = "Icon_Timer.png"
 
 class CircularTimer(QWidget):
     def __init__(
@@ -22,22 +25,33 @@ class CircularTimer(QWidget):
         fg_color: str = DEFAULT_FG_COLOR,
         stroke_width: int = DEFAULT_STROKE_WIDTH,
         text_scale: float = DEFAULT_TEXT_SCALE,
-        text_size: int  = DEFAULT_TEXT_SIZE
+        text_size: int  = DEFAULT_TEXT_SIZE,
+        icon_scale: float = DEFAULT_ICON_SCALE,
     ):
         super().__init__(parent)
-        self.duration     = duration_minutes
-        self.elapsed      = 0.0
-        self.bg_qcolor    = QColor(bg_color)
-        self.fg_qcolor    = QColor(fg_color)
-        self.stroke_width = stroke_width
+        self.duration       = duration_minutes
+        self.elapsed        = 0.0
+        self.bg_qcolor      = QColor(bg_color)
+        self.fg_qcolor      = QColor(fg_color)
+        self.stroke_width   = stroke_width
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
 
         # text-size controls
-        self.text_scale  = text_scale
-        self.text_size   = text_size
+        self.text_scale     = text_scale
+        self.text_size      = text_size
+        # icon-sizing
+        self.icon_scale     = icon_scale
 
         # only show text after start() is called
-        self._show_text  = False
+        self._show_text     = False
+
+        # load icon pixmap
+        base_path = os.path.join(os.path.dirname(__file__), "..", "Assets")
+        icon_path = os.path.join(base_path, ICON_FILENAME)
+        self._icon_pixmap = QPixmap(icon_path)
+        self._icon_label  = QLabel(self)
+        self._icon_label.setAttribute(Qt.WA_TranslucentBackground)
+        self._icon_label.setScaledContents(False)
 
         # timer for auto‐tick every second
         self._timer = QTimer(self)
@@ -48,8 +62,9 @@ class CircularTimer(QWidget):
 
     def start(self):
         """Begin ticking and show the minutes label."""
-        self.elapsed   = 0.0
+        self.elapsed    = 0.0
         self._show_text = True
+        self._icon_label.hide()
         self._timer.start(1000)
         self.update()
 
@@ -65,8 +80,8 @@ class CircularTimer(QWidget):
         if self._timer.isActive():
             self.stop()
         else:
-            # show the minutes text when toggling on
             self._show_text = True
+            self._icon_label.hide()
             self._timer.start(1000)
         self.update()
 
@@ -91,16 +106,45 @@ class CircularTimer(QWidget):
             self._timer.stop()
         self.update()
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_icon_geometry()
+
+    def _update_icon_geometry(self):
+        # center icon inside inner circle
+        size     = min(self.width(), self.height())
+        margin   = size * 0.1 + self.stroke_width/2
+        inner    = size - 2 * margin
+        icon_sz  = int(inner * self.icon_scale)
+        if self._icon_pixmap and icon_sz > 0:
+            scaled = self._icon_pixmap.scaled(
+                icon_sz, icon_sz,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation
+            )
+            self._icon_label.setPixmap(scaled)
+            w, h = scaled.width(), scaled.height()
+            x = (self.width()  - w) // 2
+            y = (self.height() - h) // 2
+            self._icon_label.setGeometry(x, y, w, h)
+            self._icon_label.show() if not self._show_text else self._icon_label.hide()
+
     def paintEvent(self, event):
         size   = min(self.width(), self.height())
         margin = size * 0.1
         rect   = QRectF(margin, margin, size - 2*margin, size - 2*margin)
 
+        # ensure icon is properly positioned
+        if not self._show_text:
+            self._update_icon_geometry()
+
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
 
-        # background circle
-        p.setPen(QPen(self.bg_qcolor, self.stroke_width))
+
+        # background circle: white until started, then use configured bg_color
+        bg_pen_color = QColor("#FFFFFF") if not self._show_text else self.bg_qcolor
+        p.setPen(QPen(bg_pen_color, self.stroke_width))
         p.drawEllipse(rect)
 
         # progress arc
@@ -143,10 +187,11 @@ if __name__ == "__main__":
         bg_color="#313132",
         fg_color="#FFFFFF",
         stroke_width=10,
-        text_scale=0.25
+        text_scale=0.25,
+        icon_scale=0.25
     )
     w.resize(150, 150)
     w.show()
     # text will remain hidden until .start()
-    QTimer.singleShot(2000, w.start)  # demo: start after 2 s
+    QTimer.singleShot(2000, w.start)
     sys.exit(app.exec_())
