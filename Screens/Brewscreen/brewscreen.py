@@ -20,6 +20,7 @@ from Common.gif_viewer import GifViewer
 from Common.detector_signals import detector_signals
 from Common.bruce_gifs import start_gif, stop_gif
 from Common.max_wattage import calculate_new_total_power_consumption, power_is_within_limit, calculate_max_new_efficiency
+from Common.CircularTimer import create_circular_timer
 
 gif_label_thinking = None
 gif_label_responding = None
@@ -53,8 +54,18 @@ class FullScreenWindow(QMainWindow):
     def init_ui(self):
         self.setup_window()
         self.setup_central_widget()
+        
+        
+        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget)
+        self.circular_timer_MLT.setGeometry(1085, 340, 160, 160)
+        self.circular_timer_MLT.show()
+        #self.circular_timer_MLT.start()
+
         self.initialize_gui_elements()
-        self.initialize_slider_and_buttons()
+        self.initialize_slider()
+
+        self.circular_timer_MLT.raise_()
+
 
         self.gif_label_loading = self.initialize_bruce_loading_gif_label(self.central_widget)
         self.gif_label_responding = self.initialize_bruce_responding_gif_label(self.central_widget)
@@ -209,7 +220,7 @@ class FullScreenWindow(QMainWindow):
 
         hide_GUI_elements(self.static_elements, self.dynamic_elements, self.buttons)
 
-    def initialize_slider_and_buttons(self):
+    def initialize_slider(self):
         """
         Initialize the slider and buttons for the GUI.
         """
