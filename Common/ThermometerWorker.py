@@ -12,57 +12,45 @@ class ThermometerWorker(QObject):
     temperature_updated_bk = pyqtSignal(float)  # Signal to send the temperature reading
     temperature_updated_hlt = pyqtSignal(float)
     temperature_updated_mlt = pyqtSignal(float)
+    temperature_readings    = pyqtSignal(float, float, float)
     variable_updated = pyqtSignal(str, int)
     finished = pyqtSignal()  # Signal to indicate the thread is finished
 
-    def __init__(self, static_elements, graph):
+    def __init__(self, static_elements):
         super().__init__()
-        self._running = True  # Control the thread execution
-        self.static_elements = static_elements  # Store static elements for access
-        self.graph = graph  # Pass the graph instance to update
-        self._update_toggle = False
+        self._running        = True
+        self.static_elements = static_elements
+        self._update_toggle  = False
 
     def run(self):
-        """Worker's main loop to read temperatures."""
+        """Worker's main loop to read temperatures and emit signals."""
         while self._running:
-            # Read and update temperature values
-            variables.temp_BK = self.read_thermometer_bk()
-            variables.temp_MLT = self.read_thermometer_mlt()
-            variables.temp_HLT = self.read_thermometer_hlt()
+            # 1) read the three DS18B20 probes
+            t_bk  = read_ds18b20(constants_rpi.DS18B20_BK)
+            t_mlt = read_ds18b20(constants_rpi.DS18B20_MLT)
+            t_hlt = read_ds18b20(constants_rpi.DS18B20_HLT)
+            variables.temp_BK, variables.temp_MLT, variables.temp_HLT = t_bk, t_mlt, t_hlt
 
-            # Unified temperature-reached checks
+            # 2) check alarms & control PWM
             self.check_if_reg_temp_reached('BK')
             self.check_if_reg_temp_reached('HLT')
-
             self.control_pwm_output()
 
-            # Emit updated temperatures
-            if variables.temp_BK  >= 0: self.temperature_updated_bk.emit(variables.temp_BK)
-            if variables.temp_MLT >= 0: self.temperature_updated_mlt.emit(variables.temp_MLT)
-            if variables.temp_HLT >= 0: self.temperature_updated_hlt.emit(variables.temp_HLT)
+            # 3) emit individual‐pot updates
+            if t_bk  >= 0: self.temperature_updated_bk.emit(t_bk)
+            if t_mlt >= 0: self.temperature_updated_mlt.emit(t_mlt)
+            if t_hlt >= 0: self.temperature_updated_hlt.emit(t_hlt)
 
-            # Calculate temperature progress for BK and HLT
-            temp_progress_bk = min(100, max(0, (variables.temp_BK / variables.temp_REG_BK) * 100)) if variables.temp_REG_BK > 0 else 0
-            temp_progress_hlt = min(100, max(0, (variables.temp_HLT / variables.temp_REG_HLT) * 100)) if variables.temp_REG_HLT > 0 else 0
-
-            # Adjust image height dynamically
-            if 'IMG_Pot_BK_On_Foreground' in self.static_elements:  
-                adjust_image_height(self.static_elements['IMG_Pot_BK_On_Foreground'], temp_progress_bk, POT_ON_FOREGROUND_HEIGHT)
-            if 'IMG_Pot_HLT_On_Foreground' in self.static_elements:  
-                adjust_image_height(self.static_elements['IMG_Pot_HLT_On_Foreground'], temp_progress_hlt, POT_ON_FOREGROUND_HEIGHT)
-
-            # Update temperature-reached visuals
-            self.update_pot_foregrounds_if_temp_reached()
-
-            # only call update_graph every OTHER loop (~ every 1 second)
+            # 4) every other loop, emit combined readings for the graph screen
             self._update_toggle = not self._update_toggle
             if self._update_toggle:
-                self.graph.update_graph(variables.temp_BK,
-                                        variables.temp_MLT,
-                                        variables.temp_HLT)
+                self.temperature_readings.emit(t_bk, t_mlt, t_hlt)
 
-            # Wait for the next reading
+            # 5) pause
             QThread.msleep(constants.THERMOMETER_READ_FREQUENCY)
+
+        # clean shutdown
+        self.finished.emit()
 
     def read_thermometer_bk(self):
         return read_ds18b20(constants_rpi.DS18B20_BK)  

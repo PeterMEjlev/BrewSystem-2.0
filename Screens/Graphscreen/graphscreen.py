@@ -43,11 +43,33 @@ class GraphScreen(QWidget):
     def initialize_gui_elements(self):
         # Delegate GUI initialization to the external file
         initialize_gui_elements(self, self.path)
+        
 
     def update_graph(self, temp_bk, temp_mlt, temp_hlt):
-        """Update the graph with new temperature data."""
+        """
+        Update the graph with new temperature data, then compute & display
+        the average over the last N entries.
+        """
+        # 1) redraw the plot
         if hasattr(self, 'temperature_graph'):
             self.temperature_graph.update_graph(temp_bk, temp_mlt, temp_hlt)
+
+            # 2) compute averages over the last N points
+            last_n = 10  # adjust this window size as you like
+            bk_avg, mlt_avg, hlt_avg = self.temperature_graph.get_average(last_n)
+
+            # 3) update the dynamic AVG labels
+            # use .get() in case the labels aren’t present yet
+            lbl = self.dynamic_elements.get('TXT_AVG_TEMP_BK')
+            if lbl:
+                lbl.setText(f"Avg BK:  {bk_avg:.1f}°C")
+            lbl = self.dynamic_elements.get('TXT_AVG_TEMP_MLT')
+            if lbl:
+                lbl.setText(f"Avg MLT: {mlt_avg:.1f}°C")
+            lbl = self.dynamic_elements.get('TXT_AVG_TEMP_HLT')
+            if lbl:
+                lbl.setText(f"Avg HLT: {hlt_avg:.1f}°C")
+
 
     def update_zoom_level(self, value):
         """
@@ -75,3 +97,27 @@ class GraphScreen(QWidget):
         from Screens.Settingsscreen.settingsscreen import SettingsScreen
         self.settings_screen = SettingsScreen()
         self.settings_screen.show()
+
+    def update_temperature_label_bk(self, temperature: float):
+        """
+        Update the GraphScreen's dynamic BK temperature label.
+        """
+        lbl = self.dynamic_elements.get('TXT_CUR_TEMP_BK')
+        if lbl:
+            lbl.setText(f"BK: {temperature:.1f}°C")
+
+    def update_temperature_label_mlt(self, temperature: float):
+        """
+        Update the GraphScreen's dynamic MLT temperature label.
+        """
+        lbl = self.dynamic_elements.get('TXT_CUR_TEMP_MLT')
+        if lbl:
+            lbl.setText(f"MLT: {temperature:.1f}°C")
+
+    def update_temperature_label_hlt(self, temperature: float):
+        """
+        Update the GraphScreen's dynamic HLT temperature label.
+        """
+        lbl = self.dynamic_elements.get('TXT_CUR_TEMP_HLT')
+        if lbl:
+            lbl.setText(f"HLT: {temperature:.1f}°C")

@@ -85,21 +85,30 @@ class FullScreenWindow(QMainWindow):
 
     def start_thermometer_thread(self):
         """Start the thermometer worker in a separate thread."""
-        self.worker_thread = QThread()
-        self.thermometer_worker = ThermometerWorker(self.static_elements, self.graph_screen.temperature_graph)
+        self.worker_thread = QThread(self)
+        worker = ThermometerWorker(self.static_elements)
+        worker.moveToThread(self.worker_thread)
+        self.worker_thread.started.connect(worker.run)
 
-        self.thermometer_worker.moveToThread(self.worker_thread)
-        self.worker_thread.started.connect(self.thermometer_worker.run)
-        self.thermometer_worker.temperature_updated_bk.connect(self.update_temperature_label_bk)
-        self.thermometer_worker.temperature_updated_mlt.connect(self.update_temperature_label_mlt)
-        self.thermometer_worker.temperature_updated_hlt.connect(self.update_temperature_label_hlt)
-        self.thermometer_worker.finished.connect(self.worker_thread.quit)
-        self.thermometer_worker.finished.connect(self.thermometer_worker.deleteLater)
+        # connect the three individual‐pot signals
+        for pot in ('bk', 'mlt', 'hlt'):
+            sig = getattr(worker, f"temperature_updated_{pot}")
+            sig.connect(getattr(self,            f"update_temperature_label_{pot}"))
+            sig.connect(getattr(self.graph_screen, f"update_temperature_label_{pot}"))
+
+        # connect the combined‐readings signal to GraphScreen.update_graph
+        worker.temperature_readings.connect(self.graph_screen.update_graph)
+
+        # handle variable updates & clean‐up
+        worker.variable_updated.connect(self.update_specific_variable)
+        worker.finished.connect(self.worker_thread.quit)
+        worker.finished.connect(worker.deleteLater)
         self.worker_thread.finished.connect(self.worker_thread.deleteLater)
 
-        self.thermometer_worker.variable_updated.connect(self.update_specific_variable)
-
+        # launch!
         self.worker_thread.start()
+        self.thermometer_worker = worker
+
 
     def stop_thermometer_thread(self):
         """Stop the thermometer worker and thread."""

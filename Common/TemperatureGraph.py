@@ -18,7 +18,7 @@ class TemperatureGraph(QWidget):
 
         # Keep an internal history (1 Hz logging) and redraw skip counter
         self.temperature_history = []  # Stores all entries every second
-        self._redraw_skip = 0         # Only redraw every 5 updates
+        self._redraw_skip = 0         # Only redraw every X updates
         self.start_time = None        # Time of the first reading
 
         self.init_ui()
@@ -94,7 +94,7 @@ class TemperatureGraph(QWidget):
 
         # Only redraw the plot every 5 logged points (~every 5 seconds)
         self._redraw_skip += 1
-        if self._redraw_skip < 5:
+        if self._redraw_skip < 2:
             return
         self._redraw_skip = 0
 
@@ -167,3 +167,11 @@ class TemperatureGraph(QWidget):
         self.info_label.move(int(event.scenePos().x()), int(event.scenePos().y()) - 40)
         self.info_label.show()
         QTimer.singleShot(3000, self.info_label.hide)
+
+    def get_average(self, last_n):
+        hist = self.temperature_history[-last_n:]
+        return (
+          np.nanmean([e['bk']  for e in hist]),
+          np.nanmean([e['mlt'] for e in hist]),
+          np.nanmean([e['hlt'] for e in hist]),
+        )
