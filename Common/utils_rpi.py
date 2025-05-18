@@ -78,11 +78,12 @@ def change_pwm_duty_cycle(pin_number, duty_cycle):
                 pi.hardware_PWM(pin_number, frequency, duty_hw)
             elif mode == 'software':
                 pi.set_PWM_dutycycle(pin_number, duty_cycle)
-            print(f"{mode.capitalize()} PWM duty cycle on pin {pin_number} changed to {duty_cycle}%.")
+            print(f"{mode.capitalize()} PWM duty cycle on pin {pin_number} changed to {duty_cycle}%")
         except Exception as e:
-            print(f"Error changing PWM duty cycle on pin {pin_number}: {e}")
+            print(f"Error changing PWM duty cycle on pin {pin_number} to {duty_cycle}%: {e}")
     else:
-        print(f"PWM duty cycle change simulated on pin {pin_number}.")
+        print(f"Simulated PWM duty cycle change on pin {pin_number} to {duty_cycle}%")
+
 
 def initialize_ds18b20_resolution(serial_code, resolution="9"):
     if IS_RPI:

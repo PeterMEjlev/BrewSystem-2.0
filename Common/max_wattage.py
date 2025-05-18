@@ -34,11 +34,11 @@ def calculate_max_new_efficiency(pot):
         HLT_power = (variables.efficiency_HLT/100)*HLT_MAX_POWER
         available_power = MAX_WATTAGE - HLT_power
         max_power_bk = (available_power / BK_MAX_POWER) * 100
-        return max(0, min(100, max_power_bk))
+        return int(max(0, min(100, max_power_bk)))
     
     if pot == "efficiency_HLT":
         BK_power = (variables.efficiency_BK/100)*BK_MAX_POWER
         available_power = MAX_WATTAGE - BK_power
         max_power_hlt = (available_power / HLT_MAX_POWER) * 100
-        return max(0, min(100, max_power_hlt))
+        return int(max(0, min(100, max_power_hlt)))
         
