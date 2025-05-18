@@ -10,7 +10,7 @@ import sys
 DEFAULT_DURATION      = 60.0
 DEFAULT_BG_COLOR      = "#313132"
 DEFAULT_FG_COLOR      = "#FFFFFF"
-DEFAULT_STROKE_WIDTH  = 8
+DEFAULT_STROKE_WIDTH  = 7
 DEFAULT_TEXT_SCALE    = 0.15  # fraction of diameter
 DEFAULT_TEXT_SIZE     = None  # if set, overrides text_scale
 DEFAULT_ICON_SCALE    = 0.5   # fraction of inner circle diameter
@@ -84,6 +84,22 @@ class CircularTimer(QWidget):
             self._icon_label.hide()
             self._timer.start(1000)
         self.update()
+        
+    def reset(self):
+        """
+        Reset the timer back to its initial (idle) state:
+        - stops any running countdown,
+        - clears elapsed time,
+        - hides the minutes text,
+        - shows the icon again,
+        - repaints.
+        """
+        self._timer.stop()
+        self.elapsed = 0.0
+        self._show_text = False
+        self._icon_label.show()
+        self.update()
+
 
     def setElapsed(self, minutes: float):
         self.elapsed = max(0.0, minutes)

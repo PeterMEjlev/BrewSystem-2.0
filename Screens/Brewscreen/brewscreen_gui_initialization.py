@@ -264,7 +264,7 @@ def initialize_buttons(central_widget, static_elements, dynamic_elements, toggle
             position=constants_gui.BTN_TIMER_MLT_COORDINATES,
             size=constants_gui.BTN_TIMER,
             on_normal_click=lambda: instance.circular_timer_MLT.toggle(),
-            on_long_click=None,
+            on_long_click=lambda: instance.circular_timer_MLT.reset(),
             invisible=Common.constants.BTN_INVISIBILITY
         )
     }
