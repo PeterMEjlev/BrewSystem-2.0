@@ -55,17 +55,13 @@ class FullScreenWindow(QMainWindow):
         self.setup_window()
         self.setup_central_widget()
         
+        self.initalize_timers()
         
-        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget)
-        self.circular_timer_MLT.setGeometry(1085, 340, 160, 160)
-        self.circular_timer_MLT.show()
-        #self.circular_timer_MLT.start()
-
         self.initialize_gui_elements()
         self.initialize_slider()
 
         self.circular_timer_MLT.raise_()
-
+        self.circular_timer_BK.raise_()
 
         self.gif_label_loading = self.initialize_bruce_loading_gif_label(self.central_widget)
         self.gif_label_responding = self.initialize_bruce_responding_gif_label(self.central_widget)
@@ -78,6 +74,15 @@ class FullScreenWindow(QMainWindow):
                 stop_gif(self.gif_label_listening)
             )
         )
+
+    def initalize_timers(self):
+        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget)
+        self.circular_timer_MLT.setGeometry(1085, 340, 160, 160)
+        self.circular_timer_MLT.show()
+
+        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#313132", icon_idle="Icon_Timer_Grey.png")
+        self.circular_timer_BK.setGeometry(645, 340, 160, 160)
+        self.circular_timer_BK.show()
 
     def setup_window(self):
         self.setGeometry(0, 0, constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)

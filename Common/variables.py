@@ -51,6 +51,9 @@ talking_with_chat = False
 #Graph 
 average_temp_time_window = 10  # minutes
 
+#Sounds
+muted = True
+
 def initialize_variables_from_settings():
     """Load settings from the JSON file and update variables."""
     global temp_BK, temp_HLT, temp_REG_BK, temp_REG_HLT

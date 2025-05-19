@@ -533,7 +533,7 @@ def play_audio(filename, volume=1.0, override_bruce=False):
         return
     
     try:
-        if variables.talking_with_chat and not override_bruce:
+        if variables.talking_with_chat and not override_bruce or variables.muted:
             return
         
         pygame.mixer.init()
