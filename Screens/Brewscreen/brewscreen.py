@@ -80,7 +80,7 @@ class FullScreenWindow(QMainWindow):
         self.circular_timer_MLT.setGeometry(1085, 340, 160, 160)
         self.circular_timer_MLT.show()
 
-        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#313132", icon_idle="Icon_Timer_Grey.png")
+        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#00000", bg_opacity_idle=0.1, icon_idle="Icon_Timer_Grey.png")
         self.circular_timer_BK.setGeometry(645, 340, 160, 160)
         self.circular_timer_BK.show()
 

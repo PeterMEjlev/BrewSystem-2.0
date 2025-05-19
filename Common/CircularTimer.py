@@ -9,7 +9,9 @@ import sys
 # defaults:
 DEFAULT_DURATION            = 60.0
 DEFAULT_BG_COLOR_IDLE       = "#FFFFFF"      # before start
+DEFAULT_BG_OPACITY_IDLE     = 1.0             # 0.0–1.0 alpha
 DEFAULT_BG_COLOR_ACTIVE     = "#313132"      # after start
+DEFAULT_BG_OPACITY_ACTIVE   = 1.0             # 0.0–1.0 alpha
 DEFAULT_FG_COLOR            = "#FFFFFF"
 DEFAULT_STROKE_WIDTH        = 6
 DEFAULT_TEXT_SCALE          = 0.15           # fraction of diameter
@@ -24,7 +26,9 @@ class CircularTimer(QWidget):
         duration_minutes: float = DEFAULT_DURATION,
         parent=None,
         bg_color_idle: str = DEFAULT_BG_COLOR_IDLE,
+        bg_opacity_idle: float = DEFAULT_BG_OPACITY_IDLE,
         bg_color_active: str = DEFAULT_BG_COLOR_ACTIVE,
+        bg_opacity_active: float = DEFAULT_BG_OPACITY_ACTIVE,
         fg_color: str = DEFAULT_FG_COLOR,
         stroke_width: int = DEFAULT_STROKE_WIDTH,
         text_scale: float = DEFAULT_TEXT_SCALE,
@@ -38,6 +42,15 @@ class CircularTimer(QWidget):
         self.elapsed         = 0.0
         self.bg_color_idle   = QColor(bg_color_idle)
         self.bg_color_active = QColor(bg_color_active)
+
+        # build idle‐RGBA
+        self.bg_color_idle   = QColor(bg_color_idle)
+        self.bg_color_idle.setAlphaF(bg_opacity_idle)
+
+        # build active‐RGBA
+        self.bg_color_active = QColor(bg_color_active)
+        self.bg_color_active.setAlphaF(bg_opacity_active)
+        
         self.fg_qcolor       = QColor(fg_color)
         self.stroke_width    = stroke_width
         self.text_scale      = text_scale
