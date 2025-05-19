@@ -69,7 +69,7 @@ class ThermometerWorker(QObject):
     def check_if_reg_temp_reached(self, key):
         """Generic check for BK/HLT reaching target temperature."""
         temp = getattr(variables, f"temp_{key}")
-        reg = getattr(variables, f"temp_REG_{key}")
+        reg  = getattr(variables.settings, f"temp_REG_{key}")
         set_flag = f"set_temp_reached_{key}"
         m = constants.TEMP_REACHED_MARGIN
         r = constants.TEMP_RESET_MARGIN
@@ -100,7 +100,7 @@ class ThermometerWorker(QObject):
         if 'IMG_Pot_BK_On_Temp_Reached' in self.static_elements:
             self.update_temp_reached_element(
                 variables.temp_BK,
-                variables.temp_REG_BK,
+                variables.settings.temp_REG_BK,
                 variables.STATE['BK_ON'],
                 self.static_elements['IMG_Pot_BK_On_Temp_Reached'],
                 constants.TEMP_REACHED_MARGIN
@@ -109,7 +109,7 @@ class ThermometerWorker(QObject):
         if 'IMG_Pot_HLT_On_Temp_Reached' in self.static_elements:
             self.update_temp_reached_element(
                 variables.temp_HLT,
-                variables.temp_REG_HLT,
+                variables.settings.temp_REG_HLT,
                 variables.STATE['HLT_ON'],
                 self.static_elements['IMG_Pot_HLT_On_Temp_Reached'],
                 constants.TEMP_REACHED_MARGIN
@@ -122,24 +122,24 @@ class ThermometerWorker(QObject):
 
         # BK control
         if variables.STATE['BK_ON'] and variables.BK_REG_ON:
-            self._apply_pwm_control('BK', variables.temp_BK, variables.temp_REG_BK, margin, near_target_heating_efficiency)
+            self._apply_pwm_control('BK', variables.temp_BK, variables.settings.temp_REG_BK, margin, near_target_heating_efficiency)
 
         # HLT control
         if variables.STATE['HLT_ON'] and variables.HLT_REG_ON:
             # limit to 35% near target for HLT
-            self._apply_pwm_control('HLT', variables.temp_HLT, variables.temp_REG_HLT, margin, 35)
+            self._apply_pwm_control('HLT', variables.temp_HLT, variables.settings.temp_REG_HLT, margin, 35)
 
     def _apply_pwm_control(self, key, temp, reg, margin, max_eff_limit):
-        flag = getattr(variables, f"efficiency_{key}")
+        flag = getattr(variables.settings, f"efficiency_{key}")
         if temp >= reg:
             change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), 0)
             self.variable_updated.emit(f"efficiency_{key}", 0)
-            setattr(variables, f"efficiency_{key}", 0)
+            setattr(variables.settings, f"efficiency_{key}", 0)
         elif temp >= reg - margin:
             new_eff = min(max_eff_limit, Common.max_wattage.calculate_max_new_efficiency(f"efficiency_{key}"))
             change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), new_eff)
             self.variable_updated.emit(f"efficiency_{key}", new_eff)
-            setattr(variables, f"efficiency_{key}", new_eff)
+            setattr(variables.settings, f"efficiency_{key}", new_eff)
         else:
             new_eff = Common.max_wattage.calculate_max_new_efficiency(f"efficiency_{key}" )
             change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), new_eff)

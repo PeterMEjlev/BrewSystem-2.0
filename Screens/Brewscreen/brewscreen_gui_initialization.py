@@ -400,7 +400,7 @@ def create_or_stop_pwm_for_bk():
             variables.BK_PWM = set_pwm_signal(
                 pin_number=constants_rpi.RPI_GPIO_PWN_BK,  
                 frequency=constants_rpi.PWM_FREQUENCY,  
-                duty_cycle=variables.efficiency_BK  
+                duty_cycle=variables.settings.efficiency_BK  
             )
     else:
             stop_pwm_signal(variables.BK_PWM)
@@ -415,7 +415,7 @@ def create_or_stop_pwm_for_hlt():
             variables.HLT_PWM = set_pwm_signal(
                 pin_number=constants_rpi.RPI_GPIO_PWN_HLT,  
                 frequency=constants_rpi.PWM_FREQUENCY,  
-                duty_cycle=variables.efficiency_HLT  
+                duty_cycle=variables.settings.efficiency_HLT  
             )
     else:
             stop_pwm_signal(variables.HLT_PWM)

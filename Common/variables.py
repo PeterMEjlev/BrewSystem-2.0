@@ -1,11 +1,48 @@
-# variables.py
 import json
 import os
+from dataclasses import dataclass, field
+from typing import List
 
 # File path for settings.json
 SETTINGS_FILE = os.path.join(os.path.dirname(__file__), "settings.json")
 
-# Default Variables
+@dataclass
+class Settings:
+    # JSON-backed settings
+    voice: str = "normal"
+    temp_REG_BK: float = 85
+    temp_REG_HLT: float = 70
+    efficiency_BK: float = 100
+    efficiency_HLT: float = 36
+    pump_speed_P1: float = 100
+    pump_speed_P2: float = 100
+    near_target_heating_efficiency: float = 35
+    target_temp_margin: float = 1
+    thermometor_read_frequency: int = 500
+    chatGPT_assistant_keywords: List[str] = field(default_factory=list)
+
+    @classmethod
+    def load(cls, path: str = SETTINGS_FILE) -> "Settings":
+        with open(path, "r") as f:
+            data = json.load(f)
+        return cls(
+            voice=data.get("voice", "normal"),
+            temp_REG_BK=data.get("REG starting temperature BK", 85),
+            temp_REG_HLT=data.get("REG starting temperature HLT", 70),
+            efficiency_BK=data.get("starting efficiency BK", 100),
+            efficiency_HLT=data.get("starting efficiency HLT", 36),
+            pump_speed_P1=data.get("starting efficiency P1", 100),
+            pump_speed_P2=data.get("starting efficiency P2", 100),
+            near_target_heating_efficiency=data.get("near_target_heating_efficiency", 35),
+            target_temp_margin=data.get("target_temp_margin", 1),
+            thermometor_read_frequency=data.get("thermometor_read_frequency", 500),
+            chatGPT_assistant_keywords=data.get("chatGPT_assistant_keywords", []),
+        )
+
+# load settings
+settings = Settings.load()
+
+# Runtime defaults and variables
 # Temperatures
 temp_BK = 100
 temp_MLT = 68
@@ -14,21 +51,17 @@ temp_HLT = 70
 temp_progress_BK = 0
 temp_progress_HLT = 0
 
-# Efficiency
-efficiency_BK = 100
-efficiency_HLT = 36
+# PWM outputs
 BK_PWM = None
 HLT_PWM = None
 
-# REG values
-temp_REG_BK = 85
-temp_REG_HLT = 70
+# Temperature control flags
 set_temp_reached_BK = False
 set_temp_reached_HLT = False
 
-# Pump speeds
-pump_speed_P1 = 100
-pump_speed_P2 = 100
+# Pump speeds (initialized from settings)
+pump_speed_P1 = settings.pump_speed_P1
+pump_speed_P2 = settings.pump_speed_P2
 P1_PWM = None
 P2_PWM = None
 
@@ -40,41 +73,21 @@ STATE = {
     "P2_ON": False,
 }
 
+# Regulator states
 BK_REG_ON = False
 HLT_REG_ON = True
 
-active_variable = None
-
-#ChatGPT API
+# ChatGPT API
 talking_with_chat = False
 
-#Graph 
+# Graphing
 average_temp_time_window = 10  # minutes
 
-#Sounds
+# Sounds
 muted = True
 
-#Timers
+# Timers
 BK_Boil_Timer_Threshold = 99
 
-def initialize_variables_from_settings():
-    """Load settings from the JSON file and update variables."""
-    global temp_BK, temp_HLT, temp_REG_BK, temp_REG_HLT
-    global efficiency_BK, efficiency_HLT, pump_speed_P1, pump_speed_P2
-
-    if not os.path.exists(SETTINGS_FILE):
-        raise FileNotFoundError(f"Settings file not found at {SETTINGS_FILE}")
-
-    with open(SETTINGS_FILE, "r") as f:
-        settings = json.load(f)
-
-    # Update variables from settings
-    temp_REG_BK = settings.get("REG starting temperature BK", temp_REG_BK)
-    temp_REG_HLT = settings.get("REG starting temperature HLT", temp_REG_HLT)
-    efficiency_BK = settings.get("starting efficiency BK", efficiency_BK)
-    efficiency_HLT = settings.get("starting efficiency HLT", efficiency_HLT)
-    pump_speed_P1 = settings.get("starting efficiency P1", pump_speed_P1)
-    pump_speed_P2 = settings.get("starting efficiency P2", pump_speed_P2)
-
-# Initialize variables at the time of import
-initialize_variables_from_settings()
+# Currently-selected variable (e.g. slider focus)
+active_variable = None
