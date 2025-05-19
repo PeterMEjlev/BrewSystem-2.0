@@ -222,12 +222,13 @@ class CircularTimer(QWidget):
             inner = size - 2*margin
             s     = inner * 0.4
             cx, cy = rect.center().x(), rect.center().y()
+            dx = inner * 0.05
             p.setPen(Qt.NoPen)
             p.setBrush(self.fg_qcolor)
             pts = [
-                QPointF(cx - s/2, cy - s/2),
-                QPointF(cx - s/2, cy + s/2),
-                QPointF(cx + s/2, cy)
+                QPointF(cx - s/2 + dx, cy - s/2),
+                QPointF(cx - s/2 + dx, cy + s/2),
+                QPointF(cx + s/2 + dx, cy)
             ]
             p.drawPolygon(*pts)
 
