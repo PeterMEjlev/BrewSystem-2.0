@@ -1,4 +1,4 @@
-# brewscreen.py
+# Screens.Brewscreen.brewscreen.py
 import os, math, time
 from PyQt5.QtWidgets import QMainWindow, QWidget
 from PyQt5.QtCore import Qt, QThread
@@ -36,7 +36,7 @@ class FullScreenWindow(QMainWindow):
         self.worker_thread = None  # Thread for thermometer
         self.thermometer_worker = None  # Worker instance
         self.graph = TemperatureGraph(self)
-
+        self._bk_timer_should_run = False
         self.init_ui()  # Call setup functions first to initialize central_widget
         
         # Initialize the graph screen
@@ -114,6 +114,8 @@ class FullScreenWindow(QMainWindow):
 
         # connect the combined‐readings signal to GraphScreen.update_graph
         worker.temperature_readings.connect(self.graph_screen.update_graph)
+
+        worker.temperature_updated_bk.connect(self._on_bk_temp)
 
         # handle variable updates & clean‐up
         worker.variable_updated.connect(self.update_specific_variable)
@@ -458,3 +460,31 @@ class FullScreenWindow(QMainWindow):
     def reset_active_variable(self):
         self.active_variable = None
         variables.active_variable = None
+
+    def _on_bk_temp(self, temp: float):
+        """Called on every BK reading.  If ≥ threshold, start/resume the timer;
+        if below, pause it."""
+        debug = False
+        threshold = variables.BK_Boil_Timer_Threshold
+        should_run = (temp >= threshold)
+        timer      = self.circular_timer_BK
+
+        # Transition: below→above the threshold
+        if should_run and not self._bk_timer_should_run:
+            if timer._state == "idle":
+                if debug : print(f"[BK Timer] temp {temp:.1f}° ≥ {threshold}° → starting timer")
+                timer.start()
+            elif timer._state == "paused":
+                if debug : print(f"[BK Timer] temp {temp:.1f}° ≥ {threshold}° → resuming timer")
+                timer.toggle()
+            # else: if already running, nothing to do
+            self._bk_timer_should_run = True
+
+        # Transition: above→below the threshold
+        elif not should_run and self._bk_timer_should_run:
+            if timer._state == "running":
+                if debug : print(f"[BK Timer] temp {temp:.1f}° < {threshold}° → pausing timer")
+                timer.stop()
+            # else: already idle/paused, nothing to do
+            self._bk_timer_should_run = False
+

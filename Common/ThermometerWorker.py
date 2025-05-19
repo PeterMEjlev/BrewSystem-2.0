@@ -1,3 +1,4 @@
+#Common.ThermometerWorker.py
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import Common.constants as constants
 from Common.utils import adjust_image_height, play_audio

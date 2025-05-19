@@ -46,6 +46,7 @@ class CircularTimer(QWidget):
         # timing
         self.duration = duration_minutes
         self.elapsed  = 0.0
+        self._state = "idle"    # possible values: "idle", "running", "paused"
 
         # background colors
         self.bg_color_idle   = QColor(bg_color_idle)
@@ -90,6 +91,7 @@ class CircularTimer(QWidget):
 
     def start(self):
         """Start from zero, show text & run."""
+        self._state = "running"
         self.elapsed        = 0.0
         self._show_text     = True
         self._show_triangle = False
@@ -99,6 +101,7 @@ class CircularTimer(QWidget):
 
     def stop(self):
         """Pause: hide text, show triangle (but don’t redraw arc)."""
+        self._state = "paused"
         self._timer.stop()
         self._show_text     = False
         self._show_triangle = True
@@ -120,10 +123,11 @@ class CircularTimer(QWidget):
             self._show_triangle = False
             self._icon_label.hide()
             self._timer.start(1000)
-            #self.update()       # now repaint, arc shows frozen progress
+            self._state = "running"
 
     def reset(self):
         """Back to idle: stop, clear, show idle icon."""
+        self._state = "idle"
         self._timer.stop()
         self.elapsed        = 0.0
         self._show_text     = False
