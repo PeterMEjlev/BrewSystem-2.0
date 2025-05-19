@@ -465,7 +465,7 @@ class FullScreenWindow(QMainWindow):
         """Called on every BK reading.  If ≥ threshold, start/resume the timer;
         if below, pause it."""
         debug = False
-        threshold = variables.BK_Boil_Timer_Threshold
+        threshold = variables.settings.BK_Boil_Timer_Threshold
         should_run = (temp >= threshold)
         timer      = self.circular_timer_BK
 

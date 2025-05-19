@@ -24,5 +24,10 @@
     "target_temp_margin": 1,
     "thermometor_read_frequency": 500,
 
-    "chatGPT_assistant_keywords": ["brew system", "bruce system", "brew", "system", "bruce", "brews"]
+    "chatGPT_assistant_keywords": ["brew system", "bruce system", "brew", "system", "bruce", "brews"],
+
+    "average_temp_time_window": 10,
+    "muted": true,
+    "BK_Boil_Timer_Threshold": 99
+
 }

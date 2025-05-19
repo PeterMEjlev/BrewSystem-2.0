@@ -19,6 +19,9 @@ class Settings:
     near_target_heating_efficiency: float = 35
     target_temp_margin: float = 1
     thermometor_read_frequency: int = 500
+    average_temp_time_window: int = 10
+    muted: bool = True
+    BK_Boil_Timer_Threshold: int = 99
     chatGPT_assistant_keywords: List[str] = field(default_factory=list)
 
     @classmethod
@@ -36,6 +39,9 @@ class Settings:
             near_target_heating_efficiency=data.get("near_target_heating_efficiency", 35),
             target_temp_margin=data.get("target_temp_margin", 1),
             thermometor_read_frequency=data.get("thermometor_read_frequency", 500),
+            average_temp_time_window=data.get("average_temp_time_window", 10),
+            muted=data.get("muted", True),
+            BK_Boil_Timer_Threshold=data.get("BK_Boil_Timer_Threshold", 99),
             chatGPT_assistant_keywords=data.get("chatGPT_assistant_keywords", []),
         )
 
@@ -79,15 +85,6 @@ HLT_REG_ON = True
 
 # ChatGPT API
 talking_with_chat = False
-
-# Graphing
-average_temp_time_window = 10  # minutes
-
-# Sounds
-muted = True
-
-# Timers
-BK_Boil_Timer_Threshold = 99
 
 # Currently-selected variable (e.g. slider focus)
 active_variable = None
