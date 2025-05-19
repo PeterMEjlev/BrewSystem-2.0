@@ -99,14 +99,25 @@ class CircularTimer(QWidget):
         self._timer.start(1000)
         self.update()
 
-    def stop(self):
-        """Pause: hide text, show triangle (but don’t redraw arc)."""
+    def stop(self, show_triangle: bool = True):
+        """
+        Pause the timer.
+        - If show_triangle is True (the default), hide the text and show the triangle.
+        - If show_triangle is False, keep showing the minutes text (no triangle).
+        """
         self._state = "paused"
         self._timer.stop()
-        self._show_text     = False
-        self._show_triangle = True
+
+        if show_triangle:
+            self._show_text     = False
+            self._show_triangle = True
+        else:
+            self._show_text     = True
+            self._show_triangle = False
+
         self._icon_label.hide()
-        # no self.update() here — arc stays exactly as it was
+        self.update()
+
 
     def toggle(self):
         """

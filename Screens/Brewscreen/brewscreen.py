@@ -484,7 +484,7 @@ class FullScreenWindow(QMainWindow):
         elif not should_run and self._bk_timer_should_run:
             if timer._state == "running":
                 if debug : print(f"[BK Timer] temp {temp:.1f}° < {threshold}° → pausing timer")
-                timer.stop()
+                timer.stop(show_triangle=False)
             # else: already idle/paused, nothing to do
             self._bk_timer_should_run = False
 
