@@ -70,6 +70,7 @@ def stop_pwm_signal(pin_number):
         print(f"PWM stopped on pin {pin_number} (simulated or not started).")
 
 def change_pwm_duty_cycle(pin_number, duty_cycle):
+    debug = False
     if IS_RPI and pin_number in _pwm_objects:
         mode, frequency = _pwm_objects[pin_number]
         try:
@@ -78,11 +79,11 @@ def change_pwm_duty_cycle(pin_number, duty_cycle):
                 pi.hardware_PWM(pin_number, frequency, duty_hw)
             elif mode == 'software':
                 pi.set_PWM_dutycycle(pin_number, duty_cycle)
-            print(f"{mode.capitalize()} PWM duty cycle on pin {pin_number} changed to {duty_cycle}%")
+            if debug : print(f"{mode.capitalize()} PWM duty cycle on pin {pin_number} changed to {duty_cycle}%")
         except Exception as e:
-            print(f"Error changing PWM duty cycle on pin {pin_number} to {duty_cycle}%: {e}")
+            if debug : print(f"Error changing PWM duty cycle on pin {pin_number} to {duty_cycle}%: {e}")
     else:
-        print(f"Simulated PWM duty cycle change on pin {pin_number} to {duty_cycle}%")
+        if debug : print(f"Simulated PWM duty cycle change on pin {pin_number} to {duty_cycle}%")
 
 
 def initialize_ds18b20_resolution(serial_code, resolution="9"):

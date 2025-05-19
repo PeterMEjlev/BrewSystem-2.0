@@ -76,7 +76,7 @@ class FullScreenWindow(QMainWindow):
         )
 
     def initalize_timers(self):
-        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget)
+        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget, bg_color_active="#00000", bg_opacity_active=0.1)
         self.circular_timer_MLT.setGeometry(1085, 345, 160, 160)
         self.circular_timer_MLT.show()
 
