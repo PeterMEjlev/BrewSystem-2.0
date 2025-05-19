@@ -77,11 +77,11 @@ class FullScreenWindow(QMainWindow):
 
     def initalize_timers(self):
         self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget)
-        self.circular_timer_MLT.setGeometry(1085, 340, 160, 160)
+        self.circular_timer_MLT.setGeometry(1085, 345, 160, 160)
         self.circular_timer_MLT.show()
 
-        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#00000", bg_opacity_idle=0.1, icon_idle="Icon_Timer_Grey.png")
-        self.circular_timer_BK.setGeometry(645, 340, 160, 160)
+        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#00000", bg_opacity_idle=0.1, icon_idle="Icon_Timer_Black.png", icon_opacity_idle=0.1)
+        self.circular_timer_BK.setGeometry(645, 345, 160, 160)
         self.circular_timer_BK.show()
 
     def setup_window(self):
