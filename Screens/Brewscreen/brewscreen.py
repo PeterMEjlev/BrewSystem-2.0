@@ -306,7 +306,7 @@ class FullScreenWindow(QMainWindow):
         if self.active_variable in ['efficiency_BK', 'efficiency_HLT']:
             # Check power limit before updating slider and variable
             if not power_is_within_limit(calculate_new_total_power_consumption(self.active_variable, value)):
-                self.slider.setValue(getattr(variables, self.active_variable))  # Revert to the last valid value
+                self.slider.setValue(getattr(variables.settings, self.active_variable))
                 
                 # Cooldown check: Prevent multiple audio triggers
                 current_time = time.time()
@@ -322,7 +322,7 @@ class FullScreenWindow(QMainWindow):
 
     def update_active_variable(self, value):
         if self.active_variable:
-            setattr(variables, self.active_variable, value)
+            setattr(variables.settings, self.active_variable, value)
             label_key = f'TXT_{self.active_variable.upper()}'
 
             # Determine the appropriate suffix based on the variable type
@@ -361,7 +361,7 @@ class FullScreenWindow(QMainWindow):
         - variable_name: name of the attribute on Common.variables, e.g. "efficiency_BK"
         - value: new numeric value to set and display
         """
-        setattr(variables, variable_name, value)
+        setattr(variables.settings, variable_name, value)
 
         if "PUMP_SPEED" in variable_name.upper() or "EFFICIENCY" in variable_name.upper():
             suffix = "%"
@@ -378,7 +378,7 @@ class FullScreenWindow(QMainWindow):
     def update_slider_value(self, variable_name):
         self.active_variable = variable_name  # Update the local reference
 
-        value = getattr(variables, variable_name, None)
+        value = getattr(variables.settings, variable_name, None)
         if value is not None:
             self.slider.setValue(value)
             self.slider_value_label.setText(str(value))
