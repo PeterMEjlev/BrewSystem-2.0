@@ -10,8 +10,9 @@ class SettingsScreen(QWidget):
     """
     This class represents the settings screen that opens when 'BTN_toggle_sidebar_settings' is clicked.
     """
-    def __init__(self):
+    def __init__(self, graph_screen):
         super().__init__()
+        self.graph_screen = graph_screen
         self.path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "Assets"))
         self.init_ui()
 
@@ -39,7 +40,5 @@ class SettingsScreen(QWidget):
         # Delegate GUI initialization to the external file
         initialize_gui_elements(self, self.path)
 
-    def open_graph_screen(self):
-        from Screens.Graphscreen.graphscreen import GraphScreen
-        self.graph_screen = GraphScreen()  # Instantiate the GraphScreen
-        self.graph_screen.show()  # Show the graph screen
+    def show_graph_screen(self):
+        self.graph_screen.show()

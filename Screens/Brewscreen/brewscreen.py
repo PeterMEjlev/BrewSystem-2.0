@@ -430,7 +430,7 @@ class FullScreenWindow(QMainWindow):
 
     def show_settings_screen(self):
         if not self.settings_screen:
-            self.settings_screen = SettingsScreen()
+            self.settings_screen = SettingsScreen(self.graph_screen)
         self.settings_screen.show()
 
     def update_active_variable_for_selection(self, selected_key):

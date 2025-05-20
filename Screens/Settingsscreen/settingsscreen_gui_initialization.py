@@ -53,11 +53,11 @@ def initialize_buttons(parent_widget):
             position=constants_gui.BTN_SIDEBAR_ACTIVE_BUTTON_GRAPHS_COORDINATES,  # Example position
             size=constants_gui.BTN_SIDEBAR_MENU,  # Example size
             on_normal_click=lambda: (
-                parent_widget.open_graph_screen(),
+                parent_widget.show_graph_screen(),
                 QTimer.singleShot(100, parent_widget.close)
             ),         
             on_long_click=None,
-            invisible=Common.constants.BTN_INVISIBILITY
+            invisible=False
         ),
         'BTN_quit': create_button(
             parent_widget=parent_widget,

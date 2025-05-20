@@ -89,14 +89,10 @@ class GraphScreen(QWidget):
         self.temperature_graph.plot_widget.setXRange(*new_range)
 
     def open_settings_screen(self):
-        """
-        Open the settings screen.
-
-        This method should be connected to functionality that initializes and displays the settings screen.
-        """
         from Screens.Settingsscreen.settingsscreen import SettingsScreen
-        self.settings_screen = SettingsScreen()
+        self.settings_screen = SettingsScreen(self)
         self.settings_screen.show()
+
 
     def update_temperature_label_bk(self, temperature: float):
         """
