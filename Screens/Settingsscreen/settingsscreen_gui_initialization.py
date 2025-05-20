@@ -57,7 +57,7 @@ def initialize_buttons(parent_widget):
                 QTimer.singleShot(100, parent_widget.close)
             ),         
             on_long_click=None,
-            invisible=False
+            invisible=Common.constants.BTN_INVISIBILITY
         ),
         'BTN_quit': create_button(
             parent_widget=parent_widget,
