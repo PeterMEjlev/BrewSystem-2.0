@@ -22,17 +22,17 @@ async function fetchAndRender(): Promise<void> {
     // Pots → BK
     document.getElementById('bkPot')!.textContent      = d.BK_pot;
     document.getElementById('bkEff')!.textContent      = d.BK_eff;
-    document.getElementById('bkTemp')!.textContent     = d.BK_temp.toFixed(1) + ' °C';
+    document.getElementById('bkTemp')!.textContent     = d.BK_temp.toFixed(1) + '°C';
     document.getElementById('bkReg')!.textContent      = d.BK_reg;
 
     // Pots → HLT
     document.getElementById('hltPot')!.textContent     = d.HLT_pot;
     document.getElementById('hltEff')!.textContent     = d.HLT_eff;
-    document.getElementById('hltTemp')!.textContent    = d.HLT_temp.toFixed(1) + ' °C';
+    document.getElementById('hltTemp')!.textContent    = d.HLT_temp.toFixed(1) + '°C';
     document.getElementById('hltReg')!.textContent     = d.HLT_reg;
 
     // Pots → MLT (temp only)
-    document.getElementById('mltTemp')!.textContent    = d.MLT_temp.toFixed(1) + ' °C';
+    document.getElementById('mltTemp')!.textContent    = d.MLT_temp.toFixed(1) + '°C';
 
     // Pumps
     document.getElementById('pump1')!.textContent      = d.Pump1;

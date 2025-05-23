@@ -42,6 +42,7 @@
       border-bottom: 1px solid #bdc3c7;
       padding-bottom: 0.25rem;
       font-size: 1.25rem;
+      text-align: center;
     }
 
     /* GRID OF CARDS */
@@ -98,8 +99,10 @@
         <div class="field"><span class="label">Status:</span><span id="bkPot">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="bkEff">–</span></div>
         <div class="field">
-          <span class="label">Temp:</span>
-          <span id="bkTemp">– °C</span>       <!-- now includes unit -->
+          <span class="label">Temperature:</span>
+          <span class="value">
+          <span id="bkTemp">–</span><span class="unit">°C</span>
+          </span>
         </div>
         <div class="field"><span class="label">Regulator:</span><span id="bkReg">–</span></div>
       </div>
@@ -108,8 +111,10 @@
       <div class="card">
         <h2>MLT</h2>
         <div class="field">
-          <span class="label">Temp:</span>
-          <span id="mltTemp">– °C</span>     <!-- unit grouped here too -->
+          <span class="label">Temperature:</span>
+          <span class="value">
+          <span id="mltTemp">–</span><span class="unit">°C</span>
+          </span>
         </div>
       </div>
 
@@ -119,8 +124,10 @@
         <div class="field"><span class="label">Status:</span><span id="hltPot">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="hltEff">–</span></div>
         <div class="field">
-          <span class="label">Temp:</span>
-          <span id="hltTemp">– °C</span>
+          <span class="label">Temperature:</span>
+          <span class="value">
+          <span id="hltTemp">–</span><span class="unit">°C</span>
+          </span>
         </div>
         <div class="field"><span class="label">Regulator:</span><span id="hltReg">–</span></div>
       </div>
