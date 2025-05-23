@@ -1,11 +1,20 @@
-import os
-import sys
+import os, sys, threading
 from PyQt5.QtWidgets import QApplication
 from Screens.Brewscreen.brewscreen import FullScreenWindow
 from ChatGPT_API.Vosk_STT import KeywordDetector
 from Common.get_setting import get_setting
 from Common.utils_rpi import initialize_ds18b20_resolution
 from Common.constants_rpi import DS18B20_BK, DS18B20_MLT, DS18B20_HLT
+from Webpage.app import app as flask_app  
+
+def run_flask():
+    # disable the reloader so it doesn’t spawn a second thread
+    flask_app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=False,
+        use_reloader=False,
+    )
 
 def main():
     # Absolute path to the Vosk model
@@ -24,6 +33,9 @@ def main():
         keywords=get_setting("chatGPT_assistant_keywords"),
     )
     detector.start_detection()
+
+    flask_thread = threading.Thread(target=run_flask, daemon=True)
+    flask_thread.start()
 
     sys.exit(app.exec_())
 

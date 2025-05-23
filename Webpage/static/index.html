@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>BrewSystem Dashboard</title>
+  <style>
+    :root {
+      --card-bg: #fafafa;
+      --card-border: #ddd;
+      --section-gap: 2rem;
+      --card-radius: 6px;
+    }
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f5f5f5;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    section {
+      margin-bottom: var(--section-gap);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 0.25rem;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      padding: 0.75rem 1rem;
+      min-width: 140px;
+      flex: 1 1 140px;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+    }
+    .label {
+      font-weight: bold;
+      margin-right: 0.25rem;
+    }
+    @media (max-width: 600px) {
+      .grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>BrewSystem Live Status</h1>
+
+  <!-- Temperatures Section -->
+  <section>
+    <div class="section-title">Temperatures</div>
+    <div class="grid">
+      <div class="card"><span class="label">BK Temp:</span> <span id="bkTemp">–</span> °C</div>
+      <div class="card"><span class="label">MLT Temp:</span> <span id="mltTemp">–</span> °C</div>
+      <div class="card"><span class="label">HLT Temp:</span> <span id="hltTemp">–</span> °C</div>
+    </div>
+  </section>
+
+  <!-- Heating Pots & Regulators Section -->
+  <section>
+    <div class="section-title">Heaters & Regulators</div>
+    <div class="grid">
+      <div class="card"><span class="label">BK Pot:</span> <span id="bkPot">–</span></div>
+      <div class="card"><span class="label">HLT Pot:</span> <span id="hltPot">–</span></div>
+      <div class="card"><span class="label">BK Reg:</span> <span id="bkReg">–</span></div>
+      <div class="card"><span class="label">HLT Reg:</span> <span id="hltReg">–</span></div>
+    </div>
+  </section>
+
+  <!-- Pumps Section -->
+  <section>
+    <div class="section-title">Pumps</div>
+    <div class="grid">
+      <div class="card"><span class="label">Pump 1:</span> <span id="pump1">–</span></div>
+      <div class="card"><span class="label">Pump 2:</span> <span id="pump2">–</span></div>
+      <div class="card"><span class="label">P1 Speed:</span> <span id="pump1Speed">–</span></div>
+      <div class="card"><span class="label">P2 Speed:</span> <span id="pump2Speed">–</span></div>
+    </div>
+  </section>
+
+  <!-- Efficiencies Section -->
+  <section>
+    <div class="section-title">Efficiencies</div>
+    <div class="grid">
+      <div class="card"><span class="label">BK Eff:</span> <span id="bkEff">–</span></div>
+      <div class="card"><span class="label">HLT Eff:</span> <span id="hltEff">–</span></div>
+    </div>
+  </section>
+
+  <!-- load your compiled TypeScript output -->
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    /* Modern JS output for browsers */
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
+
+    /* Where to find your .ts files, and where to put the .js output */
+    "rootDir": "src",
+    "outDir": "static/js",
+
+    /* Strictness and interop */
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}

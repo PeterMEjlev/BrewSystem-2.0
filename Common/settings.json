@@ -16,7 +16,7 @@
     "REG starting temperature HLT": 70,
 
     "starting efficiency BK": 100,
-    "starting efficiency HLT": 30,
+    "starting efficiency HLT": 36,
     "starting efficiency P1": 100,
     "starting efficiency P2": 100,
 
@@ -24,10 +24,5 @@
     "target_temp_margin": 1,
     "thermometor_read_frequency": 500,
 
-    "chatGPT_assistant_keywords": ["brew system", "bruce system", "brew", "system", "bruce", "brews"],
-
-    "average_temp_time_window": 10,
-    "muted": true,
-    "BK_Boil_Timer_Threshold": 99
-
+    "chatGPT_assistant_keywords": ["brew system", "bruce system", "brew", "system", "bruce", "brews"]
 }
