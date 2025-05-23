@@ -23,6 +23,7 @@ class Settings:
     muted: bool = True
     BK_Boil_Timer_Threshold: int = 99
     chatGPT_assistant_keywords: List[str] = field(default_factory=list)
+    webpage_poll_interval: int = 5000 # in milliseconds
 
     @classmethod
     def load(cls, path: str = SETTINGS_FILE) -> "Settings":
@@ -43,6 +44,7 @@ class Settings:
             muted=data.get("muted", True),
             BK_Boil_Timer_Threshold=data.get("BK_Boil_Timer_Threshold", 99),
             chatGPT_assistant_keywords=data.get("chatGPT_assistant_keywords", []),
+            webpage_poll_interval=data.get("webpage_poll_interval", 5000)
         )
 
 # load settings

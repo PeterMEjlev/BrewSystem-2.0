@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, send_from_directory
 import Common.variables as variables  # This is our module maintaining current brew values
+from Common.variables import settings
 
 app = Flask(__name__, static_url_path='', static_folder='static')  # serve files from /static
 
@@ -39,7 +40,14 @@ def api_data():
     }
     return jsonify(status)
 
-# (You might add other routes for controlling the system, e.g. to toggle pump or set targets, not shown here)
+@app.route('/api/config')
+def api_config():
+    """
+    Returns client‐side config values, like how often to poll.
+    """
+    return jsonify({
+        "poll_interval": settings.webpage_poll_interval
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

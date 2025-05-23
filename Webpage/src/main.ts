@@ -22,17 +22,17 @@ async function fetchAndRender(): Promise<void> {
     // Pots → BK
     document.getElementById('bkPot')!.textContent      = d.BK_pot;
     document.getElementById('bkEff')!.textContent      = d.BK_eff;
-    document.getElementById('bkTemp')!.textContent     = d.BK_temp.toFixed(1) + '°C';
+    document.getElementById('bkTemp')!.textContent     = d.BK_temp.toFixed(1);
     document.getElementById('bkReg')!.textContent      = d.BK_reg;
 
     // Pots → HLT
     document.getElementById('hltPot')!.textContent     = d.HLT_pot;
     document.getElementById('hltEff')!.textContent     = d.HLT_eff;
-    document.getElementById('hltTemp')!.textContent    = d.HLT_temp.toFixed(1) + '°C';
+    document.getElementById('hltTemp')!.textContent    = d.HLT_temp.toFixed(1);
     document.getElementById('hltReg')!.textContent     = d.HLT_reg;
 
     // Pots → MLT (temp only)
-    document.getElementById('mltTemp')!.textContent    = d.MLT_temp.toFixed(1) + '°C';
+    document.getElementById('mltTemp')!.textContent    = d.MLT_temp.toFixed(1);
 
     // Pumps
     document.getElementById('pump1')!.textContent      = d.Pump1;
@@ -45,7 +45,20 @@ async function fetchAndRender(): Promise<void> {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1) load the polling interval from Flask
+  let interval = 10000;                        // fallback
+  try {
+    const resp = await fetch('/api/config');
+    if (resp.ok) {
+      const cfg = await resp.json() as { poll_interval: number };
+      interval = cfg.poll_interval;
+    }
+  } catch (e) {
+    console.warn('Could not load poll interval, using default', e);
+  }
+
+  // 2) do the first data fetch, then schedule subsequent fetches
   fetchAndRender();
-  setInterval(fetchAndRender, 10000);
+  setInterval(fetchAndRender, interval);
 });
