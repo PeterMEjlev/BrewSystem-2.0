@@ -3,104 +3,150 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>BrewSystem Dashboard</title>
+  <title>BrewSystem 2.0 Dashboard</title>
   <style>
-    :root {
-      --card-bg: #fafafa;
-      --card-border: #ddd;
-      --section-gap: 2rem;
-      --card-radius: 6px;
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2c3e50;
+      color: #fff;
+      padding: 0.75rem 1rem;
+      font-size: 1.1rem;
     }
+    .navbar .title { font-weight: bold; }
+    .navbar .nav-item { cursor: pointer; }
+
+    /* PAGE & PANEL */
     body {
-      font-family: sans-serif;
       margin: 0;
-      padding: 1rem;
-      background: #f5f5f5;
+      font-family: sans-serif;
+      background: #ecf0f1;
       color: #333;
     }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
+    .panel {
+      background: #fff;
+      margin: 1rem auto;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 1100px;
     }
-    section {
-      margin-bottom: var(--section-gap);
-    }
-    .section-title {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      border-bottom: 2px solid #ccc;
+
+    /* SECTION HEADERS */
+    h1.section-header {
+      margin: 2rem 0 1rem;              /* ↑ more vertical gap above */
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #bdc3c7;
       padding-bottom: 0.25rem;
+      font-size: 1.25rem;
     }
-    .grid {
-      display: flex;
-      flex-wrap: wrap;
+
+    /* GRID OF CARDS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1rem;
     }
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--card-radius);
-      padding: 0.75rem 1rem;
-      min-width: 140px;
-      flex: 1 1 140px;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+      border: 1px solid #bdc3c7;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .card h2 {
+      margin: 0 0 0.75rem;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .field {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    .field:last-child {
+      margin-bottom: 0;
     }
     .label {
       font-weight: bold;
-      margin-right: 0.25rem;
     }
     @media (max-width: 600px) {
-      .grid {
-        flex-direction: column;
+      .card-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <h1>BrewSystem Live Status</h1>
 
-  <!-- Temperatures Section -->
-  <section>
-    <div class="section-title">Temperatures</div>
-    <div class="grid">
-      <div class="card"><span class="label">BK Temp:</span> <span id="bkTemp">–</span> °C</div>
-      <div class="card"><span class="label">MLT Temp:</span> <span id="mltTemp">–</span> °C</div>
-      <div class="card"><span class="label">HLT Temp:</span> <span id="hltTemp">–</span> °C</div>
+  <!-- TOP BAR -->
+  <header class="navbar">
+    <div class="title">BREWSYSTEM 2.0</div>
+    <div class="nav-item">OVERVIEW</div>
+  </header>
+
+  <!-- MAIN CONTENT PANEL -->
+  <div class="panel">
+
+    <!-- POTS SECTION -->
+    <h1 class="section-header">Pots</h1>
+    <div class="card-grid">
+      <!-- BK -->
+      <div class="card">
+        <h2>BK</h2>
+        <div class="field"><span class="label">Status:</span><span id="bkPot">–</span></div>
+        <div class="field"><span class="label">Efficiency:</span><span id="bkEff">–</span></div>
+        <div class="field">
+          <span class="label">Temp:</span>
+          <span id="bkTemp">– °C</span>       <!-- now includes unit -->
+        </div>
+        <div class="field"><span class="label">Regulator:</span><span id="bkReg">–</span></div>
+      </div>
+
+      <!-- MLT -->
+      <div class="card">
+        <h2>MLT</h2>
+        <div class="field">
+          <span class="label">Temp:</span>
+          <span id="mltTemp">– °C</span>     <!-- unit grouped here too -->
+        </div>
+      </div>
+
+      <!-- HLT -->
+      <div class="card">
+        <h2>HLT</h2>
+        <div class="field"><span class="label">Status:</span><span id="hltPot">–</span></div>
+        <div class="field"><span class="label">Efficiency:</span><span id="hltEff">–</span></div>
+        <div class="field">
+          <span class="label">Temp:</span>
+          <span id="hltTemp">– °C</span>
+        </div>
+        <div class="field"><span class="label">Regulator:</span><span id="hltReg">–</span></div>
+      </div>
     </div>
-  </section>
 
-  <!-- Heating Pots & Regulators Section -->
-  <section>
-    <div class="section-title">Heaters & Regulators</div>
-    <div class="grid">
-      <div class="card"><span class="label">BK Pot:</span> <span id="bkPot">–</span></div>
-      <div class="card"><span class="label">HLT Pot:</span> <span id="hltPot">–</span></div>
-      <div class="card"><span class="label">BK Reg:</span> <span id="bkReg">–</span></div>
-      <div class="card"><span class="label">HLT Reg:</span> <span id="hltReg">–</span></div>
+    <!-- PUMPS SECTION -->
+    <h1 class="section-header">Pumps</h1>
+    <div class="card-grid">
+      <!-- Pump 1 -->
+      <div class="card">
+        <h2>P1</h2>
+        <div class="field"><span class="label">Status:</span><span id="pump1">–</span></div>
+        <div class="field"><span class="label">Efficiency:</span><span id="pump1Speed">–</span></div>
+      </div>
+
+      <!-- Pump 2 -->
+      <div class="card">
+        <h2>P2</h2>
+        <div class="field"><span class="label">Status:</span><span id="pump2">–</span></div>
+        <div class="field"><span class="label">Efficiency:</span><span id="pump2Speed">–</span></div>
+      </div>
     </div>
-  </section>
 
-  <!-- Pumps Section -->
-  <section>
-    <div class="section-title">Pumps</div>
-    <div class="grid">
-      <div class="card"><span class="label">Pump 1:</span> <span id="pump1">–</span></div>
-      <div class="card"><span class="label">Pump 2:</span> <span id="pump2">–</span></div>
-      <div class="card"><span class="label">P1 Speed:</span> <span id="pump1Speed">–</span></div>
-      <div class="card"><span class="label">P2 Speed:</span> <span id="pump2Speed">–</span></div>
-    </div>
-  </section>
+  </div>
 
-  <!-- Efficiencies Section -->
-  <section>
-    <div class="section-title">Efficiencies</div>
-    <div class="grid">
-      <div class="card"><span class="label">BK Eff:</span> <span id="bkEff">–</span></div>
-      <div class="card"><span class="label">HLT Eff:</span> <span id="hltEff">–</span></div>
-    </div>
-  </section>
-
-  <!-- load your compiled TypeScript output -->
+  <!-- your existing TS bundle -->
   <script type="module" src="/js/main.js"></script>
 </body>
 </html>
