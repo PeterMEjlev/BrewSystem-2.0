@@ -1,4 +1,5 @@
 "use strict";
+// static/js/main.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,20 +14,21 @@ function fetchAndRender() {
         try {
             const res = yield fetch('/api/data');
             const d = (yield res.json());
-            // BK
-            document.getElementById('bkEff').textContent = parseFloat(d.BK_eff).toFixed(0);
-            (document.getElementById('bkTemp')).textContent =
+            // ─── BK card ────────────────────────────────────────────
+            document.getElementById('bkEff').textContent = d.BK_eff.replace('%', '');
+            document.getElementById('bkTemp').textContent =
                 d.BK_reg === 'On'
                     ? `${d.BK_temp.toFixed(1)} / ${d.BK_regTemp.toFixed(1)}`
                     : d.BK_temp.toFixed(1);
             document.getElementById('bkReg').textContent = d.BK_reg;
-            document.getElementById('timerBK').textContent = d.timer_progress_BK.toFixed(0);
+            const BKTimerNum = d.timer_progress_BK.replace(/min$/, '');
+            document.getElementById('timerBK').textContent = BKTimerNum;
             const bkInd = document.getElementById('bkIndicator');
             if (d.BK_reg === 'On' && d.set_temp_reached_BK) {
                 bkInd.classList.add('reached');
                 bkInd.classList.remove('on', 'off');
             }
-            else if (d.BK_pot === 'On' && !d.set_temp_reached_BK) {
+            else if (d.BK_pot === 'On') {
                 bkInd.classList.add('on');
                 bkInd.classList.remove('reached', 'off');
             }
@@ -34,9 +36,9 @@ function fetchAndRender() {
                 bkInd.classList.add('off');
                 bkInd.classList.remove('on', 'reached');
             }
-            // HLT
-            document.getElementById('hltEff').textContent = parseFloat(d.HLT_eff).toFixed(0);
-            (document.getElementById('hltTemp')).textContent =
+            // ─── HLT card ────────────────────────────────────────────
+            document.getElementById('hltEff').textContent = d.HLT_eff.replace('%', '');
+            document.getElementById('hltTemp').textContent =
                 d.HLT_reg === 'On'
                     ? `${d.HLT_temp.toFixed(1)} / ${d.HLT_regTemp.toFixed(1)}`
                     : d.HLT_temp.toFixed(1);
@@ -46,7 +48,7 @@ function fetchAndRender() {
                 hltInd.classList.add('reached');
                 hltInd.classList.remove('on', 'off');
             }
-            else if (d.HLT_pot === 'On' && !d.set_temp_reached_HLT) {
+            else if (d.HLT_pot === 'On') {
                 hltInd.classList.add('on');
                 hltInd.classList.remove('reached', 'off');
             }
@@ -54,11 +56,13 @@ function fetchAndRender() {
                 hltInd.classList.add('off');
                 hltInd.classList.remove('on', 'reached');
             }
-            // MLT
+            // ─── MLT card ────────────────────────────────────────────
             document.getElementById('mltTemp').textContent = d.MLT_temp.toFixed(1);
-            document.getElementById('timerMLT').textContent = d.timer_progress_MLT.toFixed(0);
-            // P1
-            document.getElementById('pump1Speed').textContent = parseFloat(d.Pump1_speed).toFixed(0);
+            const mltTimerNum = d.timer_progress_MLT.replace(/min$/, '');
+            document.getElementById('timerMLT').textContent = mltTimerNum;
+            // ─── PUMP 1 ─────────────────────────────────────────────
+            // strip off trailing '%' since html now adds it
+            document.getElementById('pump1Speed').textContent = d.Pump1_speed.replace('%', '');
             const p1Ind = document.getElementById('p1Indicator');
             if (d.Pump1 === 'On') {
                 p1Ind.classList.add('reached');
@@ -68,8 +72,8 @@ function fetchAndRender() {
                 p1Ind.classList.add('off');
                 p1Ind.classList.remove('on', 'reached');
             }
-            // P2
-            document.getElementById('pump2Speed').textContent = parseFloat(d.Pump2_speed).toFixed(0);
+            // ─── PUMP 2 ─────────────────────────────────────────────
+            document.getElementById('pump2Speed').textContent = d.Pump2_speed.replace('%', '');
             const p2Ind = document.getElementById('p2Indicator');
             if (d.Pump2 === 'On') {
                 p2Ind.classList.add('reached');
@@ -94,7 +98,9 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
             interval = cfg.poll_interval;
         }
     }
-    catch ( /* fallback */_a) { /* fallback */ }
+    catch (_a) {
+        /* use default */
+    }
     fetchAndRender();
     setInterval(fetchAndRender, interval);
 }));

@@ -1,3 +1,5 @@
+// static/js/main.ts
+
 interface BrewData {
   BK_temp: number;
   MLT_temp: number;
@@ -8,16 +10,16 @@ interface BrewData {
   HLT_reg: "On" | "Off";
   Pump1: "On" | "Off";
   Pump2: "On" | "Off";
-  Pump1_speed: string;    // e.g. "25%"
-  Pump2_speed: string;    // e.g. "100%"
+  Pump1_speed: string;    // now e.g. "25%"
+  Pump2_speed: string;    // now e.g. "100%"
   BK_eff: string;         // e.g. "100%"
   HLT_eff: string;        // e.g. "36%"
   BK_regTemp: number;
   HLT_regTemp: number;
   set_temp_reached_BK: boolean;
   set_temp_reached_HLT: boolean;
-  timer_progress_MLT: number;
-  timer_progress_BK: number;
+  timer_progress_MLT: string;  // e.g. "5 min"
+  timer_progress_BK: string;   // e.g. "12 min"
 }
 
 async function fetchAndRender(): Promise<void> {
@@ -25,47 +27,50 @@ async function fetchAndRender(): Promise<void> {
     const res = await fetch('/api/data');
     const d = (await res.json()) as BrewData;
 
-    // BK
-    document.getElementById('bkEff')!.textContent      = parseFloat(d.BK_eff).toFixed(0);
-    (document.getElementById('bkTemp')!).textContent   =
+    // ─── BK card ────────────────────────────────────────────
+    document.getElementById('bkEff')!.textContent    = d.BK_eff.replace('%','');
+    document.getElementById('bkTemp')!.textContent   =
       d.BK_reg === 'On'
         ? `${d.BK_temp.toFixed(1)} / ${d.BK_regTemp.toFixed(1)}`
         : d.BK_temp.toFixed(1);
-    document.getElementById('bkReg')!.textContent      = d.BK_reg;
-    document.getElementById('timerBK')!.textContent    = d.timer_progress_BK.toFixed(0);
+    document.getElementById('bkReg')!.textContent    = d.BK_reg;
+    const BKTimerNum = d.timer_progress_BK.replace(/min$/, '');
+    document.getElementById('timerBK')!.textContent = BKTimerNum;
 
     const bkInd = document.getElementById('bkIndicator')!;
     if (d.BK_reg === 'On' && d.set_temp_reached_BK) {
       bkInd.classList.add('reached'); bkInd.classList.remove('on','off');
-    } else if (d.BK_pot === 'On' && !d.set_temp_reached_BK) {
+    } else if (d.BK_pot === 'On') {
       bkInd.classList.add('on');      bkInd.classList.remove('reached','off');
     } else {
       bkInd.classList.add('off');     bkInd.classList.remove('on','reached');
     }
 
-    // HLT
-    document.getElementById('hltEff')!.textContent     = parseFloat(d.HLT_eff).toFixed(0);
-    (document.getElementById('hltTemp')!).textContent  =
+    // ─── HLT card ────────────────────────────────────────────
+    document.getElementById('hltEff')!.textContent    = d.HLT_eff.replace('%','');
+    document.getElementById('hltTemp')!.textContent   =
       d.HLT_reg === 'On'
         ? `${d.HLT_temp.toFixed(1)} / ${d.HLT_regTemp.toFixed(1)}`
         : d.HLT_temp.toFixed(1);
-    document.getElementById('hltReg')!.textContent     = d.HLT_reg;
+    document.getElementById('hltReg')!.textContent    = d.HLT_reg;
 
     const hltInd = document.getElementById('hltIndicator')!;
     if (d.HLT_reg === 'On' && d.set_temp_reached_HLT) {
       hltInd.classList.add('reached'); hltInd.classList.remove('on','off');
-    } else if (d.HLT_pot === 'On' && !d.set_temp_reached_HLT) {
+    } else if (d.HLT_pot === 'On') {
       hltInd.classList.add('on');      hltInd.classList.remove('reached','off');
     } else {
       hltInd.classList.add('off');     hltInd.classList.remove('on','reached');
     }
 
-    // MLT
+    // ─── MLT card ────────────────────────────────────────────
     document.getElementById('mltTemp')!.textContent    = d.MLT_temp.toFixed(1);
-    document.getElementById('timerMLT')!.textContent   = d.timer_progress_MLT.toFixed(0);
+    const mltTimerNum = d.timer_progress_MLT.replace(/min$/, '');
+    document.getElementById('timerMLT')!.textContent = mltTimerNum;
 
-    // P1
-    document.getElementById('pump1Speed')!.textContent = parseFloat(d.Pump1_speed).toFixed(0);
+    // ─── PUMP 1 ─────────────────────────────────────────────
+    // strip off trailing '%' since html now adds it
+    document.getElementById('pump1Speed')!.textContent = d.Pump1_speed.replace('%','');
     const p1Ind = document.getElementById('p1Indicator')!;
     if (d.Pump1 === 'On') {
       p1Ind.classList.add('reached'); p1Ind.classList.remove('off','on');
@@ -73,8 +78,8 @@ async function fetchAndRender(): Promise<void> {
       p1Ind.classList.add('off');     p1Ind.classList.remove('on','reached');
     }
 
-    // P2
-    document.getElementById('pump2Speed')!.textContent = parseFloat(d.Pump2_speed).toFixed(0);
+    // ─── PUMP 2 ─────────────────────────────────────────────
+    document.getElementById('pump2Speed')!.textContent = d.Pump2_speed.replace('%','');
     const p2Ind = document.getElementById('p2Indicator')!;
     if (d.Pump2 === 'On') {
       p2Ind.classList.add('reached'); p2Ind.classList.remove('off','on');
@@ -95,7 +100,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       const cfg = await resp.json() as { poll_interval: number };
       interval = cfg.poll_interval;
     }
-  } catch {/* fallback */}
+  } catch {
+    /* use default */
+  }
 
   fetchAndRender();
   setInterval(fetchAndRender, interval);

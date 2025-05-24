@@ -47,8 +47,8 @@ def api_data():
         "set_temp_reached_HLT": variables.set_temp_reached_HLT,
 
         # timer progress
-        "timer_progress_MLT": variables.timer_progress_MLT,
-        "timer_progress_BK": variables.timer_progress_BK,
+        "timer_progress_MLT": f"{variables.timer_progress_MLT}min",
+        "timer_progress_BK": f"{variables.timer_progress_BK}min",
     }
     return jsonify(status)
 
