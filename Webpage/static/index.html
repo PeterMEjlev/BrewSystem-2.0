@@ -23,7 +23,7 @@
       margin: 0;
       font-family: sans-serif;
       background: #2d2d2e;
-      color: #ffffff;
+      color: #fff;
     }
     .panel {
       background: #3E3E3F;
@@ -36,7 +36,7 @@
 
     /* SECTION HEADERS */
     h1.section-header {
-      margin: 2rem 0 1rem;              /* ↑ more vertical gap above */
+      margin: 2rem 0 1rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       border-bottom: 1px solid #bdc3c7;
@@ -62,22 +62,20 @@
       font-size: 1.2rem;
       text-align: center;
     }
+
     .indicator {
       display: inline-block;
       width: 1em;
       height: 1em;
       margin-left: 0.5em;
       border-radius: 0.2em;
-      background: #000;            /* default = off */
+      background: #000;
       vertical-align: middle;
       transition: background 0.2s;
     }
-    .indicator.on  { 
-      background: #e74c3c; 
-    } 
-    .indicator.off { 
-      background: #333; 
-    }     
+    .indicator.on  { background: #e74c3c; }
+    .indicator.off { background: #333; }
+
     .field {
       display: flex;
       justify-content: space-between;
@@ -92,6 +90,11 @@
     .field > .label + * {
       margin-left: 0.75rem;
     }
+
+    .unit {
+      margin-left: 0.25rem;
+    }
+
     @media (max-width: 600px) {
       .card-grid {
         grid-template-columns: 1fr;
@@ -123,15 +126,9 @@
         <div class="field"><span class="label">Efficiency:</span><span id="bkEff">–</span></div>
         <div class="field">
           <span class="label">Temperature:</span>
-          <span class="value">
           <span id="bkTemp">–</span><span class="unit">°C</span>
-          </span>
         </div>
         <div class="field"><span class="label">Regulator:</span><span id="bkReg">–</span></div>
-         <div class="field">
-         <span class="label">Set Temp:</span>
-         <span class="value"><span id="bk_regTemp">–</span><span class="unit">°C</span></span>
-       </div>
       </div>
 
       <!-- MLT -->
@@ -139,9 +136,7 @@
         <h2>MLT</h2>
         <div class="field">
           <span class="label">Temperature:</span>
-          <span class="value">
           <span id="mltTemp">–</span><span class="unit">°C</span>
-          </span>
         </div>
       </div>
 
@@ -155,15 +150,9 @@
         <div class="field"><span class="label">Efficiency:</span><span id="hltEff">–</span></div>
         <div class="field">
           <span class="label">Temperature:</span>
-          <span class="value">
           <span id="hltTemp">–</span><span class="unit">°C</span>
-          </span>
         </div>
         <div class="field"><span class="label">Regulator:</span><span id="hltReg">–</span></div>
-        <div class="field">
-         <span class="label">Set Temp:</span>
-         <span class="value"><span id="hlt_regTemp">–</span><span class="unit">°C</span></span>
-       </div>
       </div>
     </div>
 
@@ -193,7 +182,6 @@
 
   </div>
 
-  <!-- your existing TS bundle -->
   <script type="module" src="/js/main.js"></script>
 </body>
 </html>
