@@ -15,14 +15,16 @@ function fetchAndRender() {
             const res = yield fetch('/api/data');
             const d = (yield res.json());
             // ─── BK card ────────────────────────────────────────────
+            // Efficiency (strip off %)
             document.getElementById('bkEff').textContent = d.BK_eff.replace('%', '');
+            // Temperature (actual / set-point if regulator on)
             document.getElementById('bkTemp').textContent =
                 d.BK_reg === 'On'
                     ? `${d.BK_temp.toFixed(1)} / ${d.BK_regTemp.toFixed(1)}`
                     : d.BK_temp.toFixed(1);
+            // Regulator state
             document.getElementById('bkReg').textContent = d.BK_reg;
-            const BKTimerNum = d.timer_progress_BK.replace(/min$/, '');
-            document.getElementById('timerBK').textContent = BKTimerNum;
+            // Indicator priority
             const bkInd = document.getElementById('bkIndicator');
             if (d.BK_reg === 'On' && d.set_temp_reached_BK) {
                 bkInd.classList.add('reached');
@@ -56,28 +58,46 @@ function fetchAndRender() {
                 hltInd.classList.add('off');
                 hltInd.classList.remove('on', 'reached');
             }
-            // ─── MLT card ────────────────────────────────────────────
+            // ─── MLT card (temp only) ─────────────────────────────────
             document.getElementById('mltTemp').textContent = d.MLT_temp.toFixed(1);
-            const mltTimerNum = d.timer_progress_MLT.replace(/min$/, '');
-            document.getElementById('timerMLT').textContent = mltTimerNum;
-            // ─── PUMP 1 ─────────────────────────────────────────────
-            // strip off trailing '%' since html now adds it
+            // ─── BK timer ─────────────────────────────────────────────
+            const timerBKWrapper = document.getElementById('timerBKWrapper');
+            const bkMinutes = parseInt(d.timer_progress_BK.replace(/\D/g, ''), 10);
+            if (bkMinutes > 0) {
+                timerBKWrapper.style.display = 'flex';
+                document.getElementById('timerBK').textContent = bkMinutes.toString();
+            }
+            else {
+                timerBKWrapper.style.display = 'none';
+            }
+            // ─── MLT timer ────────────────────────────────────────────
+            const timerMLTWrapper = document.getElementById('timerMLTWrapper');
+            const mltMinutes = parseInt(d.timer_progress_MLT.replace(/\D/g, ''), 10);
+            if (mltMinutes > 0) {
+                timerMLTWrapper.style.display = 'flex';
+                document.getElementById('timerMLT').textContent = mltMinutes.toString();
+            }
+            else {
+                timerMLTWrapper.style.display = 'none';
+            }
+            // ─── PUMPS ─────────────────────────────────────────────────
+            // Pump 1
             document.getElementById('pump1Speed').textContent = d.Pump1_speed.replace('%', '');
             const p1Ind = document.getElementById('p1Indicator');
             if (d.Pump1 === 'On') {
                 p1Ind.classList.add('reached');
-                p1Ind.classList.remove('off', 'on');
+                p1Ind.classList.remove('on', 'off');
             }
             else {
                 p1Ind.classList.add('off');
                 p1Ind.classList.remove('on', 'reached');
             }
-            // ─── PUMP 2 ─────────────────────────────────────────────
+            // Pump 2
             document.getElementById('pump2Speed').textContent = d.Pump2_speed.replace('%', '');
             const p2Ind = document.getElementById('p2Indicator');
             if (d.Pump2 === 'On') {
                 p2Ind.classList.add('reached');
-                p2Ind.classList.remove('off', 'on');
+                p2Ind.classList.remove('on', 'off');
             }
             else {
                 p2Ind.classList.add('off');
@@ -90,17 +110,19 @@ function fetchAndRender() {
     });
 }
 document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, void 0, function* () {
+    // Load polling interval
     let interval = 10000;
     try {
         const resp = yield fetch('/api/config');
         if (resp.ok) {
-            const cfg = yield resp.json();
+            const cfg = (yield resp.json());
             interval = cfg.poll_interval;
         }
     }
     catch (_a) {
-        /* use default */
+        console.warn('Could not load poll interval, using default');
     }
+    // Initial fetch + schedule updates
     fetchAndRender();
     setInterval(fetchAndRender, interval);
 }));
