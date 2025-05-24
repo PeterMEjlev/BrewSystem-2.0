@@ -31,8 +31,8 @@ def api_data():
         "Pump2":      "On" if variables.STATE["P2_ON"] else "Off",
 
         # pump efficiencies (duty cycle %)
-        "Pump1_speed": f"{variables.pump_speed_P1:.0f}%",
-        "Pump2_speed": f"{variables.pump_speed_P2:.0f}%", 
+        "Pump1_speed": f"{variables.settings.pump_speed_P1:.0f}%",
+        "Pump2_speed": f"{variables.settings.pump_speed_P2:.0f}%", 
 
         # pot efficiencies
         "BK_eff":     f"{variables.settings.efficiency_BK:.0f}%",
