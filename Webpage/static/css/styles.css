@@ -69,7 +69,7 @@ h1.section-header {
   vertical-align: middle;
   transition: background 0.2s;
 }
-.indicator.on  { background: #e74c3c; }
+.indicator.on  { background: linear-gradient(0deg, #f04c65, #f58361); }
 .indicator.off { background: #333; }
 
 /* standard field rows */
