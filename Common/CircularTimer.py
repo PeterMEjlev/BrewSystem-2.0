@@ -1,10 +1,10 @@
 # circular_timer.py
 
-import os
-import sys
+import os, sys, math
 from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QGraphicsOpacityEffect
 from PyQt5.QtCore    import Qt, QTimer, QRectF, QSize, QPointF
 from PyQt5.QtGui     import QPainter, QPen, QColor, QFont, QPixmap
+from typing import Callable, Optional
 
 # ─── DEFAULT CONFIG ─────────────────────────────────────────────────────────────
 DEFAULT_DURATION             = 60.0
@@ -28,6 +28,8 @@ class CircularTimer(QWidget):
         self,
         duration_minutes: float = DEFAULT_DURATION,
         parent=None,
+        *,
+        progress_callback: Optional[Callable[[float], None]] = None,
         bg_color_idle: str = DEFAULT_BG_COLOR_IDLE,
         bg_opacity_idle: float = DEFAULT_BG_OPACITY_IDLE,
         bg_color_active: str = DEFAULT_BG_COLOR_ACTIVE,
@@ -47,6 +49,7 @@ class CircularTimer(QWidget):
         self.duration = duration_minutes
         self.elapsed  = 0.0
         self._state = "idle"    # possible values: "idle", "running", "paused"
+        self._progress_callback = progress_callback
 
         # background colors
         self.bg_color_idle   = QColor(bg_color_idle)
@@ -163,6 +166,10 @@ class CircularTimer(QWidget):
         if self.elapsed >= self.duration:
             self.elapsed = self.duration
             self._timer.stop()
+        # fire the callback with elapsed minutes
+        if self._progress_callback:
+            minutes_int = math.floor(self.elapsed)
+            self._progress_callback(minutes_int)
         self.update()
 
     def resizeEvent(self, ev):
