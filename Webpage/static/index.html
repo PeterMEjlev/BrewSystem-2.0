@@ -22,11 +22,11 @@
     body {
       margin: 0;
       font-family: sans-serif;
-      background: #ecf0f1;
-      color: #333;
+      background: #2d2d2e;
+      color: #ffffff;
     }
     .panel {
-      background: #fff;
+      background: #3E3E3F;
       margin: 1rem auto;
       padding: 1.5rem;
       border-radius: 8px;
@@ -62,6 +62,22 @@
       font-size: 1.2rem;
       text-align: center;
     }
+    .indicator {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      margin-left: 0.5em;
+      border-radius: 0.2em;
+      background: #000;            /* default = off */
+      vertical-align: middle;
+      transition: background 0.2s;
+    }
+    .indicator.on  { 
+      background: #e74c3c; 
+    } 
+    .indicator.off { 
+      background: #333; 
+    }     
     .field {
       display: flex;
       justify-content: space-between;
@@ -99,7 +115,10 @@
     <div class="card-grid">
       <!-- BK -->
       <div class="card">
-        <h2>BK</h2>
+        <h2>
+          BK
+          <span id="bkIndicator" class="indicator off"></span>
+        </h2>
         <div class="field"><span class="label">Status:</span><span id="bkPot">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="bkEff">–</span></div>
         <div class="field">
@@ -124,7 +143,10 @@
 
       <!-- HLT -->
       <div class="card">
-        <h2>HLT</h2>
+        <h2>
+          HLT
+          <span id="hltIndicator" class="indicator off"></span>
+        </h2>
         <div class="field"><span class="label">Status:</span><span id="hltPot">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="hltEff">–</span></div>
         <div class="field">
@@ -142,14 +164,20 @@
     <div class="card-grid">
       <!-- Pump 1 -->
       <div class="card">
-        <h2>P1</h2>
+        <h2>
+          P1
+          <span id="p1Indicator" class="indicator off"></span>
+        </h2>
         <div class="field"><span class="label">Status:</span><span id="pump1">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="pump1Speed">–</span></div>
       </div>
 
       <!-- Pump 2 -->
       <div class="card">
-        <h2>P2</h2>
+        <h2>
+          P2
+          <span id="p2Indicator" class="indicator off"></span>
+        </h2>
         <div class="field"><span class="label">Status:</span><span id="pump2">–</span></div>
         <div class="field"><span class="label">Efficiency:</span><span id="pump2Speed">–</span></div>
       </div>
