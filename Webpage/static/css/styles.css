@@ -70,6 +70,7 @@ h1.section-header {
   transition: background 0.2s;
 }
 .indicator.on  { background: linear-gradient(0deg, #f04c65, #f58361); }
+.indicator.reached  { background: linear-gradient(0deg, #0a9b44, #8cc866); }
 .indicator.off { background: #333; }
 
 /* standard field rows */

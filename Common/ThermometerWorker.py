@@ -33,8 +33,8 @@ class ThermometerWorker(QObject):
             variables.temp_BK, variables.temp_MLT, variables.temp_HLT = t_bk, t_mlt, t_hlt
 
             # 2) check alarms & control PWM
-            self.check_if_reg_temp_reached('BK')
-            self.check_if_reg_temp_reached('HLT')
+            self._update_reg_state('BK', t_bk)
+            self._update_reg_state('HLT', t_hlt)
             self.control_pwm_output()
 
             # 3) emit individual‐pot updates
@@ -73,47 +73,60 @@ class ThermometerWorker(QObject):
         set_flag = f"set_temp_reached_{key}"
         m = constants.TEMP_REACHED_MARGIN
         r = constants.TEMP_RESET_MARGIN
+        reg_on = getattr(variables, f"{key}_REG_ON")
 
-        if reg - m <= temp <= reg + m:
+        if reg - m <= temp <= reg + m and reg_on:
             if not getattr(variables, set_flag):
                 setattr(variables, set_flag, True)
                 play_audio(f"{key}_set_temp_reached - Male.mp3")
                 change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), 0)
+                self.update_pot_foregrounds_if_temp_reached()
         else:
             if getattr(variables, set_flag) and (temp < reg - r or temp > reg + r):
                 setattr(variables, set_flag, False)
 
-    def update_temp_reached_element(self, temp, temp_reg, state, element, threshold):
-        """Update visibility of temperature-reached elements."""
-        if state:
-            if temp >= 100 and temp_reg == 100:
-                element.show()
-            elif abs(temp - temp_reg) <= threshold:
-                element.show()
-            else:
-                element.hide()
+
+    def _update_reg_state(self, key: str, temp: float):
+        """
+        1) If REG is off → ensure flag=False, hide image.
+        2) If REG is on and temp outside margin → flag=False, hide image.
+        3) If REG is on and temp within margin → flag=True, show image, zero PWM, play audio once.
+        """
+        # resolve dynamic names
+        settings = variables.settings
+        target       = getattr(settings,       f"temp_REG_{key}")
+        reg_enabled  = getattr(variables,      f"{key}_REG_ON")
+        flag_name    = f"set_temp_reached_{key}"
+        already_set  = getattr(variables,      flag_name)
+        widget_name  = f"IMG_Pot_{key}_On_Temp_Reached"
+        widget       = self.static_elements.get(widget_name, None)
+        margin       = constants.TEMP_REACHED_MARGIN
+
+        # If regulation is off, always clear
+        if not reg_enabled:
+            if already_set:
+                setattr(variables, flag_name, False)
+                if widget: widget.hide()
+            return
+
+        # determine whether we're within the “on-target” band
+        in_band = abs(temp - target) <= margin
+
+        if in_band:
+            # just entered the band?
+            if not already_set:
+                setattr(variables, flag_name, True)
+                play_audio(f"{key}_set_temp_reached - Male.mp3")
+                # cut power
+                change_pwm_duty_cycle(getattr(constants_rpi, f"RPI_GPIO_PWN_{key}"), 0)
+            if widget:
+                widget.show()
         else:
-            element.hide()
-
-    def update_pot_foregrounds_if_temp_reached(self):
-        """Update the pot foregrounds if the temperature is reached."""
-        if 'IMG_Pot_BK_On_Temp_Reached' in self.static_elements:
-            self.update_temp_reached_element(
-                variables.temp_BK,
-                variables.settings.temp_REG_BK,
-                variables.STATE['BK_ON'],
-                self.static_elements['IMG_Pot_BK_On_Temp_Reached'],
-                constants.TEMP_REACHED_MARGIN
-            )
-
-        if 'IMG_Pot_HLT_On_Temp_Reached' in self.static_elements:
-            self.update_temp_reached_element(
-                variables.temp_HLT,
-                variables.settings.temp_REG_HLT,
-                variables.STATE['HLT_ON'],
-                self.static_elements['IMG_Pot_HLT_On_Temp_Reached'],
-                constants.TEMP_REACHED_MARGIN
-            )
+            # outside band → reset flag + hide
+            if already_set:
+                setattr(variables, flag_name, False)
+            if widget:
+                widget.hide()
 
     def control_pwm_output(self):
         """Control the PWM output for BK and HLT using dynamic max wattage management."""

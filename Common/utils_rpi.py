@@ -124,7 +124,7 @@ def read_ds18b20(serial_code):
             print(f"Error reading DS18B20: {e}")
             return -1.0
     else:
-        return random.uniform(25.0, 100.0)
+        return random.uniform(25.0, 30.0)
 
 def initialize_gpio():
     if IS_RPI:

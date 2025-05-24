@@ -41,6 +41,10 @@ def api_data():
         # regulator target temperatures
         "BK_regTemp": variables.settings.temp_REG_BK,
         "HLT_regTemp": variables.settings.temp_REG_HLT,
+
+        # regulator temp reached flags
+        "set_temp_reached_BK": variables.set_temp_reached_BK,
+        "set_temp_reached_HLT": variables.set_temp_reached_HLT,
     }
     return jsonify(status)
 
