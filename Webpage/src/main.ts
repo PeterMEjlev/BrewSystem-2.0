@@ -12,6 +12,9 @@ interface BrewData {
   Pump2_speed: string;
   BK_eff: string;
   HLT_eff: string;
+  BK_regTemp: number;
+  HLT_regTemp: number;
+
 }
 
 async function fetchAndRender(): Promise<void> {
@@ -24,6 +27,7 @@ async function fetchAndRender(): Promise<void> {
     document.getElementById('bkEff')!.textContent   = d.BK_eff;
     document.getElementById('bkTemp')!.textContent  = d.BK_temp.toFixed(1);
     document.getElementById('bkReg')!.textContent   = d.BK_reg;
+    document.getElementById('bkRegTemp')!.textContent  = d.BK_regTemp.toFixed(1);
 
     // toggle BK indicator
     const bkInd = document.getElementById('bkIndicator')!;
@@ -40,6 +44,8 @@ async function fetchAndRender(): Promise<void> {
     document.getElementById('hltEff')!.textContent  = d.HLT_eff;
     document.getElementById('hltTemp')!.textContent = d.HLT_temp.toFixed(1);
     document.getElementById('hltReg')!.textContent  = d.HLT_reg;
+    document.getElementById('hltRegTemp')!.textContent  = d.HLT_regTemp.toFixed(1);
+
 
     // toggle HLT indicator
     const hltInd = document.getElementById('hltIndicator')!;

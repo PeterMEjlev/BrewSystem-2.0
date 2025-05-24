@@ -36,7 +36,11 @@ def api_data():
 
         # pot efficiencies
         "BK_eff":     f"{variables.settings.efficiency_BK:.0f}%",
-        "HLT_eff":    f"{variables.settings.efficiency_HLT:.0f}%"
+        "HLT_eff":    f"{variables.settings.efficiency_HLT:.0f}%",
+
+        # regulator target temperatures
+        "BK_regTemp": variables.settings.temp_REG_BK,
+        "HLT_regTemp": variables.settings.temp_REG_HLT,
     }
     return jsonify(status)
 

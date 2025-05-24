@@ -18,6 +18,7 @@ function fetchAndRender() {
             document.getElementById('bkEff').textContent = d.BK_eff;
             document.getElementById('bkTemp').textContent = d.BK_temp.toFixed(1);
             document.getElementById('bkReg').textContent = d.BK_reg;
+            document.getElementById('bkRegTemp').textContent = d.BK_regTemp.toFixed(1);
             // toggle BK indicator
             const bkInd = document.getElementById('bkIndicator');
             if (d.BK_pot === 'On') {
@@ -33,6 +34,7 @@ function fetchAndRender() {
             document.getElementById('hltEff').textContent = d.HLT_eff;
             document.getElementById('hltTemp').textContent = d.HLT_temp.toFixed(1);
             document.getElementById('hltReg').textContent = d.HLT_reg;
+            document.getElementById('hltRegTemp').textContent = d.HLT_regTemp.toFixed(1);
             // toggle HLT indicator
             const hltInd = document.getElementById('hltIndicator');
             if (d.HLT_pot === 'On') {
