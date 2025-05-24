@@ -23,13 +23,18 @@ function fetchAndRender() {
                     ? `${d.BK_temp.toFixed(1)} / ${d.BK_regTemp.toFixed(1)}`
                     : d.BK_temp.toFixed(1);
             document.getElementById('bkReg').textContent = d.BK_reg;
-            // BK indicator: green gradient if we've reached set-temp while REG is on,
-            // red gradient if REG is on but not yet reached, grey if REG is off.
+            // BK indicator priority:
+            // 1) Green if REG is active AND set_temp_reached_BK is true
+            // 2) Red if BK_pot is On AND set_temp_reached_BK is false
+            // 3) Grey otherwise
             const bkInd = document.getElementById('bkIndicator');
-            if (d.BK_reg === 'On') {
-                bkInd.classList.toggle('reached', d.set_temp_reached_BK);
-                bkInd.classList.toggle('on', !d.set_temp_reached_BK);
-                bkInd.classList.remove('off');
+            if (d.BK_reg === 'On' && d.set_temp_reached_BK) {
+                bkInd.classList.add('reached');
+                bkInd.classList.remove('on', 'off');
+            }
+            else if (d.BK_pot === 'On' && !d.set_temp_reached_BK) {
+                bkInd.classList.add('on');
+                bkInd.classList.remove('reached', 'off');
             }
             else {
                 bkInd.classList.add('off');
@@ -44,12 +49,15 @@ function fetchAndRender() {
                     ? `${d.HLT_temp.toFixed(1)} / ${d.HLT_regTemp.toFixed(1)}`
                     : d.HLT_temp.toFixed(1);
             document.getElementById('hltReg').textContent = d.HLT_reg;
-            // HLT indicator: same logic as BK
+            // HLT indicator same priority
             const hltInd = document.getElementById('hltIndicator');
-            if (d.HLT_reg === 'On') {
-                hltInd.classList.toggle('reached', d.set_temp_reached_HLT);
-                hltInd.classList.toggle('on', !d.set_temp_reached_HLT);
-                hltInd.classList.remove('off');
+            if (d.HLT_reg === 'On' && d.set_temp_reached_HLT) {
+                hltInd.classList.add('reached');
+                hltInd.classList.remove('on', 'off');
+            }
+            else if (d.HLT_pot === 'On' && !d.set_temp_reached_HLT) {
+                hltInd.classList.add('on');
+                hltInd.classList.remove('reached', 'off');
             }
             else {
                 hltInd.classList.add('off');
@@ -58,27 +66,31 @@ function fetchAndRender() {
             // ─── MLT card (temp only) ──────────────────────────────────────────────
             document.getElementById('mltTemp').textContent = d.MLT_temp.toFixed(1);
             // ─── PUMPS ─────────────────────────────────────────────────────────────
+            // Pump 1
             document.getElementById('pump1').textContent = d.Pump1;
             document.getElementById('pump1Speed').textContent = d.Pump1_speed;
             const p1Ind = document.getElementById('p1Indicator');
             if (d.Pump1 === 'On') {
-                p1Ind.classList.add('on');
-                p1Ind.classList.remove('off');
+                // On → green gradient
+                p1Ind.classList.add('reached');
+                p1Ind.classList.remove('on', 'off');
             }
             else {
+                // Off → grey
                 p1Ind.classList.add('off');
-                p1Ind.classList.remove('on');
+                p1Ind.classList.remove('on', 'reached');
             }
+            // Pump 2
             document.getElementById('pump2').textContent = d.Pump2;
             document.getElementById('pump2Speed').textContent = d.Pump2_speed;
             const p2Ind = document.getElementById('p2Indicator');
             if (d.Pump2 === 'On') {
-                p2Ind.classList.add('on');
-                p2Ind.classList.remove('off');
+                p2Ind.classList.add('reached');
+                p2Ind.classList.remove('on', 'off');
             }
             else {
                 p2Ind.classList.add('off');
-                p2Ind.classList.remove('on');
+                p2Ind.classList.remove('on', 'reached');
             }
         }
         catch (err) {
@@ -87,7 +99,7 @@ function fetchAndRender() {
     });
 }
 document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, void 0, function* () {
-    // 1) grab poll interval from Flask
+    // load poll interval from Flask
     let interval = 10000;
     try {
         const resp = yield fetch('/api/config');
@@ -99,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(void 0, void 0, vo
     catch (e) {
         console.warn('Could not load poll interval, using default', e);
     }
-    // 2) initial fetch + schedule
+    // initial render + schedule
     fetchAndRender();
     setInterval(fetchAndRender, interval);
 }));

@@ -78,26 +78,30 @@ async function fetchAndRender(): Promise<void> {
     document.getElementById('mltTemp')!.textContent = d.MLT_temp.toFixed(1);
 
     // ─── PUMPS ─────────────────────────────────────────────────────────────
+    // Pump 1
     document.getElementById('pump1')!.textContent      = d.Pump1;
     document.getElementById('pump1Speed')!.textContent = d.Pump1_speed;
     const p1Ind = document.getElementById('p1Indicator')!;
     if (d.Pump1 === 'On') {
-      p1Ind.classList.add('on');
-      p1Ind.classList.remove('off');
+      // On → green gradient
+      p1Ind.classList.add('reached');
+      p1Ind.classList.remove('on', 'off');
     } else {
+      // Off → grey
       p1Ind.classList.add('off');
-      p1Ind.classList.remove('on');
+      p1Ind.classList.remove('on', 'reached');
     }
 
+    // Pump 2
     document.getElementById('pump2')!.textContent      = d.Pump2;
     document.getElementById('pump2Speed')!.textContent = d.Pump2_speed;
     const p2Ind = document.getElementById('p2Indicator')!;
     if (d.Pump2 === 'On') {
-      p2Ind.classList.add('on');
-      p2Ind.classList.remove('off');
+      p2Ind.classList.add('reached');
+      p2Ind.classList.remove('on', 'off');
     } else {
       p2Ind.classList.add('off');
-      p2Ind.classList.remove('on');
+      p2Ind.classList.remove('on', 'reached');
     }
 
   } catch (err) {
