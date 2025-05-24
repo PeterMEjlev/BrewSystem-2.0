@@ -4,8 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>BrewSystem 2.0 Dashboard</title>
-  <!-- link to your extracted stylesheet -->
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .status-field { display: none; }
+  </style>
 </head>
 <body>
 
@@ -15,25 +17,39 @@
     <div class="nav-item">OVERVIEW</div>
   </header>
 
-  <!-- MAIN CONTENT PANEL -->
   <div class="panel">
 
-    <!-- POTS SECTION -->
+    <!-- POTS -->
     <h1 class="section-header">Pots</h1>
     <div class="card-grid">
+
       <!-- BK -->
       <div class="card">
         <h2>
           BK
           <span id="bkIndicator" class="indicator off"></span>
         </h2>
-        <div class="field status-field"><span class="label">Status:</span><span id="bkPot">–</span></div>
-        <div class="field">
-          <span class="label">Temperature:</span>
-          <span id="bkTemp">–</span><span class="unit">°C</span>
+        <div class="field status-field">
+          <span class="label">Status:</span><span id="bkPot">–</span>
         </div>
-        <div class="field"><span class="label">Efficiency:</span><span id="bkEff">–</span></div>
-        <div class="field"><span class="label">Regulator:</span><span id="bkReg">–</span></div>
+        <!-- temperature -->
+        <div class="field--center">
+          <span class="value-medium">
+            <span id="bkTemp">–</span>&thinsp;°C
+          </span>
+        </div>
+        <!-- efficiency -->
+        <div class="field--center">
+          <span class="value-medium">
+            <span id="bkEff">–</span>&thinsp;%
+          </span>
+        </div>
+        <!-- reg -->
+        <div class="field--center">
+          <span class="value-medium">
+            REG:&thinsp;<span id="bkReg">–</span>
+          </span>
+        </div>
       </div>
 
       <!-- MLT -->
@@ -41,7 +57,7 @@
         <h2>MLT</h2>
         <div class="field--center">
           <span class="value-large">
-            <span id="mltTemp">–</span><span class="unit">°C</span>
+            <span id="mltTemp">–</span>&thinsp;°C
           </span>
         </div>
       </div>
@@ -52,57 +68,65 @@
           HLT
           <span id="hltIndicator" class="indicator off"></span>
         </h2>
-        <div class="field status-field"><span class="label">Status:</span><span id="hltPot">–</span></div>
-        <div class="field">
-          <span class="label">Temperature:</span>
-          <span id="hltTemp">–</span><span class="unit">°C</span>
+        <div class="field status-field">
+          <span class="label">Status:</span><span id="hltPot">–</span>
         </div>
-        <div class="field"><span class="label">Efficiency:</span><span id="hltEff">–</span></div>
-        <div class="field"><span class="label">Regulator:</span><span id="hltReg">–</span></div>
+        <div class="field--center">
+          <span class="value-medium">
+            <span id="hltTemp">–</span>&thinsp;°C
+          </span>
+        </div>
+        <div class="field--center">
+          <span class="value-medium">
+            <span id="hltEff">–</span>&thinsp;%
+          </span>
+        </div>
+        <div class="field--center">
+          <span class="value-medium">
+            REG:&thinsp;<span id="hltReg">–</span>
+          </span>
+        </div>
       </div>
     </div>
 
-    <!-- PUMPS SECTION -->
+    <!-- PUMPS -->
     <h1 class="section-header">Pumps</h1>
     <div class="card-grid">
-      <!-- Pump 1 -->
+      <!-- P1 -->
       <div class="card">
         <h2>
           P1
           <span id="p1Indicator" class="indicator off"></span>
         </h2>
-        <!-- leave this in the markup… -->
         <div class="field status-field">
-          <span class="label">Status:</span>
-          <span id="pump1">–</span>
+          <span class="label">Status:</span><span id="pump1">–</span>
         </div>
-        <!-- …but hide it in your CSS: -->
-        <style>
-          .status-field { display: none; }
-        </style>
         <div class="field--center">
-          <span class="value-medium" id="pump1Speed">–</span>
+          <span class="value-medium">
+            <span id="pump1Speed">–</span>&thinsp;%
+          </span>
         </div>
       </div>
 
-      <!-- Pump 2: same thing -->
+      <!-- P2 -->
       <div class="card">
         <h2>
           P2
           <span id="p2Indicator" class="indicator off"></span>
         </h2>
         <div class="field status-field">
-          <span class="label">Status:</span>
-          <span id="pump2">–</span>
+          <span class="label">Status:</span><span id="pump2">–</span>
         </div>
         <div class="field--center">
-          <span class="value-medium" id="pump2Speed">–</span>
+          <span class="value-medium">
+            <span id="pump2Speed">–</span>&thinsp;%
+          </span>
         </div>
       </div>
     </div>
 
+  </div>
 
-  <!-- your existing TS bundle -->
   <script type="module" src="/js/main.js"></script>
 </body>
 </html>
