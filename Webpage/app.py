@@ -45,6 +45,10 @@ def api_data():
         # regulator temp reached flags
         "set_temp_reached_BK": variables.set_temp_reached_BK,
         "set_temp_reached_HLT": variables.set_temp_reached_HLT,
+
+        # timer progress
+        "timer_progress_MLT": variables.timer_progress_MLT,
+        "timer_progress_BK": variables.timer_progress_BK,
     }
     return jsonify(status)
 

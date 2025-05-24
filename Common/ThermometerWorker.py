@@ -50,7 +50,7 @@ class ThermometerWorker(QObject):
             # 5) pause
             QThread.msleep(constants.THERMOMETER_READ_FREQUENCY)
 
-            print(variables.temp_progress_MLT)
+            
 
         # clean shutdown
         self.finished.emit()

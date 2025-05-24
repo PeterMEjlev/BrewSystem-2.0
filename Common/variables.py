@@ -91,5 +91,5 @@ talking_with_chat = False
 # Currently-selected variable (e.g. slider focus)
 active_variable = None
 
-temp_progress_MLT = 0
-temp_progress_BK = 0
+timer_progress_MLT = 0
+timer_progress_BK = 0

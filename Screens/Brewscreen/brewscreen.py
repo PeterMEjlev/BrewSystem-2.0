@@ -76,11 +76,11 @@ class FullScreenWindow(QMainWindow):
         )
 
     def initalize_timers(self):
-        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget, bg_color_active="#00000", bg_opacity_active=0.1, progress_callback=lambda minutes: setattr(variables, 'temp_progress_MLT', minutes))
+        self.circular_timer_MLT = create_circular_timer(60, parent=self.central_widget, bg_color_active="#00000", bg_opacity_active=0.1, progress_callback=lambda minutes: setattr(variables, 'timer_progress_MLT', minutes))
         self.circular_timer_MLT.setGeometry(1085, 345, 160, 160)
         self.circular_timer_MLT.show()
 
-        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#00000", bg_opacity_idle=0.1, bg_color_active="#00000", bg_opacity_active=0.1, icon_idle="Icon_Timer_Black.png", icon_opacity_idle=0.1, progress_callback=lambda minutes: setattr(variables, 'temp_progress_BK', minutes))
+        self.circular_timer_BK = create_circular_timer(60, parent=self.central_widget, bg_color_idle="#00000", bg_opacity_idle=0.1, bg_color_active="#00000", bg_opacity_active=0.1, icon_idle="Icon_Timer_Black.png", icon_opacity_idle=0.1, progress_callback=lambda minutes: setattr(variables, 'timer_progress_BK', minutes))
         self.circular_timer_BK.setGeometry(645, 345, 160, 160)
         self.circular_timer_BK.show()
 
