@@ -63,6 +63,7 @@
       text-align: center;
     }
 
+    /* little on/off pill */
     .indicator {
       display: inline-block;
       width: 1em;
@@ -76,29 +77,31 @@
     .indicator.on  { background: #e74c3c; }
     .indicator.off { background: #333; }
 
+    /* standard field rows */
     .field {
       display: flex;
       justify-content: space-between;
       margin-bottom: 0.5rem;
     }
-    .field:last-child {
-      margin-bottom: 0;
-    }
-    .label {
-      font-weight: bold;
-    }
-    .field > .label + * {
-      margin-left: 0.75rem;
-    }
+    .field:last-child { margin-bottom: 0; }
+    .label { font-weight: bold; }
+    .field > .label + * { margin-left: 0.75rem; }
+    .unit  { margin-left: 0.25rem; }
 
-    .unit {
-      margin-left: 0.25rem;
+    /* big centered value for MLT */
+    .value-large {
+      font-size: 1.8rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+    .field--center {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0.5rem;
     }
 
     @media (max-width: 600px) {
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
+      .card-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -134,9 +137,10 @@
       <!-- MLT -->
       <div class="card">
         <h2>MLT</h2>
-        <div class="field">
-          <span class="label">Temperature:</span>
-          <span id="mltTemp">–</span><span class="unit">°C</span>
+        <div class="field--center">
+          <span class="value-large">
+            <span id="mltTemp">–</span><span class="unit">°C</span>
+          </span>
         </div>
       </div>
 
@@ -182,6 +186,7 @@
 
   </div>
 
+  <!-- your existing TS bundle -->
   <script type="module" src="/js/main.js"></script>
 </body>
 </html>
