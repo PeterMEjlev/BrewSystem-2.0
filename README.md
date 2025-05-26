@@ -42,3 +42,22 @@ This section visualizes temperature data over time for the different pots. It he
 This is the web-based interface of the brewsystem. It provides remote access to live data and control options for monitoring and managing the brew session.
 
 ![Webpage of the brewsystem](README_Images/Webpage.png)
+
+
+---
+
+### Physical Controller Box
+
+This is the physical control cabinet that houses the electronics responsible for powering and managing the brewsystem. It interfaces with sensors, actuators, and the software running on the Raspberry Pi.
+
+---
+
+**Main components:**
+- Raspberry Pi 4B  
+- 92 W | 24 V DC | 3.83 A power supply (for pumps)  
+- 15 W | 5 V DC | 3 A power supply (for Raspberry Pi)  
+- RJ45 9-port splitter (for DS18B20 temperature sensors)  
+- 2 × 3 V relays (to control the pumps)  
+
+![Physical controller box of the brewsystem](README_Images/PhysicalBox.jpg)
+
