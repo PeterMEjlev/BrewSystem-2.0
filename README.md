@@ -1,25 +1,29 @@
 ### Main Dashboard
 
-This is the main dashboard of the brewsystem's touchscreen interface. It serves as the central control hub for the entire brewing process, offering both monitoring and interactive control of key components:
+This is the main dashboard of the brewsystem's touchscreen interface. It provides a real-time, interactive overview of the core brewing components in a Heat Exchange Recirculating Mash System (HERMS).
 
 - **Boil Kettle (BK)**  
-  - State: ON/OFF  
-  - Heating Element Efficiency: 0–100%  
-  - Regulator State (REG): ON/OFF  
-  - Target Temperature (REG Temp): adjustable  
+  - Displays current temperature  
+  - Heater efficiency (0–100%)  
+  - Regulator target temperature (REG Temp)  
+  - REG State: ON/OFF  
+  - An **automatic boil timer** starts when the kettle reaches 99 °C  
+
+- **Mash Lauter Tun (MLT)**  
+  - Displays current temperature  
+  - Manual **mash timer** for tracking mash durations  
 
 - **Hot Liquor Tank (HLT)**  
-  - Similar controls to BK  
+  - Displays current temperature  
+  - Heater efficiency (0–100%)  
+  - Regulator target temperature (REG Temp)  
+  - REG State: ON/OFF  
 
-- **Pumps**  
-  - Pump 1 and Pump 2: ON/OFF  
-  - Individual Speed Control (Efficiency): 0–100%  
+- **Pumps (P1 & P2)**  
+  - ON/OFF control for each pump  
+  - Speed control via efficiency setting (0–100%)  
 
-- **Timers**  
-  - Manual timer for the **Mash Lauter Tun (MLT)**  
-  - Automatic timer for the **Boil Kettle**, which starts automatically once the temperature reaches 99 °C  
-
-This interface enables intuitive, real-time control of your HERMS brewing system.
+The interface makes it easy to monitor and control the full brew cycle directly from the touchscreen.
 
 ![Main dashboard of the brewsystem](README_Images/Dashboard.png)
 
