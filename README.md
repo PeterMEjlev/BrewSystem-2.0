@@ -50,8 +50,6 @@ This is the web-based interface of the brewsystem. It provides remote access to 
 
 This is the physical control cabinet that houses the electronics responsible for powering and managing the brewsystem. It interfaces with sensors, actuators, and the software running on the Raspberry Pi.
 
----
-
 **Main components:**
 - Raspberry Pi 4B  
 - 92 W | 24 V DC | 3.83 A power supply (for pumps)  
