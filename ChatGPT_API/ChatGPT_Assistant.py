@@ -321,9 +321,10 @@ def call_ai_assistant(starter_text="Hey Brewsystem", thread_id=None):
 
 def check_for_exit_commands(user_input):
     if any(word in user_input.lower() for word in ["exit", "quit", "end", "stop", "terminate"]):
-                print(f"Goodbye!")
-                text_to_speech("Goodbye!")
-                variables.talking_with_chat = False
-                print(f"talking_with_chat = {variables.talking_with_chat}")
-                return True
+        print("Goodbye!")
+        text_to_speech("Goodbye!")
+        variables.talking_with_chat = False
+        print(f"talking_with_chat = {variables.talking_with_chat}")
+        return True
+    return False
                 
