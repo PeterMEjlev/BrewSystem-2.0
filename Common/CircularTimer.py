@@ -48,7 +48,7 @@ class CircularTimer(QWidget):
         # timing
         self.duration = duration_minutes
         self.elapsed  = 0.0
-        self._state = "idle"    # possible values: "idle", "running", "paused"
+        self._state = "idle"    # idle | running | paused
         self._progress_callback = progress_callback
 
         # background colors
@@ -69,7 +69,6 @@ class CircularTimer(QWidget):
         self.icon_scale          = icon_scale
         self.icon_opacity_idle   = icon_opacity_idle
         self.icon_opacity_active = icon_opacity_active
-
         base = os.path.join(os.path.dirname(__file__), "..", "Assets")
         self._pix_idle   = QPixmap(os.path.join(base, icon_idle))
         self._pix_active = QPixmap(os.path.join(base, icon_active))
@@ -81,6 +80,12 @@ class CircularTimer(QWidget):
         # state flags
         self._show_text     = False
         self._show_triangle = False
+
+        # cache pixmaps and font
+        self._bg_pixmap_idle   = None
+        self._bg_pixmap_active = None
+        self._font             = QFont()
+        self._font.setBold(True)
 
         # ticking timer
         self._timer = QTimer(self)
@@ -103,36 +108,22 @@ class CircularTimer(QWidget):
         self.update()
 
     def stop(self, show_triangle: bool = True):
-        """
-        Pause the timer.
-        - If show_triangle is True (the default), hide the text and show the triangle.
-        - If show_triangle is False, keep showing the minutes text (no triangle).
-        """
         self._state = "paused"
         self._timer.stop()
-
         if show_triangle:
             self._show_text     = False
             self._show_triangle = True
         else:
             self._show_text     = True
             self._show_triangle = False
-
         self._icon_label.hide()
         self.update()
 
-
     def toggle(self):
-        """
-        Toggle between paused and running without resetting:
-         - if running, pause (show triangle),
-         - if paused, resume (show text and arc stays at current elapsed).
-        """
         if self._timer.isActive():
-            # running → pause
             self.stop()
         else:
-            # paused or idle → resume
+            # resume
             self._show_text     = True
             self._show_triangle = False
             self._icon_label.hide()
@@ -166,94 +157,114 @@ class CircularTimer(QWidget):
         if self.elapsed >= self.duration:
             self.elapsed = self.duration
             self._timer.stop()
-        # fire the callback with elapsed minutes
         if self._progress_callback:
-            minutes_int = math.floor(self.elapsed)
-            self._progress_callback(minutes_int)
+            self._progress_callback(math.floor(self.elapsed))
         self.update()
 
     def resizeEvent(self, ev):
         super().resizeEvent(ev)
+        size   = min(self.width(), self.height())
+        margin = size * 0.1
+        self._rect = QRectF(margin, margin, size - 2*margin, size - 2*margin)
+
+        # cache idle background
+        pix_idle = QPixmap(self.width(), self.height())
+        pix_idle.fill(Qt.transparent)
+        p = QPainter(pix_idle)
+        p.setRenderHint(QPainter.Antialiasing)
+        p.setPen(QPen(self.bg_color_idle, self.stroke_width))
+        p.drawEllipse(self._rect)
+        p.end()
+        self._bg_pixmap_idle = pix_idle
+
+        # cache active background
+        pix_act = QPixmap(self.width(), self.height())
+        pix_act.fill(Qt.transparent)
+        p2 = QPainter(pix_act)
+        p2.setRenderHint(QPainter.Antialiasing)
+        p2.setPen(QPen(self.bg_color_active, self.stroke_width))
+        p2.drawEllipse(self._rect)
+        p2.end()
+        self._bg_pixmap_active = pix_act
+
+        # update font size
+        if self.text_size is not None:
+            pt = self.text_size
+        else:
+            pt = max(1, int(size * self.text_scale))
+        self._font.setPointSize(pt)
+
+        # reposition icon if needed
         self._position_icon()
 
     def _position_icon(self):
-        # only show icon in true idle (no text, no triangle)
         if self._show_text or self._show_triangle:
             self._icon_label.hide()
             return
-
         pix     = self._pix_idle
         opacity = self.icon_opacity_idle
-
         size   = min(self.width(), self.height())
-        margin = size*0.1 + self.stroke_width/2
-        inner  = size - 2*margin
+        margin = size * 0.1 + self.stroke_width / 2
+        inner  = size - 2 * margin
         isz    = int(inner * self.icon_scale)
-        if not pix.isNull() and isz>0:
+        if not pix.isNull() and isz > 0:
             scaled = pix.scaled(isz, isz, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             w, h   = scaled.width(), scaled.height()
-            x = (self.width()-w)//2
-            y = (self.height()-h)//2
-
+            x = (self.width() - w) // 2
+            y = (self.height() - h) // 2
             self._icon_label.setPixmap(scaled)
             self._icon_label.setGeometry(x, y, w, h)
-
             eff = QGraphicsOpacityEffect(self._icon_label)
             eff.setOpacity(opacity)
             self._icon_label.setGraphicsEffect(eff)
             self._icon_label.show()
 
     def paintEvent(self, ev):
-        size   = min(self.width(), self.height())
-        margin = size * 0.1
-        rect   = QRectF(margin, margin, size - 2*margin, size - 2*margin)
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
 
-        # in true‐idle (never started), show the icon; otherwise hide it
-        if not self._show_text and not self._show_triangle:
-            self._position_icon()
+        # draw cached background
+        idle_state = (not self._show_text and not self._show_triangle)
+        bg_pix = self._bg_pixmap_idle if idle_state else self._bg_pixmap_active
+        if bg_pix:
+            painter.drawPixmap(0, 0, bg_pix)
+        else:
+            bg = self.bg_color_idle if idle_state else self.bg_color_active
+            painter.setPen(QPen(bg, self.stroke_width))
+            painter.drawEllipse(self._rect)
 
-        p = QPainter(self)
-        p.setRenderHint(QPainter.Antialiasing)
-
-        # ─── draw background circle ───────────────────────────────────────────────
-        # idle state (never started) uses idle color; paused or running use active
-        bg = self.bg_color_idle if (not self._show_text and not self._show_triangle) else self.bg_color_active
-        p.setPen(QPen(bg, self.stroke_width))
-        p.drawEllipse(rect)
-
-        # ─── draw progress arc ────────────────────────────────────────────────────
-        p.setPen(QPen(self.fg_qcolor, self.stroke_width, cap=Qt.RoundCap))
+        # draw progress arc
+        painter.setPen(QPen(self.fg_qcolor, self.stroke_width, cap=Qt.RoundCap))
         pct  = min(self.elapsed / self.duration, 1.0)
         span = int(-pct * 360 * 16)
-        p.drawArc(rect, -90 * 16, span)
+        painter.drawArc(self._rect, -90 * 16, span)
 
-        # ─── if running, draw minutes text ────────────────────────────────────────
+        # draw minutes text
         if self._show_text:
             mins = int(self.elapsed)
             text = f"{mins:01d} min"
-            pt   = self.text_size if self.text_size else max(1, int(size * self.text_scale))
-            font = QFont()
-            font.setBold(True)
-            font.setPointSize(pt)
-            p.setFont(font)
-            p.setPen(self.fg_qcolor)
-            p.drawText(rect, Qt.AlignCenter, text)
+            painter.setFont(self._font)
+            painter.setPen(self.fg_qcolor)
+            painter.drawText(self._rect, Qt.AlignCenter, text)
 
-        # ─── if paused, draw right‐pointing triangle ──────────────────────────────
+        # draw pause-triangle
         elif self._show_triangle:
-            inner = size - 2*margin
-            s     = inner * 0.4
-            cx, cy = rect.center().x(), rect.center().y()
-            dx = inner * 0.05
-            p.setPen(Qt.NoPen)
-            p.setBrush(self.fg_qcolor)
+            size   = min(self.width(), self.height())
+            margin = size * 0.1
+            inner  = size - 2 * margin
+            s      = inner * 0.4
+            cx, cy = self._rect.center().x(), self._rect.center().y()
+            dx     = inner * 0.05
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(self.fg_qcolor)
             pts = [
                 QPointF(cx - s/2 + dx, cy - s/2),
                 QPointF(cx - s/2 + dx, cy + s/2),
                 QPointF(cx + s/2 + dx, cy)
             ]
-            p.drawPolygon(*pts)
+            painter.drawPolygon(*pts)
 
+        painter.end()
 
 
 def create_circular_timer(duration_minutes=DEFAULT_DURATION,
@@ -261,22 +272,22 @@ def create_circular_timer(duration_minutes=DEFAULT_DURATION,
     return CircularTimer(duration_minutes, parent, **kwargs)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = create_circular_timer(
         30, None,
-        bg_color_idle    = "#000000",
-        bg_opacity_idle  = 0.3,
-        bg_color_active  = "#313132",
-        bg_opacity_active= 1.0,
-        fg_color         = "#FFFFFF",
-        stroke_width     = 8,
-        text_scale       = 0.25,
-        icon_scale       = 0.3,
-        icon_idle        = "Icon_Timer.png",
-        icon_active      = "Icon_Timer_Grey.png",
-        icon_opacity_idle  = 0.5,
-        icon_opacity_active= 1.0,
+        bg_color_idle     = "#000000",
+        bg_opacity_idle   = 0.3,
+        bg_color_active   = "#313132",
+        bg_opacity_active = 1.0,
+        fg_color          = "#FFFFFF",
+        stroke_width      = 8,
+        text_scale        = 0.25,
+        icon_scale        = 0.3,
+        icon_idle         = "Icon_Timer.png",
+        icon_active       = "Icon_Timer_Grey.png",
+        icon_opacity_idle   = 0.5,
+        icon_opacity_active = 1.0,
     )
     w.resize(150, 150)
     w.show()
